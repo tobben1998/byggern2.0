@@ -4,5 +4,5 @@
 
 DRIVER_USART.c
 
-main.c
+lab3.c
 
