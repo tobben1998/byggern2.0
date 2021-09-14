@@ -60,7 +60,7 @@ void xmem_init(void){
 }
 //Write function
 void xmem_write(uint8_t data, uint16_t addr){
-	volatile char *ext_mem = (char *) 0x1800;
+	volatile char *ext_mem = (char *) 0x0000;
 	ext_mem[addr] = data;
 }
 
@@ -120,19 +120,23 @@ int main(void){
 	
 	
 	
-	/*
-	//Test of SRAM
+	
+	//Test of SRAM, task 2.
 	MCUCR |= (1 << SRE); //enable XMEM
 	SFIOR |= (1 << XMM2); //Mask unused bits/pins, which is PC4-PC7
 	
 	USART_Init(MYUBRR);
 	printf("test");
 	SRAM_test();
-	*/
+	
 
-
-	xmem_init();
-	xmem_write(0x51,0x0000);
+//	Task 3, check addresses decoder, writing to NAND Logic.
+// 	xmem_init();
+// 	
+// 	
+// 	while(1){
+// 		xmem_write(0xFF, 0x1899);
+// 	}
 }
 
 
