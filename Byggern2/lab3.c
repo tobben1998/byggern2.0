@@ -7,13 +7,28 @@
 #include <avr/interrupt.h>
 
 #include "DRIVER_USART.h"
+#include "DRIVER_ADC.h"
+#include "DRIVER_XMEM.h"
+#include "DRIVER_JOYSTICK.h"
+
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
+
+
+	
 
 int main(void){
 	
-// 	typedef enum{ UP, DOWN, LEFT, RIGHT, NEUTRAL} joyDir;
-// 		
-// 	joyDir get_joyDirAxis1( int axis1){
+	//typedef enum{ UP, DOWN, LEFT, RIGHT, NEUTRAL} joyDir;
+
+	
+	
+	// 	TCCR0 &= ~(1 << FOC0);
+	// 	TCCR0 |= (1 << WGM00);
+	// 	TCCR0 |= (1 << WGM01);
+
+	//ASSR &= ~(1 << AS2);
+		
+// 	joyDir get_joyDirAxis1( uint8_t axis1){
 // 		
 // 		if(axis1 > 128){
 // 			return UP;
@@ -26,7 +41,7 @@ int main(void){
 // 		}
 // 	}
 // 	
-// 	joyDir get_joyDirAxis2( int axis2){
+// 	joyDir get_joyDirAxis2( uint8_t axis2){
 // 
 // 		if(axis2 > 128){
 // 			return RIGHT;
@@ -38,25 +53,33 @@ int main(void){
 // 			return NEUTRAL;
 // 		}
 // 	}
-// 	
-	
-	//Set pin pd4 as output
-	DDRD |= (1 << DDD4);
-	
-	
-	cli();
-	TCCR3A |= (1 << COM3A0);
-	TCCR3B |= (1 << CS30);
-	TCCR3B |= (1 << WGM32);
-	OCR3A = 1;
-	sei();
-	
-// 	TCCR0 &= ~(1 << FOC0);
-// 	TCCR0 |= (1 << WGM00);
-// 	TCCR0 |= (1 << WGM01);
 
-	//ASSR &= ~(1 << AS2); 	
 	
+
+
+/*	adc_init();*/
+
+// 	volatile uint8_t data = 0;
+// 	data = adc_read(0);
+	
+// 	USART_Init(MYUBRR);
+// 	joystick_calibrate();
+// 	joystick_position position;
+	xmem_init();
+	while(1){
+		/*position = joystick_getPosition();*/
+		/*position = joystick_getDirection();*/
+		
+// 		uint8_t x = adc_read(1);
+// 		uint8_t y = adc_read(0);
+// 		uint8_t left_slider = adc_read(2);
+// 		uint8_t right_slider = adc_read(3);
+// 		/*printf("X: %d\t Y: %d\t Left: %d\t Right: %d\t\n", position.x_pos, position.y_pos, left_slider, right_slider);*/
+// 		printf("Direction: %s\n", position.direction);
+// 		_delay_ms(10);
+
+		xmem_write(0x10, 0x000);
+	}
 	
 	return 0;
 }

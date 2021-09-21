@@ -13,6 +13,7 @@
 #include <stdlib.h>
 
 #include "DRIVER_USART.h"
+#include "DRIVER_XMEM.h"
 
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
 
@@ -53,23 +54,6 @@ void SRAM_test(void)
 
 //External memory code:
 
-//Init function
-void xmem_init(void){
-	MCUCR |= (1 << SRE); //enable XMEM
-	SFIOR |= (1 << XMM2); //Mask unused bits/pins, which is PC4-PC7
-}
-//Write function
-void xmem_write(uint8_t data, uint16_t addr){
-	volatile char *ext_mem = (char *) 0x0000;
-	ext_mem[addr] = data;
-}
-
-//Read function
-uint8_t xmem_read(uint16_t addr){
-	volatile char *ext_mem = (char *) 0x1000;
-	uint8_t ret_val = ext_mem[addr];
-	return ret_val;
-}
 
 int main(void){
 	

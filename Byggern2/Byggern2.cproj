@@ -136,10 +136,28 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="DRIVER_ADC.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_ADC.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_JOYSTICK.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_JOYSTICK.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_USART.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="DRIVER_USART.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_XMEM.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_XMEM.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="lab3.c">
