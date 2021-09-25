@@ -16,7 +16,7 @@ void clock_init(void){
 	//Set pin pd4 as output
 	DDRD |= (1 << DDD4);
 	
-	
+	// 1.3 MHz?
 	cli(); //clears the global interrupt flag in SREG to prevent any form of interrupt occuring.
 	TCCR3A |= (1 << COM3A0);
 	TCCR3B |= (1 << CS30);
@@ -25,7 +25,7 @@ void clock_init(void){
 	sei(); // Enables interrupts by setting the global interrupt mask.
 };
 
-adc_init (void){
+void adc_init (void){
 	//Configuration data to be written to ADC
 
 	clock_init();

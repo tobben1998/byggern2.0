@@ -57,28 +57,29 @@ int main(void){
 	
 
 
-/*	adc_init();*/
+	adc_init();
 
-// 	volatile uint8_t data = 0;
-// 	data = adc_read(0);
+	volatile uint8_t data = 0;
+	data = adc_read(0);
 	
-// 	USART_Init(MYUBRR);
-// 	joystick_calibrate();
-// 	joystick_position position;
+	USART_Init(MYUBRR);
+	
+	joystick_calibrate();
+	joystick_position position;
 	xmem_init();
+	
 	while(1){
-		/*position = joystick_getPosition();*/
-		/*position = joystick_getDirection();*/
+		position = joystick_getPosition();
+		//position = joystick_getDirection();)
 		
-// 		uint8_t x = adc_read(1);
-// 		uint8_t y = adc_read(0);
-// 		uint8_t left_slider = adc_read(2);
-// 		uint8_t right_slider = adc_read(3);
-// 		/*printf("X: %d\t Y: %d\t Left: %d\t Right: %d\t\n", position.x_pos, position.y_pos, left_slider, right_slider);*/
-// 		printf("Direction: %s\n", position.direction);
-// 		_delay_ms(10);
+		uint8_t x = adc_read(1);
+		uint8_t y = adc_read(0);
+		uint8_t left_slider = adc_read(2);
+		uint8_t right_slider = adc_read(3);
+		printf("X: %d\t Y: %d\t Left: %d\t Right: %d\t\n", position.x_pos, position.y_pos, left_slider, right_slider);
+		//printf("Direction: %s\n", position.direction);
+		_delay_ms(10);
 
-		xmem_write(0x10, 0x000);
 	}
 	
 	return 0;

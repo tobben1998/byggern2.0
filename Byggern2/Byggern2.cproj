@@ -148,6 +148,12 @@
     <Compile Include="DRIVER_JOYSTICK.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_OLED.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_OLED.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_USART.c">
       <SubType>compile</SubType>
     </Compile>
@@ -160,7 +166,16 @@
     <Compile Include="DRIVER_XMEM.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab3.c">
+    <Compile Include="fonts.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lab4.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="util.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="util.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

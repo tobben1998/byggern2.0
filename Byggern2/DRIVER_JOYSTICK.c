@@ -4,14 +4,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include "util.h"
 
 
 volatile uint8_t x_offset;
 volatile uint8_t y_offset;
 
 void joystick_calibrate(){
-	x_offset = adc_read(1);
-	y_offset = adc_read(0);
+	int n=10,arrx[n],arry[n];
+	for(int i = 0;i < n;i++) {
+		arrx[i]=adc_read(1);
+		arry[i]=adc_read(0);
+	}
+	
+	x_offset = util_median(arrx,n);
+	y_offset = util_median(arry,n);
 }
 
 joystick_position joystick_getPosition(void){
@@ -43,6 +50,7 @@ joystick_position joystick_getPosition(void){
 }
 
 joystick_position joystick_getDirection(void){
+	//We havn't tested this function, since we haven't defined a way to print the struct. 
 	joystick_position position;
 
 	position = joystick_getDirection();

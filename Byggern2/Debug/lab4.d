@@ -1,4 +1,4 @@
-lab3.d lab3.o: .././lab3.c \
+lab4.d lab4.o: .././lab4.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -19,7 +19,7 @@ lab3.d lab3.o: .././lab3.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
  .././DRIVER_USART.h .././DRIVER_ADC.h .././DRIVER_XMEM.h \
- .././DRIVER_JOYSTICK.h
+ .././DRIVER_JOYSTICK.h .././DRIVER_OLED.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -66,3 +66,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././DRIVER_XMEM.h:
 
 .././DRIVER_JOYSTICK.h:
+
+.././DRIVER_OLED.h:
