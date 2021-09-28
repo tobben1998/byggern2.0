@@ -1,14 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include "DRIVER_ADC.h"
 #include "DRIVER_OLED.h"
 #include "fonts.h"
 
 
+
 volatile char *ext_oled_command = (char *) 0x1000;
 volatile char *ext_oled_data = (char *) 0x1200;
 volatile int fontsize = 8;
+
 
 //oled write command
 void oled_wrc(uint8_t data){
@@ -47,6 +50,7 @@ void oled_goto_page(uint8_t page){
 		}
 		else{
 			oled_wrc(0xB0+page);
+			oled_position.page = page;
 		}
 }
 void oled_goto_col(uint8_t col){
@@ -58,16 +62,13 @@ void oled_goto_col(uint8_t col){
 		int ls=col%16;
 		oled_wrc(0x10+ms);
 		oled_wrc(0x00+ls);
+		oled_position.coloumn = col;
 	}
 }
 
-void oled_goto_page(uint8_t page){
-	if(page>7 || page<0){
-		printf("denne posisjonen eksisterer ikke");
-	}
-	else{
-		oled_wrc(0xB0+page);
-	}
+void oled_goto_pos(uint8_t page, uint8_t col){
+	oled_goto_page(page);
+	oled_goto_col(col);
 }
 
 
@@ -87,7 +88,7 @@ void oled_brightness(uint8_t lvl){
 	if(lvl < 0 || lvl>255){
 		lvl = lvl%255; //error correction 
 	} 
-	oled_wrc(0x81) //Command "Set Contrast Control"
+	oled_wrc(0x81); //Command "Set Contrast Control"
 	oled_wrc(lvl);
 }
 
@@ -103,21 +104,47 @@ void oled_light_screen(void){
 	}
 }
 
-//Denne er ikk skrevet ferdig
-void oled_write_char(char c){
+
+void oled_write_char(char c, int fs){
 	c=c-32;
-	for(int i=0; i<fontsize;i++){
-		oled_wrd(pgm_read_word(&font8[c][i]))
-		oled_goto_col()// MÅ LAGE EN SLAG GLOBAL POSISIJON? SÅ VI VET HVOR VI FLYTTER FRA.
+	
+	switch(fs){
+		case 8 :
+			for(int i=0; i<fontsize;i++){
+				oled_wrd(pgm_read_word(&font8[c][i]));
+				oled_position.coloumn++;
+			}
+			break;
+		case 6 :
+			for(int i=0; i<6;i++){
+				oled_wrd(pgm_read_word(&font6[c][i]));
+				oled_position.coloumn++;
+			}
+			break;
+		case 4 :
+			for(int i=0; i<4;i++){
+				oled_wrd(pgm_read_word(&font4[c][i]));
+				oled_position.coloumn++;
+			}
+			break;
 	}
-	PROGMEM font4[95][4]
-	oled_wrd(data);
+	
+	
+	//PROGMEM font4[95][4];
+	
 }
 
-void oled_print(char*){
-	//Tar inn en peker til der en font-bokstav er lagret.
-	//inkrementerer gjennom arrayet for å printe ut hvert segment som utgjør bokstaven.
-	
+
+
+void oled_print(char* word, int fs){
+	for( int i = 0; i < strlen(word); i++){
+		oled_write_char(word[i], fs);
+	}
+}
+
+void oled_center_print(char* word, int fs){
+	oled_goto_col(63-(strlen(word)*fs/2));
+	oled_print(word, fs);
 }
 
 
@@ -145,6 +172,7 @@ void oled_init (void){
 	      oled_wrc(0xa6);        //set normal display
 	      oled_wrc(0xaf);        // display on
 		  oled_clear_screen();
+		  oled_goto_pos(0,0);
 
 	
 }

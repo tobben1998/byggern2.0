@@ -26,7 +26,13 @@ int main(void){
 // 		_delay_ms(10);
 // 	}
 
-	oled_goto_pos(4,60);
+	
+	oled_center_print("PINGPONG",8);
+	oled_goto_page(1);
+	/*oled_center_print("NEWGAME", 6);*/
+	oled_center_print(">Hello world<", 4);
+	oled_goto_page(2);
+	oled_center_print("NEWGAME", 4);
 	
 	
 	while(1){

@@ -5,8 +5,15 @@
 
 #include <avr/pgmspace.h>
 
+#define RIGHTARROW 96+32
+#define LEFTARROW 97+32
+
 typedef enum{HORIZONTAL_MODE, VERTICAL_MODE, PAGE_MODE} adressing_mode;
 
+volatile struct{
+	int page;
+	int coloumn;
+} oled_position;
 
 void oled_reset(void);
 void oled_home(void);
@@ -21,8 +28,10 @@ void oled_wrc(uint8_t data); //oled write command
 void oled_wrd(uint8_t data); //oled write data
 void oled_mode(adressing_mode mode);
 void oled_brightness(uint8_t lvl);
-void print_print(char*);
+void oled_print(char*, int fs);
+void oled_center_print(char* word, int fs);
 void oled_write_data(char data);
+void oled_write_char(char c, int fs);
 
 
 

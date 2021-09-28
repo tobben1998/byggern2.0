@@ -11,7 +11,7 @@ volatile uint8_t x_offset;
 volatile uint8_t y_offset;
 
 void joystick_calibrate(){
-	int n=10,arrx[n],arry[n];
+	int n=100,arrx[n],arry[n];
 	for(int i = 0;i < n;i++) {
 		arrx[i]=adc_read(1);
 		arry[i]=adc_read(0);
@@ -50,27 +50,27 @@ joystick_position joystick_getPosition(void){
 }
 
 joystick_position joystick_getDirection(void){
-	//We havn't tested this function, since we haven't defined a way to print the struct. 
+	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
 	joystick_position position;
 
-	position = joystick_getDirection();
+	position = joystick_getPosition();
 	
 	if(position.x_pos < -50){
-		position.direction = "LEFT";
+		position.direction = LEFT;
 	}
 	else if(position.x_pos > 50){
-		position.direction = "Right";	
+		position.direction = RIGHT;	
 	}
 
 	if(position.y_pos < -50){
-		position.direction = "DOWN";
+		position.direction = DOWN;
 	}
 	else if(position.y_pos > 50){
-		position.direction = "UP";
+		position.direction = UP;
 	}
 	
-	if(position.x_pos == 0 && position.y_pos == 0){
-		position.direction = "NEUTRAL";
+	if(position.x_pos <= 50 && position.x_pos >= -50 && position.y_pos <= 50 && position.y_pos >= -50){
+		position.direction = NEUTRAL;
 	}
 	
 	return position;
