@@ -7,11 +7,54 @@
 #include <stdint.h>
 
 static int pos_child=0;
-static menu_item* main_menu
+static menu_item* main_menu;
 static menu_item* curr_menu;
 static int header_pages=2;
+volatile int fontsize=8;
 
-menu_item* menu_new_submenu(menu_item* self, char* name);
+/*
+struct{
+	struct menu_item* parent;
+	//	void functionPtr* fptr;
+	struct menu_item* children[8];
+	int numOfChildren=0;
+	char name[];
+} menu_item;
+*/
+void menu_init(){
+	
+	main_menu=malloc(sizeof(menu_item));
+	main_menu->parent=NULL;
+	main_menu->numOfChildren=0;
+	/*
+	main_menu->name="MAINMENU";
+	*/
+	/*
+	oled_goto_page(header_pages);
+	oled_center_print(main_menu->children[0]->name, fontsize );
+	for (int i=1; i < (main_menu->numOfChildren); i++){
+		oled_goto_page(header_pages+i);
+		oled_center_print(main_menu->children[i]->name, fontsize);
+	}
+	*/
+	curr_menu=main_menu;
+	
+}
+
+menu_item* Menu_new_submenu(menu_item* self, char* name){
+	menu_item* new = malloc(sizeof(menu_item));
+	new->parent=self;
+	
+	new->children=NULL;
+	new->numOfChildren=0;
+	new->name=name;
+	
+	self->children[self->numOfChildren]=new;
+	self->children=realloc(self->children, sizeof((self->children+1)*menu_item*));
+	self->numOfChildren++;
+	
+	return new;
+}
 
 
 
@@ -63,16 +106,9 @@ struct menu_item{
 	menu_item* children[8]
 	numOfChildren=0;
 }debugging;
-*/
 
-void menu_init(){
-	oled_goto_page(header_pages);
-	oled_center_print(main_menu->children[0]->name);
-	for (int i=1; i<main_menu->numOfChildren; i++){
-		oled_goto_page(header_pages+i);
-		oled_center_print(main_menu->children[i]->name);
-	}
-}
+
+
 
 void f_newgame(){
 	oled_reset();
@@ -132,7 +168,7 @@ switch (dir){
 	}
 		
 }
-
+*/
 
 
 	
