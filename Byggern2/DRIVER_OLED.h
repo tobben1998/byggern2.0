@@ -32,6 +32,7 @@ void oled_print(char*, int fs);
 void oled_center_print(char* word, int fs);
 void oled_write_data(char data);
 void oled_write_char(char c, int fs);
+char* oled_arrow(char name[]);
 
 
 

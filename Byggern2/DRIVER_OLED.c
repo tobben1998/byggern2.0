@@ -147,6 +147,14 @@ void oled_center_print(char* word, int fs){
 	oled_print(word, fs);
 }
 
+char* oled_arrow(char name[]){
+	char a[] = ">";
+	char b[] = "<";
+	strcat(name,b);
+	strcat(a,name);
+	return a;
+}
+
 
 void oled_init (void){
 	      oled_wrc(0xae);        // display off

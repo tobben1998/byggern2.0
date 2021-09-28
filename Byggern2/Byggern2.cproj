@@ -148,6 +148,12 @@
     <Compile Include="DRIVER_JOYSTICK.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_MENU.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_MENU.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_OLED.c">
       <SubType>compile</SubType>
     </Compile>

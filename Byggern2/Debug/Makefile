@@ -39,6 +39,7 @@ SUBDIRS :=
 C_SRCS +=  \
 ../DRIVER_ADC.c \
 ../DRIVER_JOYSTICK.c \
+../DRIVER_MENU.c \
 ../DRIVER_OLED.c \
 ../DRIVER_USART.c \
 ../DRIVER_XMEM.c \
@@ -55,6 +56,7 @@ ASM_SRCS +=
 OBJS +=  \
 DRIVER_ADC.o \
 DRIVER_JOYSTICK.o \
+DRIVER_MENU.o \
 DRIVER_OLED.o \
 DRIVER_USART.o \
 DRIVER_XMEM.o \
@@ -64,6 +66,7 @@ util.o
 OBJS_AS_ARGS +=  \
 DRIVER_ADC.o \
 DRIVER_JOYSTICK.o \
+DRIVER_MENU.o \
 DRIVER_OLED.o \
 DRIVER_USART.o \
 DRIVER_XMEM.o \
@@ -73,6 +76,7 @@ util.o
 C_DEPS +=  \
 DRIVER_ADC.d \
 DRIVER_JOYSTICK.d \
+DRIVER_MENU.d \
 DRIVER_OLED.d \
 DRIVER_USART.d \
 DRIVER_XMEM.d \
@@ -82,6 +86,7 @@ util.d
 C_DEPS_AS_ARGS +=  \
 DRIVER_ADC.d \
 DRIVER_JOYSTICK.d \
+DRIVER_MENU.d \
 DRIVER_OLED.d \
 DRIVER_USART.d \
 DRIVER_XMEM.d \
@@ -110,6 +115,13 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./DRIVER_JOYSTICK.o: .././DRIVER_JOYSTICK.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./DRIVER_MENU.o: .././DRIVER_MENU.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

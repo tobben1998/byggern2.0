@@ -28,11 +28,21 @@ int main(void){
 
 	
 	oled_center_print("PINGPONG",8);
-	oled_goto_page(1);
-	/*oled_center_print("NEWGAME", 6);*/
-	oled_center_print(">Hello world<", 4);
 	oled_goto_page(2);
-	oled_center_print("NEWGAME", 4);
+	oled_center_print("NEW GAME",6);
+	oled_goto_page(3);
+	oled_center_print(">HIGHSCORE<",6);
+	oled_goto_page(4);
+	oled_center_print("CALIBRATE",6);
+	oled_goto_page(5);
+	oled_center_print("DIFFICULTY",6);
+	oled_goto_page(6);
+	oled_center_print("DEBUGGING",6);
+
+
+	
+	
+	
 	
 	
 	while(1){
