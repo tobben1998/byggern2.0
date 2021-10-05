@@ -9,6 +9,7 @@
 #define LEFTARROW 97+32
 
 typedef enum{HORIZONTAL_MODE, VERTICAL_MODE, PAGE_MODE} adressing_mode;
+int fontsize;
 
 volatile struct{
 	int page;

@@ -10,7 +10,7 @@
 
 volatile char *ext_oled_command = (char *) 0x1000;
 volatile char *ext_oled_data = (char *) 0x1200;
-volatile int fontsize = 8;
+int fontsize = 8;
 
 
 //oled write command

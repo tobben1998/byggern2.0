@@ -7,10 +7,10 @@
 #include <stdint.h>
 
 static int pos_child=0;
-static menu_item* main_menu;
+//static menu_item* main_menu;
 static menu_item* curr_menu;
 static int header_pages=2;
-volatile int fontsize=8;
+//volatile int fontsize=8;
 
 /*
 struct{
@@ -23,37 +23,46 @@ struct{
 */
 void menu_init(){
 	
-	main_menu=malloc(sizeof(menu_item));
-	main_menu->parent=NULL;
-	main_menu->numOfChildren=0;
+	menu_item* main_menu = malloc(sizeof(menu_item));
+	
+	main_menu->name = "Main Menu";
+	main_menu->numOfChildren = 0;
+	main_menu->parent = NULL;
+	main_menu->function = NULL;
+	
+	Menu_new_submenu(main_menu, "New Game", &f_newgame);
+	
+	
 	/*
 	main_menu->name="MAINMENU";
 	*/
-	/*
+	
 	oled_goto_page(header_pages);
 	oled_center_print(main_menu->children[0]->name, fontsize );
 	for (int i=1; i < (main_menu->numOfChildren); i++){
 		oled_goto_page(header_pages+i);
 		oled_center_print(main_menu->children[i]->name, fontsize);
 	}
-	*/
-	curr_menu=main_menu;
+	
+	curr_menu = main_menu;
 	
 }
 
-menu_item* Menu_new_submenu(menu_item* self, char* name){
-	menu_item* new = malloc(sizeof(menu_item));
-	new->parent=self;
+menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)){
+	menu_item* new_submenu = malloc(sizeof(menu_item));
 	
-	new->children=NULL;
-	new->numOfChildren=0;
-	new->name=name;
+	new_submenu->parent=self;
+	new_submenu->children=NULL;
+	new_submenu->numOfChildren=0;
+	new_submenu->name=name;
+	new_submenu->function = function;
+		
+	self->children=realloc(self->children, (self->numOfChildren+1)*sizeof(menu_item*));
+	self->children[self->numOfChildren]=new_submenu;
 	
-	self->children[self->numOfChildren]=new;
-	self->children=realloc(self->children, sizeof((self->children+1)*menu_item*));
 	self->numOfChildren++;
 	
-	return new;
+	return new_submenu;
 }
 
 
@@ -109,12 +118,14 @@ struct menu_item{
 
 
 
+*/
 
 void f_newgame(){
 	oled_reset();
 	oled_center_print("New Game", 8);
 }
 
+/*
 void f_debugging(){
 	oled_reset();
 	oled_center_print("Debugging", 8);
@@ -135,14 +146,15 @@ void f_high_score(){
 	oled_center_print("Highscore", 8);
 }
 
+*/
 void navigate(menu_item* self, joystick_direction dir){
 switch (dir){
 	case UP:
 		if(pos_child>0){
 			oled_clear_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages-1);
-			oled_center_print(self->children[pos_child]->name);
-			oled_center_print(oled_arrow(self->children[pos_child-1]->name));
+			oled_center_print(self->children[pos_child]->name,fontsize);
+			oled_center_print(oled_arrow(self->children[pos_child-1]->name),fontsize);
 			pos_child--;
 		}
 		break;
@@ -150,8 +162,8 @@ switch (dir){
 		if(pos_child < self->numOfChildren-1){
 			oled_clear_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages+1);
-			oled_center_print(self->children[pos_child]->name);
-			oled_center_print(oled_arrow(self->children[pos_child+1]->name));
+			oled_center_print(self->children[pos_child]->name,fontsize);
+			oled_center_print(oled_arrow(self->children[pos_child+1]->name),fontsize);
 			pos_child++;
 		}
 		break;
@@ -159,7 +171,10 @@ switch (dir){
 	
 		break;
 	case RIGHT:
-	
+		curr_menu=curr_menu->children[pos_child];
+		pos_child=0;
+		(*curr_menu->function)(curr_menu->name);
+		//curr_menu=curr_menu->children[curr_menu->numOfChildren];
 		break;
 	
 	case NEUTRAL:
@@ -168,7 +183,9 @@ switch (dir){
 	}
 		
 }
-*/
+
+
+
 
 
 	
