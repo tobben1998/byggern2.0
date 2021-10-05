@@ -49,29 +49,29 @@ joystick_position joystick_getPosition(void){
 	return position;
 }
 
-joystick_position joystick_getDirection(void){
+
+joystick_direction joystick_getDirection(void){
 	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
 	joystick_position position;
 
 	position = joystick_getPosition();
 	
 	if(position.x_pos < -50){
-		position.direction = LEFT;
+		return LEFT;
 	}
 	else if(position.x_pos > 50){
-		position.direction = RIGHT;	
+		return RIGHT;	
 	}
 
 	if(position.y_pos < -50){
-		position.direction = DOWN;
+		return DOWN;
 	}
 	else if(position.y_pos > 50){
-		position.direction = UP;
+		return UP;
 	}
 	
 	if(position.x_pos <= 50 && position.x_pos >= -50 && position.y_pos <= 50 && position.y_pos >= -50){
-		position.direction = NEUTRAL;
+		return NEUTRAL;
 	}
-	
-	return position;
+	return 0;
 }

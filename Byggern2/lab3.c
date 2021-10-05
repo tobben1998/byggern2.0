@@ -65,19 +65,19 @@ int main(void){
 	USART_Init(MYUBRR);
 	
 	joystick_calibrate();
-	joystick_position position;
+	int direction;
 	xmem_init();
 	
 	while(1){
 		//position = joystick_getPosition();
-		position = joystick_getDirection();
+		direction = joystick_getDirection();
 		
 		uint8_t x = adc_read(1);
 		uint8_t y = adc_read(0);
 		uint8_t left_slider = adc_read(2);
 		uint8_t right_slider = adc_read(3);
 		//printf("X: %d\t Y: %d\t Left: %d\t Right: %d\t\n", position.x_pos, position.y_pos, left_slider, right_slider);
-		printf("Direction: %d\n", position.direction);
+		printf("Direction: %d\n", direction);
 		_delay_ms(10);
 
 	}

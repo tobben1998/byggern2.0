@@ -18,9 +18,13 @@ int main(void){
 	
 	xmem_init();
 	oled_init();
-	
 	menu_init();
-	/*oled_light_screen();*/
+	adc_init();
+	joystick_calibrate();
+	
+	
+	
+
 
 // 	
 // 	for (int i = 0; i <256; i++){
@@ -30,27 +34,28 @@ int main(void){
 // 	}
 	
 // 	
-// 	oled_center_print("PINGPONG",8);
-// 	oled_goto_page(2);
-// 	oled_center_print("NEW GAME",6);
-// 	oled_goto_page(3);
-// 	oled_center_print(">HIGHSCORE<",6);
-// 	oled_goto_page(4);
-// 	oled_center_print("CALIBRATE",6);
-// 	oled_goto_page(5);
-// 	oled_center_print("DIFFICULTY",6);
-// 	oled_goto_page(6);
-// 	oled_center_print("DEBUGGING",6);
-
-
+/*
+ 	oled_center_print("PINGPONG",8);
+ 	oled_goto_page(2);
+ 	oled_center_print("NEW GAME",6);
+ 	oled_goto_page(3);
+ 	oled_center_print(">HIGHSCORE<",6);
+ 	oled_goto_page(4);
+ 	oled_center_print("CALIBRATE",6);
+ 	oled_goto_page(5);
+ 	oled_center_print("DIFFICULTY",6);
+	oled_goto_page(6);
+ 	oled_center_print("DEBUGGING",6);
 	
-	
-	
+	oled_clear_page(6);
+	oled_center_print(oled_arrow("DEBUGGING"),fontsize);
+	*/
 	
 	
 	while(1){
 		
-
+		navigate();
+		_delay_ms(100);
 
 	};
 	

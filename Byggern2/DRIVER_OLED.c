@@ -82,6 +82,7 @@ void oled_clear_screen(void){
 	for (int j=0; j<1024; j++){
 		ext_oled_data[j] = 0x00;
 	}
+	oled_mode(PAGE_MODE);
 }
 
 void oled_brightness(uint8_t lvl){
@@ -102,6 +103,7 @@ void oled_light_screen(void){
 	for (int j=0; j<1024; j++){
 		ext_oled_data[j] = 0xff;
 	}
+	oled_mode(PAGE_MODE);
 }
 
 
@@ -147,9 +149,9 @@ void oled_center_print(char* word, int fs){
 	oled_print(word, fs);
 }
 
-char* oled_arrow(char name[]){
-	char a[] = ">";
-	char b[] = "<";
+char* oled_arrow(char* name){
+	char* a = ">";
+	char* b = "<";
 	strcat(name,b);
 	strcat(a,name);
 	return a;

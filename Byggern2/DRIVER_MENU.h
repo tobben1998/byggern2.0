@@ -13,18 +13,19 @@ typedef struct menu_struct{
 	menu_item** children;
 	int numOfChildren;
 	char* name;
+	char* nameArrow;
 	
 } menu_item;
 
 void menu_init();
-//void f_high_score();
-//void f_calibrate();
-//void f_difficulty();
-//void f_debugging();
+void f_high_score();
+void f_calibrate();
+void f_difficulty();
+void f_debugging();
 void f_newgame();
-menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*));
+menu_item* Menu_new_submenu(menu_item* self, char* name, char* nameArrow, void (*function)(char*));
 
-void navigate(menu_item* self, joystick_direction dir);
+void navigate();
 
 
 #endif

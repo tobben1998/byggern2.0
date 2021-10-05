@@ -1,3 +1,5 @@
+
+
 #include "DRIVER_MENU.h"
 #include "DRIVER_JOYSTICK.h"
 #include "DRIVER_OLED.h"
@@ -5,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
 
 static int pos_child=0;
 //static menu_item* main_menu;
@@ -26,35 +29,41 @@ void menu_init(){
 	menu_item* main_menu = malloc(sizeof(menu_item));
 	
 	main_menu->name = "Main Menu";
+	main_menu->nameArrow= NULL;
 	main_menu->numOfChildren = 0;
 	main_menu->parent = NULL;
 	main_menu->function = NULL;
 	
-	Menu_new_submenu(main_menu, "New Game", &f_newgame);
-	
+	Menu_new_submenu(main_menu, "NEW", ">NEW<", &f_newgame);
+	Menu_new_submenu(main_menu, "SCOR", ">SCOR<", &f_high_score);
+	Menu_new_submenu(main_menu, "CALIB", ">CALIB<", &f_calibrate);
+	Menu_new_submenu(main_menu, "DIFF", ">DIFF<", &f_difficulty);
+	Menu_new_submenu(main_menu, "DEB", ">DEB<", &f_debugging);
 	
 	/*
 	main_menu->name="MAINMENU";
 	*/
 	
-	oled_goto_page(header_pages);
-	oled_center_print(main_menu->children[0]->name, fontsize );
-	for (int i=1; i < (main_menu->numOfChildren); i++){
+	oled_center_print("PINGPONG",8);
+	for (int i=0; i < (main_menu->numOfChildren); i++){
 		oled_goto_page(header_pages+i);
 		oled_center_print(main_menu->children[i]->name, fontsize);
 	}
+	oled_goto_page(header_pages);
+	oled_center_print(main_menu->children[0]->nameArrow,fontsize);
 	
 	curr_menu = main_menu;
 	
 }
 
-menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)){
+menu_item* Menu_new_submenu(menu_item* self, char* name, char* nameArrow, void (*function)(char*)){
 	menu_item* new_submenu = malloc(sizeof(menu_item));
 	
 	new_submenu->parent=self;
 	new_submenu->children=NULL;
 	new_submenu->numOfChildren=0;
 	new_submenu->name=name;
+	new_submenu->nameArrow=nameArrow;
 	new_submenu->function = function;
 		
 	self->children=realloc(self->children, (self->numOfChildren+1)*sizeof(menu_item*));
@@ -65,67 +74,12 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 	return new_submenu;
 }
 
-
-
-/*struct menu_item {
-	menu_item* parent;
-	name[]="Main";
-//	functionPtr*=void;
-	menu_item* children[8] = {&new_game}//, &high_score, &calibrate_joystick, &difficulty, &debugging};
-	numOfChildren=5;
-	}main_menu;
-
-struct menu_item{
-	menu_item* parent = &main_menu;
-	name[]="New game";
-//	functionPtr*=newgame;
-	menu_item* children[8]
-	numOfChildren=0;
-	}new_game;
-
-
-struct menu_item{
-	menu_item* parent = &main_menu;
-	name[]="High Scores";
-//	functionPtr*=high_score;
-	menu_item* children[8]
-	numOfChildren=0;
-}high_score;
-
-struct menu_item{
-	menu_item* parent = &main_menu;
-	name[]="Calibrate";
-//	functionPtr*=calibrate;
-	menu_item* children[8]
-	numOfChildren=0;
-}calibrate_joystick;
-
-struct menu_item{
-	menu_item* parent = &main_menu;
-	name[]="Difficulty";
-//	functionPtr*=difficulty;
-	menu_item* children[8]
-	numOfChildren=0;
-}difficulty;
-
-struct menu_item{
-	menu_item* parent = &main_menu;
-	name[]="Debugging";
-//	functionPtr* = debugging;
-	menu_item* children[8]
-	numOfChildren=0;
-}debugging;
-
-
-
-*/
-
 void f_newgame(){
 	oled_reset();
 	oled_center_print("New Game", 8);
 }
 
-/*
+
 void f_debugging(){
 	oled_reset();
 	oled_center_print("Debugging", 8);
@@ -143,37 +97,58 @@ void f_calibrate(){
 
 void f_high_score(){
 	oled_reset();
-	oled_center_print("Highscore", 8);
+	oled_center_print("High Score", 8);
 }
 
-*/
-void navigate(menu_item* self, joystick_direction dir){
-switch (dir){
+
+void navigate(){
+switch (joystick_getDirection()){
 	case UP:
 		if(pos_child>0){
+			//_delay_ms(10);
+			//_delay_ms(10);
+			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
+			oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			oled_goto_page(pos_child+header_pages-1);
 			oled_clear_page(pos_child+header_pages-1);
-			oled_center_print(self->children[pos_child]->name,fontsize);
-			oled_center_print(oled_arrow(self->children[pos_child-1]->name),fontsize);
-			pos_child--;
+			oled_center_print(curr_menu->children[pos_child-1]->nameArrow,fontsize);
+			//oled_center_print("------",fontsize);
+			pos_child -= 1;
 		}
 		break;
 	case DOWN:
-		if(pos_child < self->numOfChildren-1){
+		if(pos_child < curr_menu->numOfChildren-1){
+			//oled_clear_page(pos_child+header_pages);
+			//_delay_ms(10);
+			//oled_clear_page(pos_child+header_pages+1);
+			//_delay_ms(10);
+			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
+			oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			//_delay_ms(10);
+			oled_goto_page(pos_child+header_pages+1);
 			oled_clear_page(pos_child+header_pages+1);
-			oled_center_print(self->children[pos_child]->name,fontsize);
-			oled_center_print(oled_arrow(self->children[pos_child+1]->name),fontsize);
-			pos_child++;
+			oled_center_print(curr_menu->children[pos_child+1]->nameArrow,fontsize);
+			//oled_center_print("------",fontsize);
+			pos_child += 1;
 		}
 		break;
 	case LEFT:
+		if(curr_menu->parent!=NULL){
+			curr_menu=curr_menu->parent;
+			pos_child=0;
+			(*curr_menu->function)(curr_menu->name);
+			
+		}
 	
 		break;
 	case RIGHT:
-		curr_menu=curr_menu->children[pos_child];
-		pos_child=0;
-		(*curr_menu->function)(curr_menu->name);
+		if(curr_menu->children!= NULL){
+			curr_menu=curr_menu->children[pos_child];
+			pos_child=0;
+			(*curr_menu->function)(curr_menu->name);
+		}
 		//curr_menu=curr_menu->children[curr_menu->numOfChildren];
 		break;
 	
