@@ -22,41 +22,9 @@ int main(void){
 	adc_init();
 	joystick_calibrate();
 	
-	
-	
-
-
-// 	
-// 	for (int i = 0; i <256; i++){
-// 		oled_wrc(0x81);
-// 		oled_wrc(i);
-// 		_delay_ms(10);
-// 	}
-	
-// 	
-/*
- 	oled_center_print("PINGPONG",8);
- 	oled_goto_page(2);
- 	oled_center_print("NEW GAME",6);
- 	oled_goto_page(3);
- 	oled_center_print(">HIGHSCORE<",6);
- 	oled_goto_page(4);
- 	oled_center_print("CALIBRATE",6);
- 	oled_goto_page(5);
- 	oled_center_print("DIFFICULTY",6);
-	oled_goto_page(6);
- 	oled_center_print("DEBUGGING",6);
-	
-	oled_clear_page(6);
-	oled_center_print(oled_arrow("DEBUGGING"),fontsize);
-	*/
-	
-	
 	while(1){
-		
 		navigate();
-		_delay_ms(100);
-
+		_delay_ms(80);
 	};
 	
 	return 0;

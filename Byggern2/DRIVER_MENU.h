@@ -13,7 +13,7 @@ typedef struct menu_struct{
 	menu_item** children;
 	int numOfChildren;
 	char* name;
-	char* nameArrow;
+    char* nameArrow;
 	
 } menu_item;
 
@@ -23,7 +23,7 @@ void f_calibrate();
 void f_difficulty();
 void f_debugging();
 void f_newgame();
-menu_item* Menu_new_submenu(menu_item* self, char* name, char* nameArrow, void (*function)(char*));
+menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*));
 
 void navigate();
 

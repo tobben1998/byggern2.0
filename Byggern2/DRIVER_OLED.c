@@ -150,11 +150,11 @@ void oled_center_print(char* word, int fs){
 }
 
 char* oled_arrow(char* name){
-	char* a = ">";
-	char* b = "<";
-	strcat(name,b);
-	strcat(a,name);
-	return a;
+	char* str = malloc(sizeof(char)*20);
+	strcpy(str,">");
+	strcat(str,name);
+	strcat(str,"<");
+	return str;
 }
 
 
