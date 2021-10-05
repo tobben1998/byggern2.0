@@ -160,6 +160,12 @@
     <Compile Include="DRIVER_OLED.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_SPI.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_SPI.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_USART.c">
       <SubType>compile</SubType>
     </Compile>
@@ -175,7 +181,13 @@
     <Compile Include="fonts.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab4.c">
+    <Compile Include="lab5.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_MCP2515.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_MCP2515.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="util.c">

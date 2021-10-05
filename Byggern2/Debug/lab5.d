@@ -1,4 +1,4 @@
-lab4.d lab4.o: .././lab4.c \
+lab5.d lab5.o: .././lab5.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -21,7 +21,7 @@ lab4.d lab4.o: .././lab4.c \
  .././DRIVER_USART.h .././DRIVER_ADC.h .././DRIVER_XMEM.h \
  .././DRIVER_JOYSTICK.h .././DRIVER_OLED.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
- .././DRIVER_MENU.h
+ .././DRIVER_MENU.h .././DRIVER_SPI.h .././DRIVER_MCP2515.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -74,3 +74,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h:
 
 .././DRIVER_MENU.h:
+
+.././DRIVER_SPI.h:
+
+.././DRIVER_MCP2515.h:
