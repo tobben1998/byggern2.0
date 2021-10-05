@@ -898,7 +898,7 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 	new_submenu->name=name;
      a14:	f9 86       	std	Y+9, r15	; 0x09
      a16:	e8 86       	std	Y+8, r14	; 0x08
-	new_submenu->nameArrow=oled_arrow(new_submenu->name);
+	new_submenu->nameArrow=oled_arrow(name);
      a18:	c7 01       	movw	r24, r14
      a1a:	0e 94 48 08 	call	0x1090	; 0x1090 <oled_arrow>
      a1e:	9b 87       	std	Y+11, r25	; 0x0b

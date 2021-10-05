@@ -65,7 +65,7 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 	new_submenu->children=NULL;
 	new_submenu->numOfChildren=0;
 	new_submenu->name=name;
-	new_submenu->nameArrow=oled_arrow(new_submenu->name);
+	new_submenu->nameArrow=oled_arrow(name);
 	new_submenu->function = function;
 		
 	self->children=realloc(self->children, (self->numOfChildren+1)*sizeof(menu_item*));
