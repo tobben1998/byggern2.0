@@ -16,9 +16,9 @@ DRIVER_USART.c
 
 DRIVER_XMEM.c
 
-lab5.c
-
 DRIVER_MCP2515.c
+
+lab5.c
 
 util.c
 

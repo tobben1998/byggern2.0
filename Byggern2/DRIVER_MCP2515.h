@@ -1,6 +1,8 @@
 #ifndef __DRIVER_MCP2515_H
 #define __DRIVER_MCP2515_H
 
+#include <stdint.h>
+
 /*
 mcp2515.h
 
@@ -154,6 +156,13 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_WAKIF		0x40
 #define MCP_MERRF		0x80
 
-
+uint8_t mcp_read(uint8_t addr);
+void mcp_write(uint8_t addr,uint8_t data);
+void mcp_req_to_send(uint8_t instruction);
+uint8_t mcp_read_status();
+uint8_t mcp_read_status();
+void mcp_bit_modify(uint8_t addr, uint8_t mask, uint8_t data);
+void mcp_reset(void);
+void mcp_init();
 
 #endif

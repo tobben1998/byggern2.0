@@ -15,6 +15,7 @@
 #include "DRIVER_SPI.h"
 #include "DRIVER_MCP2515.h"
 
+
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
 
 int main(void){
@@ -25,15 +26,23 @@ int main(void){
 	menu_init();
 	adc_init();
 	joystick_calibrate();
-	spi_init();
+	
+	mcp_init();
+	
+// 	mcp_write(MCP_CANCTRL,MODE_CONFIG);
+	mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_CONFIG);
+	uint8_t value = mcp_read(MCP_CANSTAT);
+	
+	if ((value & MODE_MASK) != MODE_CONFIG){
+		printf("Not in config mode after reset! value: %x \n\r", value);
+	}
+
+
+	
+	//husk å sett i loopback mode
 	
 	while(1){
-		_delay_ms(1000);
-		spi_send('A');
-		char test=spi_read();
-		char test1='A';
-		printf("Result: %c",test);
-	};
+	}
 	
 	return 0;
 }
