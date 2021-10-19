@@ -193,7 +193,7 @@
     <Compile Include="DRIVER_MCP2515.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab5.c">
+    <Compile Include="lab6.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="util.c">

@@ -20,7 +20,7 @@ DRIVER_XMEM.c
 
 DRIVER_MCP2515.c
 
-lab5.c
+lab6.c
 
 util.c
 

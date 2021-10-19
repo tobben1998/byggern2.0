@@ -9,6 +9,8 @@
 void spi_init(void){
 	/* Set MOSI, SCK , Slave select output, all others become input*/
 	DDRB = (1<<DDB5)|(1<<DDB7)|(1<<DDB4);
+	//vet ikke hvorfor denne mpåtte være output, men får excercise 5 til å funke. blir masse loopingom ikke.
+	DDRD |= (1<<PD2);
 
 	
 	/* Enable SPI, Master, set clock rate fck/16 */
@@ -16,6 +18,8 @@ void spi_init(void){
 	
 	//Set slave select
 	PORTB |= 1<<PB4;
+	
+	
 }
 
 void spi_send(uint8_t cData){

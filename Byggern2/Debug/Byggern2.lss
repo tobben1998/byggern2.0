@@ -377,7 +377,7 @@ Disassembly of section .text:
      74a:	ac 31       	cpi	r26, 0x1C	; 28
      74c:	b2 07       	cpc	r27, r18
      74e:	e1 f7       	brne	.-8      	; 0x748 <.do_clear_bss_loop>
-     750:	0e 94 aa 08 	call	0x1154	; 0x1154 <main>
+     750:	0e 94 ab 08 	call	0x1156	; 0x1156 <main>
      754:	0c 94 62 0e 	jmp	0x1cc4	; 0x1cc4 <_exit>
 
 00000758 <__bad_interrupt>:
@@ -445,13 +445,13 @@ int adc_read(int channel){
 	uint16_t adcMemArea = 0x400;
 
 	xmem_init();
-     794:	0e 94 34 08 	call	0x1068	; 0x1068 <xmem_init>
+     794:	0e 94 35 08 	call	0x106a	; 0x106a <xmem_init>
 	xmem_write(confData, adcMemArea);
      798:	60 e0       	ldi	r22, 0x00	; 0
      79a:	74 e0       	ldi	r23, 0x04	; 4
      79c:	8c 2f       	mov	r24, r28
      79e:	80 68       	ori	r24, 0x80	; 128
-     7a0:	0e 94 3b 08 	call	0x1076	; 0x1076 <xmem_write>
+     7a0:	0e 94 3c 08 	call	0x1078	; 0x1078 <xmem_write>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -466,7 +466,7 @@ int adc_read(int channel){
 	uint8_t result = xmem_read(adcMemArea);
      7ac:	80 e0       	ldi	r24, 0x00	; 0
      7ae:	94 e0       	ldi	r25, 0x04	; 4
-     7b0:	0e 94 3f 08 	call	0x107e	; 0x107e <xmem_read>
+     7b0:	0e 94 40 08 	call	0x1080	; 0x1080 <xmem_read>
      7b4:	90 e1       	ldi	r25, 0x10	; 16
      7b6:	9a 95       	dec	r25
      7b8:	f1 f7       	brne	.-4      	; 0x7b6 <adc_read+0x26>
@@ -487,13 +487,13 @@ static uint8_t buffer_number=0;
 
 void can_init(){
     mcp_init();
-     7c2:	0e 94 8c 08 	call	0x1118	; 0x1118 <mcp_init>
+     7c2:	0e 94 8d 08 	call	0x111a	; 0x111a <mcp_init>
 
 
     mcp_write(MCP_CANCTRL, MODE_LOOPBACK); //velge loopback mode
      7c6:	60 e4       	ldi	r22, 0x40	; 64
      7c8:	8f e0       	ldi	r24, 0x0F	; 15
-     7ca:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     7ca:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
    
     //enable interrupt for can on atmega
     cli();
@@ -525,7 +525,7 @@ void can_init(){
     mcp_write(MCP_CANINTE, MCP_RX_INT);
      7e4:	63 e0       	ldi	r22, 0x03	; 3
      7e6:	8b e2       	ldi	r24, 0x2B	; 43
-     7e8:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     7e8:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
      7ec:	08 95       	ret
 
 000007ee <can_send_message>:
@@ -557,14 +557,14 @@ void can_send_message(can_message *msg){
      804:	66 95       	lsr	r22
      806:	66 95       	lsr	r22
      808:	81 e3       	ldi	r24, 0x31	; 49
-     80a:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     80a:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
 	mcp_write(TXBnSIDL + 16 * buffer_number, id_low);  //0x32
      80e:	6c 2f       	mov	r22, r28
      810:	62 95       	swap	r22
      812:	66 0f       	add	r22, r22
      814:	60 7e       	andi	r22, 0xE0	; 224
      816:	82 e3       	ldi	r24, 0x32	; 50
-     818:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     818:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
 
     uint8_t length=(msg->length); // tallet kan ikke v√¶re st√∏rre enn 0xb00001111 //den er slik man gj√∏r det med &?
      81c:	f7 01       	movw	r30, r14
@@ -573,7 +573,7 @@ void can_send_message(can_message *msg){
      820:	61 2f       	mov	r22, r17
      822:	6f 70       	andi	r22, 0x0F	; 15
      824:	85 e3       	ldi	r24, 0x35	; 53
-     826:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     826:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
 
 
     for(uint8_t m=0; m<length;m++){
@@ -591,7 +591,7 @@ void can_send_message(can_message *msg){
         mcp_write(TXBnDm+m*16*buffer_number,msg->data[m]); //see register 3-8
      840:	69 91       	ld	r22, Y+
      842:	86 e3       	ldi	r24, 0x36	; 54
-     844:	0e 94 51 08 	call	0x10a2	; 0x10a2 <mcp_write>
+     844:	0e 94 52 08 	call	0x10a4	; 0x10a4 <mcp_write>
 
     uint8_t length=(msg->length); // tallet kan ikke v√¶re st√∏rre enn 0xb00001111 //den er slik man gj√∏r det med &?
     mcp_write(TXBnDLC + 16 *buffer_number, (length & 0b1111)); //see register 3-7
@@ -607,7 +607,7 @@ void can_send_message(can_message *msg){
     //send message//
     mcp_req_to_send(MCP_RTS_TX0 + buffer_number);
      84e:	81 e8       	ldi	r24, 0x81	; 129
-     850:	0e 94 63 08 	call	0x10c6	; 0x10c6 <mcp_req_to_send>
+     850:	0e 94 64 08 	call	0x10c8	; 0x10c8 <mcp_req_to_send>
 }
      854:	df 91       	pop	r29
      856:	cf 91       	pop	r28
@@ -644,12 +644,12 @@ can_message *can_recive_msg(uint8_t buffer_number){
      87c:	ff 0c       	add	r15, r15
      87e:	81 e6       	ldi	r24, 0x61	; 97
      880:	8f 0d       	add	r24, r15
-     882:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+     882:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
      886:	c8 2f       	mov	r28, r24
     int id_low = mcp_read(RXBnSIDL+16*buffer_number);
      888:	82 e6       	ldi	r24, 0x62	; 98
      88a:	8f 0d       	add	r24, r15
-     88c:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+     88c:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
     msg.id=0b1000*id_high + id_low/0b100000;
      890:	cc 0f       	add	r28, r28
      892:	cc 0f       	add	r28, r28
@@ -663,7 +663,7 @@ can_message *can_recive_msg(uint8_t buffer_number){
     int length=(0b1111 & mcp_read(RXBnDLC+16*buffer_number)); //see register 4-8
      8a2:	85 e6       	ldi	r24, 0x65	; 101
      8a4:	8f 0d       	add	r24, r15
-     8a6:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+     8a6:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
      8aa:	8f 70       	andi	r24, 0x0F	; 15
      8ac:	c8 2e       	mov	r12, r24
      8ae:	d1 2c       	mov	r13, r1
@@ -679,7 +679,7 @@ can_message *can_recive_msg(uint8_t buffer_number){
      8c0:	10 e0       	ldi	r17, 0x00	; 0
         msg.data[m] = mcp_read(RXBnDM+m*16*buffer_number); //see register 4-9
      8c2:	80 2f       	mov	r24, r16
-     8c4:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+     8c4:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
      8c8:	c0 50       	subi	r28, 0x00	; 0
      8ca:	de 4f       	sbci	r29, 0xFE	; 254
      8cc:	8a 83       	std	Y+2, r24	; 0x02
@@ -720,7 +720,7 @@ void can_interrupt_handler(void){
      8f0:	cf 93       	push	r28
 	uint8_t flag = mcp_read(MCP_CANINTF);
      8f2:	8c e2       	ldi	r24, 0x2C	; 44
-     8f4:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+     8f4:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
      8f8:	c8 2f       	mov	r28, r24
 	
 	if(flag & MCP_RX0IF){
@@ -744,7 +744,7 @@ void can_interrupt_handler(void){
      918:	40 e0       	ldi	r20, 0x00	; 0
      91a:	61 e0       	ldi	r22, 0x01	; 1
      91c:	8c e2       	ldi	r24, 0x2C	; 44
-     91e:	0e 94 68 08 	call	0x10d0	; 0x10d0 <mcp_bit_modify>
+     91e:	0e 94 69 08 	call	0x10d2	; 0x10d2 <mcp_bit_modify>
      922:	0f 90       	pop	r0
      924:	0f 90       	pop	r0
      926:	0f 90       	pop	r0
@@ -771,7 +771,7 @@ void can_interrupt_handler(void){
      948:	40 e0       	ldi	r20, 0x00	; 0
      94a:	62 e0       	ldi	r22, 0x02	; 2
      94c:	8c e2       	ldi	r24, 0x2C	; 44
-     94e:	0e 94 68 08 	call	0x10d0	; 0x10d0 <mcp_bit_modify>
+     94e:	0e 94 69 08 	call	0x10d2	; 0x10d2 <mcp_bit_modify>
      952:	0f 90       	pop	r0
      954:	0f 90       	pop	r0
      956:	0f 90       	pop	r0
@@ -1840,335 +1840,332 @@ void spi_init(void){
 	DDRB = (1<<DDB5)|(1<<DDB7)|(1<<DDB4);
     101c:	80 eb       	ldi	r24, 0xB0	; 176
     101e:	87 bb       	out	0x17, r24	; 23
+	//vet ikke hvorfor denne mpÂtte vÊre output, men fÂr excercise 5 til Â funke. blir masse loopingom ikke.
+	DDRD |= (1<<PD2);
+    1020:	8a 9a       	sbi	0x11, 2	; 17
 
 	
 	/* Enable SPI, Master, set clock rate fck/16 */
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-    1020:	81 e5       	ldi	r24, 0x51	; 81
-    1022:	8d b9       	out	0x0d, r24	; 13
+    1022:	81 e5       	ldi	r24, 0x51	; 81
+    1024:	8d b9       	out	0x0d, r24	; 13
 	
 	//Set slave select
 	PORTB |= 1<<PB4;
-    1024:	c4 9a       	sbi	0x18, 4	; 24
-    1026:	08 95       	ret
+    1026:	c4 9a       	sbi	0x18, 4	; 24
+    1028:	08 95       	ret
 
-00001028 <spi_send>:
+0000102a <spi_send>:
+	
 }
 
 void spi_send(uint8_t cData){
 	/* Start transmission */
 	SPDR = cData;
-    1028:	8f b9       	out	0x0f, r24	; 15
+    102a:	8f b9       	out	0x0f, r24	; 15
 	
 	/* Wait for transmission complete */
 	while(!(SPSR & (1<<SPIF)));
-    102a:	77 9b       	sbis	0x0e, 7	; 14
-    102c:	fe cf       	rjmp	.-4      	; 0x102a <spi_send+0x2>
+    102c:	77 9b       	sbis	0x0e, 7	; 14
+    102e:	fe cf       	rjmp	.-4      	; 0x102c <spi_send+0x2>
 }
-    102e:	08 95       	ret
+    1030:	08 95       	ret
 
-00001030 <spi_read>:
+00001032 <spi_read>:
 uint8_t spi_read(){
 	
 	char dummyByte = 0x45; //0b01000101
 	
 	/* Start transmission of dummy byte such that Output from slave arrives at SPDR*/
 	SPDR = dummyByte;
-    1030:	85 e4       	ldi	r24, 0x45	; 69
-    1032:	8f b9       	out	0x0f, r24	; 15
+    1032:	85 e4       	ldi	r24, 0x45	; 69
+    1034:	8f b9       	out	0x0f, r24	; 15
 	
 	/* Wait for transmission complete */
 	while(!(SPSR & (1<<SPIF)));
-    1034:	77 9b       	sbis	0x0e, 7	; 14
-    1036:	fe cf       	rjmp	.-4      	; 0x1034 <spi_read+0x4>
+    1036:	77 9b       	sbis	0x0e, 7	; 14
+    1038:	fe cf       	rjmp	.-4      	; 0x1036 <spi_read+0x4>
 	
 	/*Return data register*/
 	return SPDR;
-    1038:	8f b1       	in	r24, 0x0f	; 15
-    103a:	08 95       	ret
+    103a:	8f b1       	in	r24, 0x0f	; 15
+    103c:	08 95       	ret
 
-0000103c <USART_Init>:
-    103c:	90 bd       	out	0x20, r25	; 32
-    103e:	89 b9       	out	0x09, r24	; 9
-    1040:	88 e1       	ldi	r24, 0x18	; 24
-    1042:	8a b9       	out	0x0a, r24	; 10
-    1044:	8e e8       	ldi	r24, 0x8E	; 142
-    1046:	80 bd       	out	0x20, r24	; 32
-    1048:	60 e0       	ldi	r22, 0x00	; 0
-    104a:	70 e0       	ldi	r23, 0x00	; 0
-    104c:	8f e2       	ldi	r24, 0x2F	; 47
-    104e:	98 e0       	ldi	r25, 0x08	; 8
-    1050:	0e 94 16 0b 	call	0x162c	; 0x162c <fdevopen>
-    1054:	08 95       	ret
+0000103e <USART_Init>:
+    103e:	90 bd       	out	0x20, r25	; 32
+    1040:	89 b9       	out	0x09, r24	; 9
+    1042:	88 e1       	ldi	r24, 0x18	; 24
+    1044:	8a b9       	out	0x0a, r24	; 10
+    1046:	8e e8       	ldi	r24, 0x8E	; 142
+    1048:	80 bd       	out	0x20, r24	; 32
+    104a:	60 e0       	ldi	r22, 0x00	; 0
+    104c:	70 e0       	ldi	r23, 0x00	; 0
+    104e:	80 e3       	ldi	r24, 0x30	; 48
+    1050:	98 e0       	ldi	r25, 0x08	; 8
+    1052:	0e 94 16 0b 	call	0x162c	; 0x162c <fdevopen>
+    1056:	08 95       	ret
 
-00001056 <USART_Transmit>:
-    1056:	5d 9b       	sbis	0x0b, 5	; 11
-    1058:	fe cf       	rjmp	.-4      	; 0x1056 <USART_Transmit>
-    105a:	8c b9       	out	0x0c, r24	; 12
-    105c:	08 95       	ret
+00001058 <USART_Transmit>:
+    1058:	5d 9b       	sbis	0x0b, 5	; 11
+    105a:	fe cf       	rjmp	.-4      	; 0x1058 <USART_Transmit>
+    105c:	8c b9       	out	0x0c, r24	; 12
+    105e:	08 95       	ret
 
-0000105e <USART_PUTCHAR>:
-    105e:	0e 94 2b 08 	call	0x1056	; 0x1056 <USART_Transmit>
-    1062:	80 e0       	ldi	r24, 0x00	; 0
-    1064:	90 e0       	ldi	r25, 0x00	; 0
-    1066:	08 95       	ret
+00001060 <USART_PUTCHAR>:
+    1060:	0e 94 2c 08 	call	0x1058	; 0x1058 <USART_Transmit>
+    1064:	80 e0       	ldi	r24, 0x00	; 0
+    1066:	90 e0       	ldi	r25, 0x00	; 0
+    1068:	08 95       	ret
 
-00001068 <xmem_init>:
+0000106a <xmem_init>:
 #include <avr/io.h>
 #include "DRIVER_XMEM.h"
 
 //Init function
 void xmem_init(void){
 	MCUCR |= (1 << SRE); //enable XMEM
-    1068:	85 b7       	in	r24, 0x35	; 53
-    106a:	80 68       	ori	r24, 0x80	; 128
-    106c:	85 bf       	out	0x35, r24	; 53
+    106a:	85 b7       	in	r24, 0x35	; 53
+    106c:	80 68       	ori	r24, 0x80	; 128
+    106e:	85 bf       	out	0x35, r24	; 53
 	SFIOR |= (1 << XMM2); //Mask unused bits/pins, which is PC4-PC7
-    106e:	80 b7       	in	r24, 0x30	; 48
-    1070:	80 62       	ori	r24, 0x20	; 32
-    1072:	80 bf       	out	0x30, r24	; 48
-    1074:	08 95       	ret
+    1070:	80 b7       	in	r24, 0x30	; 48
+    1072:	80 62       	ori	r24, 0x20	; 32
+    1074:	80 bf       	out	0x30, r24	; 48
+    1076:	08 95       	ret
 
-00001076 <xmem_write>:
+00001078 <xmem_write>:
 }
 //Write function. //Somehow works badly when calling this function from main? Works perfectly by just copy-pasting code to main.
 void xmem_write(uint8_t data, uint16_t addr){
 	volatile char *ext_mem = (char *) 0x1000;
 	ext_mem[addr] = data;
-    1076:	fb 01       	movw	r30, r22
-    1078:	f0 5f       	subi	r31, 0xF0	; 240
-    107a:	80 83       	st	Z, r24
-    107c:	08 95       	ret
+    1078:	fb 01       	movw	r30, r22
+    107a:	f0 5f       	subi	r31, 0xF0	; 240
+    107c:	80 83       	st	Z, r24
+    107e:	08 95       	ret
 
-0000107e <xmem_read>:
+00001080 <xmem_read>:
 }
 
 //Read function
 uint8_t xmem_read(uint16_t addr){
 	volatile char *ext_mem = (char *) 0x1000;
 	uint8_t ret_val = ext_mem[addr];
-    107e:	90 5f       	subi	r25, 0xF0	; 240
-    1080:	fc 01       	movw	r30, r24
-    1082:	80 81       	ld	r24, Z
+    1080:	90 5f       	subi	r25, 0xF0	; 240
+    1082:	fc 01       	movw	r30, r24
+    1084:	80 81       	ld	r24, Z
 	return ret_val;
 }
-    1084:	08 95       	ret
+    1086:	08 95       	ret
 
-00001086 <mcp_read>:
+00001088 <mcp_read>:
 	uint8_t status = spi_read();
 	
 	PORTB |= (1<<PB4);
 	
 	return status;
 }
-    1086:	cf 93       	push	r28
-    1088:	c8 2f       	mov	r28, r24
-    108a:	c4 98       	cbi	0x18, 4	; 24
-    108c:	83 e0       	ldi	r24, 0x03	; 3
-    108e:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    1092:	8c 2f       	mov	r24, r28
-    1094:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    1098:	0e 94 18 08 	call	0x1030	; 0x1030 <spi_read>
-    109c:	c4 9a       	sbi	0x18, 4	; 24
-    109e:	cf 91       	pop	r28
-    10a0:	08 95       	ret
+    1088:	cf 93       	push	r28
+    108a:	c8 2f       	mov	r28, r24
+    108c:	c4 98       	cbi	0x18, 4	; 24
+    108e:	83 e0       	ldi	r24, 0x03	; 3
+    1090:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    1094:	8c 2f       	mov	r24, r28
+    1096:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    109a:	0e 94 19 08 	call	0x1032	; 0x1032 <spi_read>
+    109e:	c4 9a       	sbi	0x18, 4	; 24
+    10a0:	cf 91       	pop	r28
+    10a2:	08 95       	ret
 
-000010a2 <mcp_write>:
-    10a2:	cf 93       	push	r28
-    10a4:	df 93       	push	r29
-    10a6:	d8 2f       	mov	r29, r24
-    10a8:	c6 2f       	mov	r28, r22
-    10aa:	c4 98       	cbi	0x18, 4	; 24
-    10ac:	82 e0       	ldi	r24, 0x02	; 2
-    10ae:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    10b2:	8d 2f       	mov	r24, r29
-    10b4:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    10b8:	8c 2f       	mov	r24, r28
-    10ba:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    10be:	c4 9a       	sbi	0x18, 4	; 24
-    10c0:	df 91       	pop	r29
-    10c2:	cf 91       	pop	r28
-    10c4:	08 95       	ret
+000010a4 <mcp_write>:
+    10a4:	cf 93       	push	r28
+    10a6:	df 93       	push	r29
+    10a8:	d8 2f       	mov	r29, r24
+    10aa:	c6 2f       	mov	r28, r22
+    10ac:	c4 98       	cbi	0x18, 4	; 24
+    10ae:	82 e0       	ldi	r24, 0x02	; 2
+    10b0:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    10b4:	8d 2f       	mov	r24, r29
+    10b6:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    10ba:	8c 2f       	mov	r24, r28
+    10bc:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    10c0:	c4 9a       	sbi	0x18, 4	; 24
+    10c2:	df 91       	pop	r29
+    10c4:	cf 91       	pop	r28
+    10c6:	08 95       	ret
 
-000010c6 <mcp_req_to_send>:
-    10c6:	c4 98       	cbi	0x18, 4	; 24
-    10c8:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
-    10cc:	c4 9a       	sbi	0x18, 4	; 24
-    10ce:	08 95       	ret
+000010c8 <mcp_req_to_send>:
+    10c8:	c4 98       	cbi	0x18, 4	; 24
+    10ca:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
+    10ce:	c4 9a       	sbi	0x18, 4	; 24
+    10d0:	08 95       	ret
 
-000010d0 <mcp_bit_modify>:
+000010d2 <mcp_bit_modify>:
 
 //Setting or clearing individual bits in specific status and control registers. Not all registers are modifiable, see pg. 63.
 //Mask determines which bits are allowed to change.
 //Data determines what value the modified bits in the register will change to.
 void mcp_bit_modify(uint8_t addr, uint8_t mask, uint8_t data){
-    10d0:	1f 93       	push	r17
-    10d2:	cf 93       	push	r28
-    10d4:	df 93       	push	r29
-    10d6:	18 2f       	mov	r17, r24
-    10d8:	d6 2f       	mov	r29, r22
-    10da:	c4 2f       	mov	r28, r20
+    10d2:	1f 93       	push	r17
+    10d4:	cf 93       	push	r28
+    10d6:	df 93       	push	r29
+    10d8:	18 2f       	mov	r17, r24
+    10da:	d6 2f       	mov	r29, r22
+    10dc:	c4 2f       	mov	r28, r20
 	PORTB &= ~(1<<PB4);
-    10dc:	c4 98       	cbi	0x18, 4	; 24
+    10de:	c4 98       	cbi	0x18, 4	; 24
 	//0x05 0b00000101
 	//0x0f 0b00001111;
 	//0xe0 0b11100000;
 	//0x80 0b10000000;
 	
 	spi_send(MCP_BITMOD);	//0x05 0b00000101
-    10de:	85 e0       	ldi	r24, 0x05	; 5
-    10e0:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
+    10e0:	85 e0       	ldi	r24, 0x05	; 5
+    10e2:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
 	spi_send(addr);			
-    10e4:	81 2f       	mov	r24, r17
-    10e6:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
+    10e6:	81 2f       	mov	r24, r17
+    10e8:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
 	spi_send(mask);			
-    10ea:	8d 2f       	mov	r24, r29
-    10ec:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
+    10ec:	8d 2f       	mov	r24, r29
+    10ee:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
 	spi_send(data);
-    10f0:	8c 2f       	mov	r24, r28
-    10f2:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
+    10f2:	8c 2f       	mov	r24, r28
+    10f4:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
 	
 	PORTB |= (1<<PB4);
-    10f6:	c4 9a       	sbi	0x18, 4	; 24
+    10f8:	c4 9a       	sbi	0x18, 4	; 24
 	
 }
-    10f8:	df 91       	pop	r29
-    10fa:	cf 91       	pop	r28
-    10fc:	1f 91       	pop	r17
-    10fe:	08 95       	ret
+    10fa:	df 91       	pop	r29
+    10fc:	cf 91       	pop	r28
+    10fe:	1f 91       	pop	r17
+    1100:	08 95       	ret
 
-00001100 <mcp_reset>:
+00001102 <mcp_reset>:
 
 //Re-initialize the internal registers of the MCP2515
 void mcp_reset(void){
 	
 	PORTB &= ~(1<<PB4);
-    1100:	c4 98       	cbi	0x18, 4	; 24
+    1102:	c4 98       	cbi	0x18, 4	; 24
 	
 	spi_send(MCP_RESET); //0xC0		0b1100 0000
-    1102:	80 ec       	ldi	r24, 0xC0	; 192
-    1104:	0e 94 14 08 	call	0x1028	; 0x1028 <spi_send>
+    1104:	80 ec       	ldi	r24, 0xC0	; 192
+    1106:	0e 94 15 08 	call	0x102a	; 0x102a <spi_send>
 	
 	PORTB |= (1<<PB4);
-    1108:	c4 9a       	sbi	0x18, 4	; 24
+    110a:	c4 9a       	sbi	0x18, 4	; 24
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
-    110a:	8f e3       	ldi	r24, 0x3F	; 63
-    110c:	9c e9       	ldi	r25, 0x9C	; 156
-    110e:	01 97       	sbiw	r24, 0x01	; 1
-    1110:	f1 f7       	brne	.-4      	; 0x110e <mcp_reset+0xe>
-    1112:	00 c0       	rjmp	.+0      	; 0x1114 <mcp_reset+0x14>
-    1114:	00 00       	nop
-    1116:	08 95       	ret
+    110c:	8f e3       	ldi	r24, 0x3F	; 63
+    110e:	9c e9       	ldi	r25, 0x9C	; 156
+    1110:	01 97       	sbiw	r24, 0x01	; 1
+    1112:	f1 f7       	brne	.-4      	; 0x1110 <mcp_reset+0xe>
+    1114:	00 c0       	rjmp	.+0      	; 0x1116 <mcp_reset+0x14>
+    1116:	00 00       	nop
+    1118:	08 95       	ret
 
-00001118 <mcp_init>:
+0000111a <mcp_init>:
 }
 
 void mcp_init(){
 	
 	uint8_t value;
 	spi_init();
-    1118:	0e 94 0e 08 	call	0x101c	; 0x101c <spi_init>
+    111a:	0e 94 0e 08 	call	0x101c	; 0x101c <spi_init>
 	mcp_reset();
-    111c:	0e 94 80 08 	call	0x1100	; 0x1100 <mcp_reset>
-    1120:	8f e3       	ldi	r24, 0x3F	; 63
-    1122:	9f e1       	ldi	r25, 0x1F	; 31
-    1124:	01 97       	sbiw	r24, 0x01	; 1
-    1126:	f1 f7       	brne	.-4      	; 0x1124 <mcp_init+0xc>
-    1128:	00 c0       	rjmp	.+0      	; 0x112a <mcp_init+0x12>
-    112a:	00 00       	nop
+    111e:	0e 94 81 08 	call	0x1102	; 0x1102 <mcp_reset>
+    1122:	8f e3       	ldi	r24, 0x3F	; 63
+    1124:	9f e1       	ldi	r25, 0x1F	; 31
+    1126:	01 97       	sbiw	r24, 0x01	; 1
+    1128:	f1 f7       	brne	.-4      	; 0x1126 <mcp_init+0xc>
+    112a:	00 c0       	rjmp	.+0      	; 0x112c <mcp_init+0x12>
+    112c:	00 00       	nop
 	_delay_ms(2); //controller needs some time to do internal initialization.
 	
 	value = mcp_read(MCP_CANSTAT);
-    112c:	8e e0       	ldi	r24, 0x0E	; 14
-    112e:	0e 94 43 08 	call	0x1086	; 0x1086 <mcp_read>
+    112e:	8e e0       	ldi	r24, 0x0E	; 14
+    1130:	0e 94 44 08 	call	0x1088	; 0x1088 <mcp_read>
 	
  	if ((value & MODE_MASK) != MODE_CONFIG){
-    1132:	98 2f       	mov	r25, r24
-    1134:	90 7e       	andi	r25, 0xE0	; 224
-    1136:	90 38       	cpi	r25, 0x80	; 128
-    1138:	61 f0       	breq	.+24     	; 0x1152 <mcp_init+0x3a>
+    1134:	98 2f       	mov	r25, r24
+    1136:	90 7e       	andi	r25, 0xE0	; 224
+    1138:	90 38       	cpi	r25, 0x80	; 128
+    113a:	61 f0       	breq	.+24     	; 0x1154 <mcp_init+0x3a>
  		printf("Not in config mode after reset! value: %x \n\r", value);
-    113a:	1f 92       	push	r1
-    113c:	8f 93       	push	r24
-    113e:	8a ec       	ldi	r24, 0xCA	; 202
-    1140:	91 e0       	ldi	r25, 0x01	; 1
-    1142:	9f 93       	push	r25
-    1144:	8f 93       	push	r24
-    1146:	0e 94 61 0b 	call	0x16c2	; 0x16c2 <printf>
-    114a:	0f 90       	pop	r0
+    113c:	1f 92       	push	r1
+    113e:	8f 93       	push	r24
+    1140:	8a ec       	ldi	r24, 0xCA	; 202
+    1142:	91 e0       	ldi	r25, 0x01	; 1
+    1144:	9f 93       	push	r25
+    1146:	8f 93       	push	r24
+    1148:	0e 94 61 0b 	call	0x16c2	; 0x16c2 <printf>
     114c:	0f 90       	pop	r0
     114e:	0f 90       	pop	r0
     1150:	0f 90       	pop	r0
-    1152:	08 95       	ret
+    1152:	0f 90       	pop	r0
+    1154:	08 95       	ret
 
-00001154 <main>:
+00001156 <main>:
 #include "DRIVER_CAN.h"
 
 
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
 
 int main(void){
-    1154:	cf 93       	push	r28
-    1156:	df 93       	push	r29
-    1158:	cd b7       	in	r28, 0x3d	; 61
-    115a:	de b7       	in	r29, 0x3e	; 62
-    115c:	2a 97       	sbiw	r28, 0x0a	; 10
-    115e:	0f b6       	in	r0, 0x3f	; 63
-    1160:	f8 94       	cli
-    1162:	de bf       	out	0x3e, r29	; 62
-    1164:	0f be       	out	0x3f, r0	; 63
-    1166:	cd bf       	out	0x3d, r28	; 61
+    1156:	cf 93       	push	r28
+    1158:	df 93       	push	r29
+    115a:	cd b7       	in	r28, 0x3d	; 61
+    115c:	de b7       	in	r29, 0x3e	; 62
+    115e:	2a 97       	sbiw	r28, 0x0a	; 10
+    1160:	0f b6       	in	r0, 0x3f	; 63
+    1162:	f8 94       	cli
+    1164:	de bf       	out	0x3e, r29	; 62
+    1166:	0f be       	out	0x3f, r0	; 63
+    1168:	cd bf       	out	0x3d, r28	; 61
 	
 	USART_Init(MYUBRR);
-    1168:	8f e1       	ldi	r24, 0x1F	; 31
-    116a:	90 e0       	ldi	r25, 0x00	; 0
-    116c:	0e 94 1e 08 	call	0x103c	; 0x103c <USART_Init>
+    116a:	8f e1       	ldi	r24, 0x1F	; 31
+    116c:	90 e0       	ldi	r25, 0x00	; 0
+    116e:	0e 94 1f 08 	call	0x103e	; 0x103e <USART_Init>
 	xmem_init();
-    1170:	0e 94 34 08 	call	0x1068	; 0x1068 <xmem_init>
+    1172:	0e 94 35 08 	call	0x106a	; 0x106a <xmem_init>
 	oled_init();
-    1174:	0e 94 84 07 	call	0xf08	; 0xf08 <oled_init>
+    1176:	0e 94 84 07 	call	0xf08	; 0xf08 <oled_init>
 	menu_init();
-    1178:	0e 94 72 05 	call	0xae4	; 0xae4 <menu_init>
+    117a:	0e 94 72 05 	call	0xae4	; 0xae4 <menu_init>
 	adc_init();
-    117c:	0e 94 c5 03 	call	0x78a	; 0x78a <adc_init>
+    117e:	0e 94 c5 03 	call	0x78a	; 0x78a <adc_init>
 	joystick_calibrate();
-    1180:	0e 94 af 04 	call	0x95e	; 0x95e <joystick_calibrate>
+    1182:	0e 94 af 04 	call	0x95e	; 0x95e <joystick_calibrate>
 	
 	//mcp_init();
 	can_init();
-    1184:	0e 94 e1 03 	call	0x7c2	; 0x7c2 <can_init>
+    1186:	0e 94 e1 03 	call	0x7c2	; 0x7c2 <can_init>
 //	mcp_write(MCP_CANCTRL, MODE_LOOPBACK);
 /*	uint8_t value1 = mcp_read(MCP_CANSTAT);*/
 /*	printf(" in MODE value: %x \n\r", value1);*/
 
 	can_message msg;
 	msg.id=1;
-    1188:	81 e0       	ldi	r24, 0x01	; 1
-    118a:	89 83       	std	Y+1, r24	; 0x01
+    118a:	81 e0       	ldi	r24, 0x01	; 1
+    118c:	89 83       	std	Y+1, r24	; 0x01
 	msg.length=8;
-    118c:	88 e0       	ldi	r24, 0x08	; 8
-    118e:	8a 83       	std	Y+2, r24	; 0x02
+    118e:	88 e0       	ldi	r24, 0x08	; 8
+    1190:	8a 83       	std	Y+2, r24	; 0x02
 
 	msg.data[8] = "ABCDEFGH";
-    1190:	87 ef       	ldi	r24, 0xF7	; 247
-    1192:	91 e0       	ldi	r25, 0x01	; 1
-    1194:	8b 87       	std	Y+11, r24	; 0x0b
+    1192:	87 ef       	ldi	r24, 0xF7	; 247
+    1194:	91 e0       	ldi	r25, 0x01	; 1
+    1196:	8b 87       	std	Y+11, r24	; 0x0b
 	can_send_message(&msg);
-    1196:	ce 01       	movw	r24, r28
-    1198:	01 96       	adiw	r24, 0x01	; 1
-    119a:	0e 94 f7 03 	call	0x7ee	; 0x7ee <can_send_message>
-	//IRQhandler();
-	//can_message *msg2 = can_recive_msg(0);
-	//printf("Message data: %x", msg2->id);
-	//printf("hei");
-	//int val;
-	DDRD |= (1<<PD2);
-    119e:	8a 9a       	sbi	0x11, 2	; 17
+    1198:	ce 01       	movw	r24, r28
+    119a:	01 96       	adiw	r24, 0x01	; 1
+    119c:	0e 94 f7 03 	call	0x7ee	; 0x7ee <can_send_message>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -2177,15 +2174,15 @@ int main(void){
 	__builtin_avr_delay_cycles(__ticks_dc);
     11a0:	85 e0       	ldi	r24, 0x05	; 5
     11a2:	8a 95       	dec	r24
-    11a4:	f1 f7       	brne	.-4      	; 0x11a2 <main+0x4e>
+    11a4:	f1 f7       	brne	.-4      	; 0x11a2 <main+0x4c>
     11a6:	00 00       	nop
+
+
 	while(1){
 		_delay_us(1);
-		//val= PIND & (1<<PD3);
-		//if(!val){
-			can_interrupt_handler();
+		can_interrupt_handler();
     11a8:	0e 94 78 04 	call	0x8f0	; 0x8f0 <can_interrupt_handler>
-    11ac:	f9 cf       	rjmp	.-14     	; 0x11a0 <main+0x4c>
+    11ac:	f9 cf       	rjmp	.-14     	; 0x11a0 <main+0x4a>
 
 000011ae <util_sort>:
 	t=*p;

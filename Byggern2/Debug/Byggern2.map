@@ -126,9 +126,9 @@ Discarded input sections
  .bss           0x00000000        0x0 DRIVER_MCP2515.o
  .text.mcp_read_status
                 0x00000000       0x10 DRIVER_MCP2515.o
- .text          0x00000000        0x0 lab5.o
- .data          0x00000000        0x0 lab5.o
- .bss           0x00000000        0x0 lab5.o
+ .text          0x00000000        0x0 lab6.o
+ .data          0x00000000        0x0 lab6.o
+ .bss           0x00000000        0x0 lab6.o
  .text          0x00000000        0x0 util.o
  .data          0x00000000        0x0 util.o
  .bss           0x00000000        0x0 util.o
@@ -417,7 +417,7 @@ LOAD DRIVER_SPI.o
 LOAD DRIVER_USART.o
 LOAD DRIVER_XMEM.o
 LOAD DRIVER_MCP2515.o
-LOAD lab5.o
+LOAD lab6.o
 LOAD util.o
 START GROUP
 LOAD c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libm.a
@@ -706,52 +706,52 @@ END GROUP
                 0x00000f08      0x114 DRIVER_OLED.o
                 0x00000f08                oled_init
  .text.spi_init
-                0x0000101c        0xc DRIVER_SPI.o
+                0x0000101c        0xe DRIVER_SPI.o
                 0x0000101c                spi_init
  .text.spi_send
-                0x00001028        0x8 DRIVER_SPI.o
-                0x00001028                spi_send
+                0x0000102a        0x8 DRIVER_SPI.o
+                0x0000102a                spi_send
  .text.spi_read
-                0x00001030        0xc DRIVER_SPI.o
-                0x00001030                spi_read
+                0x00001032        0xc DRIVER_SPI.o
+                0x00001032                spi_read
  .text.USART_Init
-                0x0000103c       0x1a DRIVER_USART.o
-                0x0000103c                USART_Init
+                0x0000103e       0x1a DRIVER_USART.o
+                0x0000103e                USART_Init
  .text.USART_Transmit
-                0x00001056        0x8 DRIVER_USART.o
-                0x00001056                USART_Transmit
+                0x00001058        0x8 DRIVER_USART.o
+                0x00001058                USART_Transmit
  .text.USART_PUTCHAR
-                0x0000105e        0xa DRIVER_USART.o
-                0x0000105e                USART_PUTCHAR
+                0x00001060        0xa DRIVER_USART.o
+                0x00001060                USART_PUTCHAR
  .text.xmem_init
-                0x00001068        0xe DRIVER_XMEM.o
-                0x00001068                xmem_init
+                0x0000106a        0xe DRIVER_XMEM.o
+                0x0000106a                xmem_init
  .text.xmem_write
-                0x00001076        0x8 DRIVER_XMEM.o
-                0x00001076                xmem_write
+                0x00001078        0x8 DRIVER_XMEM.o
+                0x00001078                xmem_write
  .text.xmem_read
-                0x0000107e        0x8 DRIVER_XMEM.o
-                0x0000107e                xmem_read
+                0x00001080        0x8 DRIVER_XMEM.o
+                0x00001080                xmem_read
  .text.mcp_read
-                0x00001086       0x1c DRIVER_MCP2515.o
-                0x00001086                mcp_read
+                0x00001088       0x1c DRIVER_MCP2515.o
+                0x00001088                mcp_read
  .text.mcp_write
-                0x000010a2       0x24 DRIVER_MCP2515.o
-                0x000010a2                mcp_write
+                0x000010a4       0x24 DRIVER_MCP2515.o
+                0x000010a4                mcp_write
  .text.mcp_req_to_send
-                0x000010c6        0xa DRIVER_MCP2515.o
-                0x000010c6                mcp_req_to_send
+                0x000010c8        0xa DRIVER_MCP2515.o
+                0x000010c8                mcp_req_to_send
  .text.mcp_bit_modify
-                0x000010d0       0x30 DRIVER_MCP2515.o
-                0x000010d0                mcp_bit_modify
+                0x000010d2       0x30 DRIVER_MCP2515.o
+                0x000010d2                mcp_bit_modify
  .text.mcp_reset
-                0x00001100       0x18 DRIVER_MCP2515.o
-                0x00001100                mcp_reset
+                0x00001102       0x18 DRIVER_MCP2515.o
+                0x00001102                mcp_reset
  .text.mcp_init
-                0x00001118       0x3c DRIVER_MCP2515.o
-                0x00001118                mcp_init
- .text.main     0x00001154       0x5a lab5.o
-                0x00001154                main
+                0x0000111a       0x3c DRIVER_MCP2515.o
+                0x0000111a                mcp_init
+ .text.main     0x00001156       0x58 lab6.o
+                0x00001156                main
  .text.util_sort
                 0x000011ae       0x58 util.o
                 0x000011ae                util_sort
@@ -860,7 +860,7 @@ END GROUP
  .rodata.str1.1
                 0x008001ca       0x2d DRIVER_MCP2515.o
  .rodata.str1.1
-                0x008001f7        0x9 lab5.o
+                0x008001f7        0x9 lab6.o
  *(.gnu.linkonce.r*)
                 0x00800200                . = ALIGN (0x2)
                 0x00800200                _edata = .
@@ -944,7 +944,7 @@ END GROUP
  .comment       0x00000030       0x31 DRIVER_USART.o
  .comment       0x00000030       0x31 DRIVER_XMEM.o
  .comment       0x00000030       0x31 DRIVER_MCP2515.o
- .comment       0x00000030       0x31 lab5.o
+ .comment       0x00000030       0x31 lab6.o
  .comment       0x00000030       0x31 util.o
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
  .comment       0x00000030       0x31 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(realloc.o)
@@ -997,7 +997,7 @@ END GROUP
  .debug_aranges
                 0x00000230       0x50 DRIVER_MCP2515.o
  .debug_aranges
-                0x00000280       0x20 lab5.o
+                0x00000280       0x20 lab6.o
  .debug_aranges
                 0x000002a0       0x30 util.o
 
@@ -1016,7 +1016,7 @@ END GROUP
  .debug_info    0x000021bf      0x231 DRIVER_USART.o
  .debug_info    0x000023f0      0x22e DRIVER_XMEM.o
  .debug_info    0x0000261e      0x3d9 DRIVER_MCP2515.o
- .debug_info    0x000029f7      0x2b0 lab5.o
+ .debug_info    0x000029f7      0x2b0 lab6.o
  .debug_info    0x00002ca7      0x1bb util.o
 
 .debug_abbrev   0x00000000     0x1564
@@ -1031,7 +1031,7 @@ END GROUP
  .debug_abbrev  0x00000e9e      0x14a DRIVER_USART.o
  .debug_abbrev  0x00000fe8      0x14a DRIVER_XMEM.o
  .debug_abbrev  0x00001132      0x1a3 DRIVER_MCP2515.o
- .debug_abbrev  0x000012d5      0x15a lab5.o
+ .debug_abbrev  0x000012d5      0x15a lab6.o
  .debug_abbrev  0x0000142f      0x135 util.o
 
 .debug_line     0x00000000     0x16b8
@@ -1042,11 +1042,11 @@ END GROUP
  .debug_line    0x000004cd      0x1c7 DRIVER_JOYSTICK.o
  .debug_line    0x00000694      0x2ed DRIVER_MENU.o
  .debug_line    0x00000981      0x461 DRIVER_OLED.o
- .debug_line    0x00000de2      0x103 DRIVER_SPI.o
- .debug_line    0x00000ee5      0x12a DRIVER_USART.o
- .debug_line    0x0000100f      0x19a DRIVER_XMEM.o
- .debug_line    0x000011a9      0x26f DRIVER_MCP2515.o
- .debug_line    0x00001418      0x1dd lab5.o
+ .debug_line    0x00000de2      0x109 DRIVER_SPI.o
+ .debug_line    0x00000eeb      0x12a DRIVER_USART.o
+ .debug_line    0x00001015      0x19a DRIVER_XMEM.o
+ .debug_line    0x000011af      0x26f DRIVER_MCP2515.o
+ .debug_line    0x0000141e      0x1d7 lab6.o
  .debug_line    0x000015f5       0xc3 util.o
 
 .debug_frame    0x00000000      0x6b4
@@ -1060,7 +1060,7 @@ END GROUP
  .debug_frame   0x00000448       0x54 DRIVER_USART.o
  .debug_frame   0x0000049c       0xc8 DRIVER_XMEM.o
  .debug_frame   0x00000564       0xb8 DRIVER_MCP2515.o
- .debug_frame   0x0000061c       0x34 lab5.o
+ .debug_frame   0x0000061c       0x34 lab6.o
  .debug_frame   0x00000650       0x64 util.o
 
 .debug_str      0x00000000      0xa27
@@ -1084,7 +1084,7 @@ END GROUP
                                 0x22d (size before relaxing)
  .debug_str     0x000009a1       0x50 DRIVER_MCP2515.o
                                 0x27b (size before relaxing)
- .debug_str     0x000009f1       0x11 lab5.o
+ .debug_str     0x000009f1       0x11 lab6.o
                                 0x28a (size before relaxing)
  .debug_str     0x00000a02       0x25 util.o
                                 0x19d (size before relaxing)
@@ -1099,7 +1099,7 @@ END GROUP
  .debug_loc     0x000010f4       0x6d DRIVER_USART.o
  .debug_loc     0x00001161      0x1f6 DRIVER_XMEM.o
  .debug_loc     0x00001357      0x2c6 DRIVER_MCP2515.o
- .debug_loc     0x0000161d       0x8b lab5.o
+ .debug_loc     0x0000161d       0x8b lab6.o
  .debug_loc     0x000016a8      0x1cf util.o
 
 .debug_macinfo
@@ -1131,7 +1131,7 @@ END GROUP
  .debug_ranges  0x00000160       0x28 DRIVER_USART.o
  .debug_ranges  0x00000188       0x58 DRIVER_XMEM.o
  .debug_ranges  0x000001e0       0x40 DRIVER_MCP2515.o
- .debug_ranges  0x00000220       0x10 lab5.o
+ .debug_ranges  0x00000220       0x10 lab6.o
  .debug_ranges  0x00000230       0x20 util.o
 
 .debug_macro
