@@ -14,6 +14,7 @@
 #include "DRIVER_MENU.h"
 #include "DRIVER_SPI.h"
 #include "DRIVER_MCP2515.h"
+#include "DRIVER_CAN.h"
 
 
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
@@ -27,21 +28,46 @@ int main(void){
 	adc_init();
 	joystick_calibrate();
 	
-	mcp_init();
+	//mcp_init();
+	can_init();
 	
 // 	mcp_write(MCP_CANCTRL,MODE_CONFIG);
-	mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_CONFIG);
-	uint8_t value = mcp_read(MCP_CANSTAT);
+//mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_CONFIG);
+/*	uint8_t value = mcp_read(MCP_CANSTAT);*/
 	
-	if ((value & MODE_MASK) != MODE_CONFIG){
+/*	if ((value & MODE_MASK) != MODE_CONFIG){
 		printf("Not in config mode after reset! value: %x \n\r", value);
 	}
+	printf(" in config mode after reset! value: %x \n\r", value); */
 
+	//mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_LOOPBACK);
+//	mcp_write(MCP_CANCTRL,MODE_CONFIG);
+//	mcp_write(MCP_CANCTRL, MODE_LOOPBACK);
+/*	uint8_t value1 = mcp_read(MCP_CANSTAT);*/
+/*	printf(" in MODE value: %x \n\r", value1);*/
 
-	
-	//husk å sett i loopback mode
-	
+	can_message msg;
+	msg.id=1;
+	msg.length=8;
+
+	msg.data[8] = "ABCDEFGH";
+	can_send_message(&msg);
+
+	//IRQhandler();
+	//can_message *msg2 = can_recive_msg(0);
+	//printf("Message data: %x", msg2->id);
+	//printf("hei");
+	//int val;
+	DDRD |= (1<<PD2);
 	while(1){
+		_delay_us(1);
+		//val= PIND & (1<<PD3);
+		//if(!val){
+			can_interrupt_handler();
+		//}
+		//value = mcp_read(MCP_CANSTAT);
+		
+	
 	}
 	
 	return 0;

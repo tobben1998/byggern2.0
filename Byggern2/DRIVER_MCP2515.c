@@ -58,9 +58,16 @@ uint8_t mcp_read_status(){
 void mcp_bit_modify(uint8_t addr, uint8_t mask, uint8_t data){
 	PORTB &= ~(1<<PB4);
 	
-	spi_send(MCP_BITMOD);
-	spi_send(addr);
-	spi_send(mask);
+	//Debug lør 16/10, slett når du ser dette
+	//4 signaler sendes
+	//0x05 0b00000101
+	//0x0f 0b00001111;
+	//0xe0 0b11100000;
+	//0x80 0b10000000;
+	
+	spi_send(MCP_BITMOD);	//0x05 0b00000101
+	spi_send(addr);			
+	spi_send(mask);			
 	spi_send(data);
 	
 	PORTB |= (1<<PB4);
@@ -69,6 +76,7 @@ void mcp_bit_modify(uint8_t addr, uint8_t mask, uint8_t data){
 
 //Re-initialize the internal registers of the MCP2515
 void mcp_reset(void){
+	
 	PORTB &= ~(1<<PB4);
 	
 	spi_send(MCP_RESET); //0xC0		0b1100 0000
@@ -82,6 +90,7 @@ void mcp_init(){
 	uint8_t value;
 	spi_init();
 	mcp_reset();
+	_delay_ms(2); //controller needs some time to do internal initialization.
 	
 	value = mcp_read(MCP_CANSTAT);
 	
