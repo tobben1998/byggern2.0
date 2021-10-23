@@ -37,6 +37,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../can_controller.c \
+../can_interrupt.c \
 ../DRIVER_ADC.c \
 ../DRIVER_CAN.c \
 ../DRIVER_JOYSTICK.c \
@@ -47,6 +49,8 @@ C_SRCS +=  \
 ../DRIVER_XMEM.c \
 ../DRIVER_MCP2515.c \
 ../lab6.c \
+../printf-stdarg.c \
+../uart.c \
 ../util.c
 
 
@@ -57,6 +61,8 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+can_controller.o \
+can_interrupt.o \
 DRIVER_ADC.o \
 DRIVER_CAN.o \
 DRIVER_JOYSTICK.o \
@@ -67,9 +73,13 @@ DRIVER_USART.o \
 DRIVER_XMEM.o \
 DRIVER_MCP2515.o \
 lab6.o \
+printf-stdarg.o \
+uart.o \
 util.o
 
 OBJS_AS_ARGS +=  \
+can_controller.o \
+can_interrupt.o \
 DRIVER_ADC.o \
 DRIVER_CAN.o \
 DRIVER_JOYSTICK.o \
@@ -80,9 +90,13 @@ DRIVER_USART.o \
 DRIVER_XMEM.o \
 DRIVER_MCP2515.o \
 lab6.o \
+printf-stdarg.o \
+uart.o \
 util.o
 
 C_DEPS +=  \
+can_controller.d \
+can_interrupt.d \
 DRIVER_ADC.d \
 DRIVER_CAN.d \
 DRIVER_JOYSTICK.d \
@@ -93,9 +107,13 @@ DRIVER_USART.d \
 DRIVER_XMEM.d \
 DRIVER_MCP2515.d \
 lab6.d \
+printf-stdarg.d \
+uart.d \
 util.d
 
 C_DEPS_AS_ARGS +=  \
+can_controller.d \
+can_interrupt.d \
 DRIVER_ADC.d \
 DRIVER_CAN.d \
 DRIVER_JOYSTICK.d \
@@ -106,6 +124,8 @@ DRIVER_USART.d \
 DRIVER_XMEM.d \
 DRIVER_MCP2515.d \
 lab6.d \
+printf-stdarg.d \
+uart.d \
 util.d
 
 OUTPUT_FILE_PATH +=Byggern2.elf
@@ -122,6 +142,20 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+./can_controller.o: .././can_controller.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./can_interrupt.o: .././can_interrupt.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
 ./DRIVER_ADC.o: .././DRIVER_ADC.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
@@ -186,6 +220,20 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./lab6.o: .././lab6.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./printf-stdarg.o: .././printf-stdarg.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 5.4.0
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+./uart.o: .././uart.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\include"  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega162 -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\Atmel\ATmega_DFP\1.3.300\gcc\dev\atmega162" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

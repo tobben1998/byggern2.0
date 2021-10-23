@@ -8,6 +8,7 @@
  *
  */ 
 #include <stdint.h>
+#include <stdio.h>
 
 #include "sam.h"
 #include "uart.h"

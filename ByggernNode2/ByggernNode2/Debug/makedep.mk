@@ -6,29 +6,13 @@ can_controller.c
 
 can_interrupt.c
 
-DRIVER_ADC.c
+Device_Startup\startup_sam3xa.c
 
-DRIVER_CAN.c
+Device_Startup\system_sam3xa.c
 
-DRIVER_JOYSTICK.c
-
-DRIVER_MENU.c
-
-DRIVER_OLED.c
-
-DRIVER_SPI.c
-
-DRIVER_USART.c
-
-DRIVER_XMEM.c
-
-DRIVER_MCP2515.c
-
-lab6.c
+main.c
 
 printf-stdarg.c
 
 uart.c
-
-util.c
 

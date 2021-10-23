@@ -18,11 +18,8 @@ lab6.d lab6.o: .././lab6.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- .././DRIVER_USART.h .././DRIVER_ADC.h .././DRIVER_XMEM.h \
- .././DRIVER_JOYSTICK.h .././DRIVER_OLED.h \
- c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
- .././DRIVER_MENU.h .././DRIVER_SPI.h .././DRIVER_MCP2515.h \
- .././DRIVER_CAN.h
+ .././can_controller.h .././can_interrupt.h .././printf-stdarg.h \
+ .././uart.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -62,22 +59,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 
-.././DRIVER_USART.h:
+.././can_controller.h:
 
-.././DRIVER_ADC.h:
+.././can_interrupt.h:
 
-.././DRIVER_XMEM.h:
+.././printf-stdarg.h:
 
-.././DRIVER_JOYSTICK.h:
-
-.././DRIVER_OLED.h:
-
-c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h:
-
-.././DRIVER_MENU.h:
-
-.././DRIVER_SPI.h:
-
-.././DRIVER_MCP2515.h:
-
-.././DRIVER_CAN.h:
+.././uart.h:
