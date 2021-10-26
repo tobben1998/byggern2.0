@@ -1,5 +1,6 @@
 #include "DRIVER_ADC.h"
 #include "DRIVER_JOYSTICK.h"
+#include "DRIVER_CAN.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,7 +28,7 @@ joystick_position joystick_getPosition(void){
 	uint8_t y = adc_read(0);
 
 	if(x > x_offset){
-			position.x_pos = 100*(x-x_offset)/(0xFF - x_offset);
+			position.x_pos = (int8_t)100*(x-x_offset)/(0xFF - x_offset);
 	}
 	else if (x < x_offset){
 		position.x_pos = 100*(x-x_offset)/(x_offset - 0);
@@ -74,4 +75,24 @@ joystick_direction joystick_getDirection(void){
 		return NEUTRAL;
 	}
 	return 0;
+}
+
+void joystick_sendPositionCan(joystick_position pos){
+	
+	can_message msg;
+	msg.id=9;
+	msg.length=8;
+	msg.data[0] = (char)pos.x_pos;
+	msg.data[1] = (char)pos.y_pos;
+	msg.data[2] = 69;
+	msg.data[3] = 22;
+	msg.data[4] = 11;
+	msg.data[5] = 1;
+	msg.data[6] = -11;
+	msg.data[7] = 0;
+	msg.data[8] = 0;
+	
+	can_send_message(&msg);
+	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
+
 }

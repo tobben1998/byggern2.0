@@ -93,8 +93,7 @@ void mcp_init(){
 	_delay_ms(2); //controller needs some time to do internal initialization.
 	
 	
-	//cnflags write cnf3, cnf2, cnf1. cnf3 first,
-	
+
 	value = mcp_read(MCP_CANSTAT);
 	
  	if ((value & MODE_MASK) != MODE_CONFIG){

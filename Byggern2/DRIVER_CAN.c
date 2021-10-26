@@ -15,9 +15,18 @@ static uint8_t buffer_number=0;
 
 void can_init(){
     mcp_init();
+	
+	    //configure bit timing for the CAN bus interface?? CNF1, CNF2 and CNF3
+	    //cnflags write cnf3, cnf2, cnf1. cnf3 first,
+	    //
+	mcp_write(MCP_CNF3, 0b00000001); //PS2 = 2Tq
+	mcp_write(MCP_CNF2, 0b10110101); //Propagation segment length = prseg+1=6*Tq, PS1 = phseg+1=7*tq, length of PS" determined by PHSEG22: PHSEG20 bits of cn3
+	mcp_write(MCP_CNF1, 0b01000011); //brp=3, sjw=2*Tq
+	    
 
 
-    mcp_write(MCP_CANCTRL, MODE_LOOPBACK); //velge loopback mode
+    //mcp_write(MCP_CANCTRL, MODE_LOOPBACK); //velge loopback mode //denne må vels 
+	mcp_write(MCP_CANCTRL, MODE_NORMAL); // velge normal mode
    
     //enable interrupt for can on atmega
     cli();
@@ -30,10 +39,11 @@ void can_init(){
 // 	GICR |= (1<<INT2); 
 	
 	sei();
+	
 
 
 
-    //configure bit timing for the CAN bus interface?? CNF1, CNF2 and CNF3
+
 
 
     //enable recive intterupts for mcp2515. page 51 in mcp2515
@@ -63,7 +73,7 @@ void can_send_message(can_message *msg){
 
 
     for(uint8_t m=0; m<length;m++){
-        mcp_write(TXBnDm+m*16*buffer_number,msg->data[m]); //see register 3-8
+        mcp_write(TXBnDm+m+16*buffer_number,msg->data[m]); //see register 3-8
     }
 
     //send message//
@@ -108,7 +118,9 @@ void can_interrupt_handler(void){
 	
 	if(flag & MCP_RX0IF){
 		can_message *p=can_recive_msg(0);
-		printf("Message length: %x", p->id);
+		printf("Message id %x \r\n", p->id);
+		printf("Message length: %x \r\n", p->length);
+		//printf("Message length: %x", p->length);
 		
 		mcp_bit_modify(MCP_CANINTF, 0x01, 0);
 	}

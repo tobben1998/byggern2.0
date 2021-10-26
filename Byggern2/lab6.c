@@ -6,31 +6,63 @@
 #include <stdlib.h>
 #include <avr/interrupt.h>
 
-#include "can_controller.h"
-#include "can_interrupt.h"
-#include "printf-stdarg.h"
-#include "uart.h"
+#include "DRIVER_USART.h"
+#include "DRIVER_ADC.h"
+#include "DRIVER_XMEM.h"
+#include "DRIVER_JOYSTICK.h"
+#include "DRIVER_OLED.h"
+#include "DRIVER_MENU.h"
+#include "DRIVER_SPI.h"
+#include "DRIVER_MCP2515.h"
+#include "DRIVER_CAN.h"
 
 
-
-//brukes denne her?
-//#define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
+#define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
 
 int main(void){
 	
-	configure_uart();
-	//D1=PA5
-	//D2=PA0
+	USART_Init(MYUBRR);
+	xmem_init();
+	oled_init();
+	menu_init();
+	adc_init();
+	joystick_calibrate();
 	
-	//inits
+	//mcp_init();
+	can_init();
 	
+// 	mcp_write(MCP_CANCTRL,MODE_CONFIG);
+//mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_CONFIG);
+/*	uint8_t value = mcp_read(MCP_CANSTAT);*/
+	
+/*	if ((value & MODE_MASK) != MODE_CONFIG){
+		printf("Not in config mode after reset! value: %x \n\r", value);
+	}
+	printf(" in config mode after reset! value: %x \n\r", value); */
 
+	//mcp_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_LOOPBACK);
+//	mcp_write(MCP_CANCTRL,MODE_CONFIG);
+//	mcp_write(MCP_CANCTRL, MODE_LOOPBACK);
+/*	uint8_t value1 = mcp_read(MCP_CANSTAT);*/
+/*	printf(" in MODE value: %x \n\r", value1);*/
+
+	can_message msg;
+	msg.id=6;
+	msg.length=8;
+	msg.data[0] = 'A';
+	msg.data[1] = 'B';
+	
+	joystick_position pos;
+	pos.x_pos= -21;
+	pos.y_pos= 41;
 
 
 	while(1){
 		_delay_us(1);
-
-		
+		can_send_message(&msg);
+		//joystick_sendPositionCan(pos);
+		//can_interrupt_handler();
+	
 	}
 	
 	return 0;

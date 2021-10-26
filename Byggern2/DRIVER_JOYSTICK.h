@@ -3,6 +3,8 @@
 #ifndef DRIVER_JOYSTICK_H_
 #define DRIVER_JOYSTICK_H_
 
+#include <stdint.h>
+
 typedef enum {LEFT, RIGHT, DOWN, UP, NEUTRAL} joystick_direction;
 
 typedef struct {
@@ -15,5 +17,7 @@ void joystick_calibrate(void);
 joystick_position joystick_getPosition(void);
 
 joystick_direction joystick_getDirection(void);
+
+void joystick_sendPositionCan(joystick_position pos);
 
 #endif
