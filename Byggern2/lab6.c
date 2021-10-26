@@ -53,14 +53,14 @@ int main(void){
 	msg.data[1] = 'B';
 	
 	joystick_position pos;
-	pos.x_pos= -21;
+	pos.x_pos= -1;
 	pos.y_pos= 41;
 
 
 	while(1){
 		_delay_us(1);
-		can_send_message(&msg);
-		//joystick_sendPositionCan(pos);
+		//can_send_message(&msg);
+		joystick_sendPositionCan(pos);
 		//can_interrupt_handler();
 	
 	}
