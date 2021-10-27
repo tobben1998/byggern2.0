@@ -177,7 +177,19 @@
     <Compile Include="Device_Startup\system_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="main.c">
+    <Compile Include="DRIVER_PWM.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_PWM.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_TIMER.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_TIMER.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lab7.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="printf-stdarg.c">

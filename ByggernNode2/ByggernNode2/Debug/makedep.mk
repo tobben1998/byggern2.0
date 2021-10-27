@@ -10,7 +10,11 @@ Device_Startup\startup_sam3xa.c
 
 Device_Startup\system_sam3xa.c
 
-main.c
+DRIVER_PWM.c
+
+DRIVER_TIMER.c
+
+lab7.c
 
 printf-stdarg.c
 
