@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "DRIVER_PWM.h"
 #include "can_controller.h"
 #include "can_interrupt.h"
 #include "printf-stdarg.h"
@@ -32,13 +31,24 @@ int main(void)
 		PIOA->PIO_OER |= PIO_OER_P20;  //pio enable output register
 		PIOA->PIO_SODR |= PIO_SODR_P20;  //set output data register
 		
-		/* Initialize the SAM system */
-		SystemInit();
-		WDT->WDT_MR |= WDT_MR_WDDIS; // disable the watchdog timer
-		configure_uart();
-		can_init_def_tx_rx_mb(CAN_BR);
-		pwm_init();
+
+    /* Initialize the SAM system */
+    SystemInit();
+	WDT->WDT_MR |= WDT_MR_WDDIS; // reset the watchdog timer
+	configure_uart();
+	can_init_def_tx_rx_mb(CAN_BR);
 	
+	printf("test");
+    /* Replace with your application code */
+	
+	
+		CAN_MESSAGE msg;
+		msg.id=2;
+		msg.data_length=5;
+
+		msg.data[8] = "ABCDEFGH";
+		
+		
     while (1) 
     {
 

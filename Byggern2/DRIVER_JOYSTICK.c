@@ -80,7 +80,7 @@ joystick_direction joystick_getDirection(void){
 void joystick_sendPositionCan(joystick_position pos){
 	
 	can_message msg;
-	msg.id=9;
+	msg.id=1;
 	msg.length=2;
 	msg.data[0] = (char)pos.x_pos;
 	msg.data[1] = (char)pos.y_pos;

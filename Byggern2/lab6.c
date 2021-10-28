@@ -60,7 +60,7 @@ int main(void){
 	while(1){
 		_delay_us(1);
 		//can_send_message(&msg);
-		joystick_sendPositionCan(pos);
+		joystick_sendPositionCan(joystick_getPosition());
 		//can_interrupt_handler();
 	
 	}

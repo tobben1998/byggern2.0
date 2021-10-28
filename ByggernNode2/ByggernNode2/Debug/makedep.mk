@@ -12,7 +12,7 @@ Device_Startup\system_sam3xa.c
 
 DRIVER_PWM.c
 
-DRIVER_TIMER.c
+DRIVER_ADC.c
 
 lab7.c
 

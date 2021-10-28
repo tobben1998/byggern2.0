@@ -16,8 +16,9 @@
 #include "./printf-stdarg.h"
 
 #include "can_controller.h"
+#include "DRIVER_PWM.h"
 
-#define DEBUG_INTERRUPT 1
+#define DEBUG_INTERRUPT 0
 
 /**
  * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
@@ -57,6 +58,22 @@ void CAN0_Handler( void )
 			if(DEBUG_INTERRUPT)printf("%d ", message.data[i]);
 		}
 		if(DEBUG_INTERRUPT)printf("\n\r");
+		
+		//////////////////////////////////////////////
+		if (message.id=1){//joystick pos =1
+			pwm_update_duty_cycle(&message);
+		}
+		else if(message.id=2){ //slider pos
+			printf("slider");
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 	
 	if(can_sr & CAN_SR_MB0)

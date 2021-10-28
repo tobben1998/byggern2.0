@@ -183,10 +183,10 @@
     <Compile Include="DRIVER_PWM.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="DRIVER_TIMER.c">
+    <Compile Include="DRIVER_ADC.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="DRIVER_TIMER.h">
+    <Compile Include="DRIVER_ADC.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="lab7.c">

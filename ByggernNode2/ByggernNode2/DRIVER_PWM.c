@@ -5,7 +5,8 @@
 #include "sam.h"
 #include "can_interrupt.h"
 #include "can_controller.h"
-#include "./printf-stdarg.h"
+#include "printf-stdarg.h"
+
 
 
 
@@ -28,41 +29,45 @@ void pwm_init(void){
 
 	//perhipeal B kanal 6
 
-	//enable clock of the peripheral
-	//PMC->PMC_PCR = PMC_PCR_EN | (ID_PWM << PMC_PCR_PID_Pos); //Enable clock on PID 36 (PWM)
-	REG_PMC_PCER1 |= PMC_PCER1_PID36;
+	REG_PMC_PCER1 |= PMC_PCER1_PID36; 	//enable clock 
 	
-	//PIOC->PIO_ABSR &= ~PIO_ABSR_P18; //A=0 B=1 //  //A er valgt her
+
     PIOC->PIO_ABSR |= PIO_ABSR_P18; //A=0 B=1 //  //B er valgt her
-	PIOC->PIO_PDR |= PIO_PDR_P18;  //pio disable register for i/o  set pwm pin to output       
-	
-	//MCK=84
-	//sette clock A MCK  og divide factor på 41 0x2A
-// 	PWM->PWM_CLK |= (0b0000 << PWM_CLK_PREA_Pos); //delt på 42 her ogs, istedneofro delt på 2 og så 21?
-// 	PWM->PWM_CLK |= (0x2A << PWM_CLK_DIVA_Pos);
+	PIOC->PIO_PDR |= PIO_PDR_P18;  //pio disable register for i/o  set pwm pin to output 
 
-	//PWM_CMR_CPRE_MCK_DIV_1024 
 
-	REG_PWM_CLK |= PWM_CLK_PREB(0) | PWM_CLK_DIVB(42);
-	
-	//REG_PWM_CMR6 |= PWM_CMR_CALG | PWM_CMR_CPRE_CLKA | PWM_CMR_DTHI;
+	REG_PWM_CLK |= PWM_CLK_PREB(0) | PWM_CLK_DIVB(42); //sette klokke B til mck/42=2MHz
 
-	REG_PWM_CMR6 &= ~(PWM_CMR_CALG);
-	REG_PWM_CMR6 &= ~(PWM_CMR_CPRE_MCK);
-	REG_PWM_CMR6 |= (PWM_CMR_CPOL);
+	REG_PWM_CMR6 |= (PWM_CMR_CALG); //dual slope mode
+	REG_PWM_CMR6 |= (PWM_CMR_CPRE_CLKB); //bruker klokke b
+	REG_PWM_CMR6 |= (PWM_CMR_CPOL); //skifter polaritet. begynner nedde istednefor opp
 
-	//CPOL = 0 (starter på lav), MCK er valgt by default, CALG = 0 (Period Left alligned), 
-	REG_PWM_CPRD6=40000;
-	REG_PWM_CDTY6=1500;
+	REG_PWM_CPRD6 &= 0;
+	REG_PWM_CDTY6 &= 0;  
+	REG_PWM_CPRD6=20000; //period
+	REG_PWM_CDTY6=1500; //duty cycle
 	REG_PWM_ENA=PWM_ENA_CHID6; 
-
+	
+	
 	
 }
 
 
-// void pwm_set_duty_cycle(int dutyCycle){
-// 	if (dutyCycle)
-// }
+void pwm_update_duty_cycle(CAN_MESSAGE *msg){
+	 
+	 int8_t tall=msg->data[0];
+	 int16_t dutyCycle = tall*5+1500; //Presisjonen til joystick er rævva, går fra 1050 til 1850 ish. Fiks joystick-funksjonene. joystick går fra -100 til 70 ish.
+	 
+	printf("%d \n\r",dutyCycle);
+	
+	 if(dutyCycle>2000){ //har satt margin på 100 her for test.
+		 dutyCycle=2000;
+	 }
+	 else if(dutyCycle<1000){//og her
+		 dutyCycle=1000;
+	 }
+	 REG_PWM_CDTYUPD6=dutyCycle;
+}
 
 //servo driver with freq of 50HZ=period 20ms and pulse width of 0.9 and 2.1ms
 
