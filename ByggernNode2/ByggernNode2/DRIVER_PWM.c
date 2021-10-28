@@ -58,7 +58,7 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
 	 int8_t tall=msg->data[0];
 	 int16_t dutyCycle = tall*5+1500; //Presisjonen til joystick er rævva, går fra 1050 til 1850 ish. Fiks joystick-funksjonene. joystick går fra -100 til 70 ish.
 	 
-	printf("%d \n\r",dutyCycle);
+	//printf("%d \n\r",dutyCycle);
 	
 	 if(dutyCycle>2000){ //har satt margin på 100 her for test.
 		 dutyCycle=2000;

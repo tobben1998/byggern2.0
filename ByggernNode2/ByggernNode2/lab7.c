@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "DRIVER_ADC.h"
 #include "DRIVER_PWM.h"
 #include "can_controller.h"
 #include "can_interrupt.h"
@@ -38,9 +39,10 @@ int main(void)
 		configure_uart();
 		can_init_def_tx_rx_mb(CAN_BR);
 		pwm_init();
+		adc_init();
 	
-    while (1) 
-    {
+    while (1){
+		adc_read_putty();
 
 		//can_send(&msg,0);
 

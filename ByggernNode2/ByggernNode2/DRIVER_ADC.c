@@ -6,6 +6,8 @@
 #include "can_interrupt.h"
 #include "can_controller.h"
 #include "./printf-stdarg.h"
+//#include <util/delay.h>
+
 
 
 //activate perperal.
@@ -29,6 +31,15 @@ void adc_init(void){
 	
 }
 
-	
-	//REG_ADC_CDRx used for reading current result
-	
+void adc_read_putty(void){
+	//printf("test");
+	printf("%d \n\r",REG_ADC_CDR);//used for reading current result
+}
+
+void adc_ballpoint(int *goal){
+	int adcval = REG_ADC_CDR;
+	if(adcval > 1000){ // eller annen tersekl verdi
+		//goal++
+		//_delay_ms(100);
+	}
+}
