@@ -62,6 +62,7 @@ void CAN0_Handler( void )
 		//////////////////////////////////////////////
 		if (message.id=1){//joystick pos =1
 			pwm_update_duty_cycle(&message);
+			//printf("slide pos: %d, %d \n\r",message.data[0], message.data[1]);
 		}
 		else if(message.id=2){ //slider pos
 			printf("slider");

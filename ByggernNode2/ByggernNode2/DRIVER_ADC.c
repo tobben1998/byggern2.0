@@ -6,7 +6,10 @@
 #include "can_interrupt.h"
 #include "can_controller.h"
 #include "./printf-stdarg.h"
-//#include <util/delay.h>
+
+static int activateGoal=1;
+static int goalCount=0;
+
 
 
 
@@ -17,6 +20,8 @@
 //adc_cher channel enable register
 //adc_cr controller register
 //adc_cdr[n] only in free runing mode, but i chosse this- channel n data register
+
+//A7 på shieldet er valhgt
 
 void adc_init(void){
 		REG_PMC_PCER1 |= PMC_PCER1_PID37; 	//enable clock
@@ -32,14 +37,19 @@ void adc_init(void){
 }
 
 void adc_read_putty(void){
-	//printf("test");
-	printf("%d \n\r",REG_ADC_CDR);//used for reading current result
+	printf("test");
+	//printf("adc value: %d \n\r",REG_ADC_CDR);//used for reading current result
 }
 
 void adc_ballpoint(int *goal){
 	int adcval = REG_ADC_CDR;
-	if(adcval > 1000){ // eller annen tersekl verdi
-		//goal++
-		//_delay_ms(100);
+	if(adcval == 0  && activateGoal==1){ // eller annen tersekl verdi
+		goalCount++;
+		activateGoal=0;
+		printf("Goal Count: %d \n\r", goalCount);
+		
+	}
+	if (adcval> 500 && activateGoal==0){
+		activateGoal=1;
 	}
 }

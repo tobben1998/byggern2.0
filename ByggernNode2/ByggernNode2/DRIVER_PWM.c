@@ -24,8 +24,11 @@
 // REG_PWM_CDTn: pwm channel duty cycle register
 //pwm_ENA: pwm enable
 
-void pwm_init(void){
 
+
+void pwm_init(void){
+	
+	//pin 44 på shieldet
 
 	//perhipeal B kanal 6
 

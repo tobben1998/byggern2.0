@@ -1,3 +1,5 @@
+#define F_CPU 16000000  //  clock  frequency  in Hz
+
 #include "DRIVER_ADC.h"
 #include "DRIVER_JOYSTICK.h"
 #include "DRIVER_CAN.h"
@@ -6,12 +8,14 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "util.h"
+#include <util/delay.h>
 
 
 volatile uint8_t x_offset;
 volatile uint8_t y_offset;
 
 void joystick_calibrate(){
+	_delay_ms(5000);
 	int n=100,arrx[n],arry[n];
 	for(int i = 0;i < n;i++) {
 		arrx[i]=adc_read(1);

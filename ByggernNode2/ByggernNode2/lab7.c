@@ -42,7 +42,10 @@ int main(void)
 		adc_init();
 	
     while (1){
+		int tull=0;
+		//printf("test");
 		adc_read_putty();
+		adc_ballpoint(&tull);
 
 		//can_send(&msg,0);
 
