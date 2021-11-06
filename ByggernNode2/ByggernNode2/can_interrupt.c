@@ -16,6 +16,7 @@
 #include "./printf-stdarg.h"
 
 #include "can_controller.h"
+#include "DRIVER_MOTOR.h"
 #include "DRIVER_PWM.h"
 
 #define DEBUG_INTERRUPT 0
@@ -62,7 +63,9 @@ void CAN0_Handler( void )
 		//////////////////////////////////////////////
 		if (message.id=1){//joystick pos =1
 			pwm_update_duty_cycle(&message);
-			//printf("slide pos: %d, %d \n\r",message.data[0], message.data[1]);
+			motor_dac_send(&message);
+			
+			//printf("pos: %d, %d \n\r",message.data[0], message.data[1]);
 		}
 		else if(message.id=2){ //slider pos
 			printf("slider");

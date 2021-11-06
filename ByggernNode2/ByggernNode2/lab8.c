@@ -10,6 +10,7 @@
 
 #include "DRIVER_ADC.h"
 #include "DRIVER_PWM.h"
+#include "DRIVER_MOTOR.h"
 #include "can_controller.h"
 #include "can_interrupt.h"
 #include "printf-stdarg.h"
@@ -40,10 +41,11 @@ int main(void)
 		can_init_def_tx_rx_mb(CAN_BR);
 		pwm_init();
 		adc_init();
+		motor_init();
+		motor_dac_init();
 	
     while (1){
 		int tull=0;
-		//printf("test");
 		//adc_read_putty();
 		adc_ballpoint(&tull);
 

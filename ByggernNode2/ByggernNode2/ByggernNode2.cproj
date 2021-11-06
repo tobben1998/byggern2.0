@@ -177,6 +177,12 @@
     <Compile Include="Device_Startup\system_sam3xa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_MOTOR.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_MOTOR.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_PWM.c">
       <SubType>compile</SubType>
     </Compile>
@@ -189,7 +195,7 @@
     <Compile Include="DRIVER_ADC.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab7.c">
+    <Compile Include="lab8.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="printf-stdarg.c">

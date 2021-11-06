@@ -10,11 +10,13 @@ Device_Startup\startup_sam3xa.c
 
 Device_Startup\system_sam3xa.c
 
+DRIVER_MOTOR.c
+
 DRIVER_PWM.c
 
 DRIVER_ADC.c
 
-lab7.c
+lab8.c
 
 printf-stdarg.c
 
