@@ -8,6 +8,7 @@ void motor_init(void);
 int motor_read_encoder(void);
 void motor_dac_send(CAN_MESSAGE *msg);
 void motor_dac_init(void);
+void motor_solenoid(CAN_MESSAGE *msg);
 
 
 

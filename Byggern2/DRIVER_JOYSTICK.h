@@ -18,6 +18,6 @@ joystick_position joystick_getPosition(void);
 
 joystick_direction joystick_getDirection(void);
 
-void joystick_sendPositionCan(joystick_position pos);
+void joystick_sendPositionButtonCan(joystick_position pos);
 
 #endif

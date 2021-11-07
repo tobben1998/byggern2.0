@@ -47,7 +47,7 @@ int main(void)
     while (1){
 		int tull=0;
 		//adc_read_putty();
-		adc_ballpoint(&tull);
+		//adc_ballpoint(&tull);
 
 		//can_send(&msg,0);
 

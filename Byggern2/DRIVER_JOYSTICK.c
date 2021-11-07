@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <avr/io.h>
 #include "util.h"
 #include <util/delay.h>
 
@@ -15,7 +16,7 @@ volatile uint8_t x_offset;
 volatile uint8_t y_offset;
 
 void joystick_calibrate(){
-	_delay_ms(5000);
+	_delay_ms(1000);
 	int n=100,arrx[n],arry[n];
 	for(int i = 0;i < n;i++) {
 		arrx[i]=adc_read(1);
@@ -81,13 +82,18 @@ joystick_direction joystick_getDirection(void){
 	return 0;
 }
 
-void joystick_sendPositionCan(joystick_position pos){
-	
+void joystick_sendPositionButtonCan(joystick_position pos){
 	can_message msg;
 	msg.id=1;
-	msg.length=2;
+	msg.length=3;
+	//joy_pos
 	msg.data[0] = (char)pos.x_pos;
 	msg.data[1] = (char)pos.y_pos;
+	
+	//button
+	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
+	
+	
 	
 	can_send_message(&msg);
 	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4

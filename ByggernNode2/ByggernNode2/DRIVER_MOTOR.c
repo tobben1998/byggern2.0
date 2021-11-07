@@ -29,6 +29,9 @@ PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register */
 
 void motor_init(void){
 	//enable PIO registers
+	//PB27=pwm13
+	PIOB->PIO_PER |= PIO_PER_P27;
+	
 	PIOC->PIO_PER |= PIO_PER_P1;	
 	PIOC->PIO_PER |= PIO_PER_P2;  
 	PIOC->PIO_PER |= PIO_PER_P3;  
@@ -45,6 +48,8 @@ void motor_init(void){
 	PIOD->PIO_PER |= PIO_PER_P10;
 	
 	//enable output
+	PIOB->PIO_OER |= PIO_OER_P27;
+	
 	PIOD->PIO_OER |= PIO_OER_P0;
 	PIOD->PIO_OER |= PIO_OER_P1;
 	PIOD->PIO_OER |= PIO_OER_P2;
@@ -68,10 +73,10 @@ void motor_init(void){
 int motor_read_encoder(void){
 	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
 	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
-	//wait 20 microseconds 
+	for(int i =0; i<5000; i++);		//waiting..
 	int MSB = PIOC->PIO_PDSR;		//Read D0 to D7 to get the MSB
 	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
-	//wait 20 microseconds
+	for(int i =0; i<5000; i++);		//waiting..
 	int LSB = PIOC->PIO_PDSR;
 	PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
 	PIOD->PIO_SODR |= PIO_SODR_P1;
@@ -93,6 +98,30 @@ void motor_dac_init(void){
 
 }
 
-void motor_dac_send(CAN_MESSAGE *msg){		 
-	REG_DACC_CDR = msg->data[0];
+void motor_dac_send(CAN_MESSAGE *msg){
+	uint16_t tall=msg->data[0];
+	uint16_t scaler=40; //DAC er 12 bit. kommer max opp til 4000 nå, som er under 2^12=4096.
+	if(tall>=0 && tall<=100){
+		tall=tall*scaler;
+		PIOD->PIO_CODR |= PIO_CODR_P10; //set direction right?
+	}
+	else if (tall>=156 && tall<=255 ){
+		tall=(255-tall)*scaler;
+		PIOD->PIO_SODR |= PIO_SODR_P10; //set direction left?
+	}
+	REG_DACC_CDR=tall;
+}
+
+
+// void motor_dac_send(CAN_MESSAGE *msg){
+// 	REG_DACC_CDR=(msg->data[0]);
+// }
+
+void motor_solenoid(CAN_MESSAGE *msg){
+	if(msg->data[2]){
+	PIOB->PIO_SODR |= PIO_SODR_P27;
+	}
+	else{
+	PIOB->PIO_CODR |= PIO_CODR_P27;		
+	}
 }
