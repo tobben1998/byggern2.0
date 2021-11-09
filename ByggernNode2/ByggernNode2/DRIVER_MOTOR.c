@@ -70,20 +70,28 @@ void motor_init(void){
 
 
 
-int motor_read_encoder(void){
+int motor_read_encoder(int doReset){
 	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
 	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
+	
 	for(int i =0; i<5000; i++);		//waiting..
 	int MSB = PIOC->PIO_PDSR;		//Read D0 to D7 to get the MSB
+	
 	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
 	for(int i =0; i<5000; i++);		//waiting..
 	int LSB = PIOC->PIO_PDSR;
-	PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
-	PIOD->PIO_SODR |= PIO_SODR_P1;
+	
+	if(doReset){
+		PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
+		PIOD->PIO_SODR |= PIO_SODR_P1;
+	}
+
 	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
 	int result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
 	return result;
-}
+	
+} 
+
 
 void motor_dac_init(void){
 	//REG_PWM_CMR6 |= (PWM_CMR_CALG); eksemple pwm
@@ -100,7 +108,7 @@ void motor_dac_init(void){
 
 void motor_dac_send(CAN_MESSAGE *msg){
 	uint16_t tall=msg->data[0];
-	uint16_t scaler=40; //DAC er 12 bit. kommer max opp til 4000 nå, som er under 2^12=4096.
+	uint16_t scaler=12; //DAC er 12 bit. kommer max opp til 4000 nå, som er under 2^12=4096.
 	if(tall>=0 && tall<=100){
 		tall=tall*scaler;
 		PIOD->PIO_CODR |= PIO_CODR_P10; //set direction right?
@@ -119,9 +127,9 @@ void motor_dac_send(CAN_MESSAGE *msg){
 
 void motor_solenoid(CAN_MESSAGE *msg){
 	if(msg->data[2]){
-	PIOB->PIO_SODR |= PIO_SODR_P27;
+	PIOB->PIO_CODR |= PIO_CODR_P27; //Pinne 13 på shield? Lurer på om må bytte sånn at knappetrykket gir 0 V (aktivt lav)
 	}
 	else{
-	PIOB->PIO_CODR |= PIO_CODR_P27;		
+	PIOB->PIO_SODR |= PIO_SODR_P27;		
 	}
 }

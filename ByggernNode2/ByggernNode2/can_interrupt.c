@@ -73,14 +73,9 @@ void CAN0_Handler( void )
 			printf("slider");
 		}
 		*/
-		
-		
-		
-		
-		
-		
-		
+
 	}
+
 	
 	if(can_sr & CAN_SR_MB0)
 	{

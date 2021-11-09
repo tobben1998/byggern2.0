@@ -43,9 +43,16 @@ int main(void)
 		adc_init();
 		motor_init();
 		motor_dac_init();
+		
+		int a = motor_read_encoder(1);
+		
 	
     while (1){
 		int tull=0;
+		
+// 		a = motor_read_encoder(1);
+// 		printf("Motor Position: %x \n\r", a);
+		
 		//adc_read_putty();
 		//adc_ballpoint(&tull);
 

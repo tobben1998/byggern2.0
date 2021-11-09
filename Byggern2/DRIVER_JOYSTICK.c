@@ -16,7 +16,6 @@ volatile uint8_t x_offset;
 volatile uint8_t y_offset;
 
 void joystick_calibrate(){
-	_delay_ms(1000);
 	int n=100,arrx[n],arry[n];
 	for(int i = 0;i < n;i++) {
 		arrx[i]=adc_read(1);
@@ -92,7 +91,7 @@ void joystick_sendPositionButtonCan(joystick_position pos){
 	
 	//button
 	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
-	
+	printf("Button value: %d \n\r", msg.data[2]);
 	
 	
 	can_send_message(&msg);
