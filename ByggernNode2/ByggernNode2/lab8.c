@@ -16,6 +16,7 @@
 #include "printf-stdarg.h"
 #include "uart.h"
 #include "sam.h"
+#include "DRIVER_PID.h"
 
 #define CAN_BR 0x00290561
 //#include <util/delay.h>
@@ -44,12 +45,17 @@ int main(void)
 		motor_init();
 		motor_dac_init();
 		
-		int a = motor_read_encoder(1);
+		int encval = motor_read_encoder(0);
 		
-	
+		//SysTick_init(209643);
+		
+		
     while (1){
-		int tull=0;
 		
+		//encval = motor_read_encoder(0);
+		//printf("Encoder val: %x \n\r", encval);
+		
+		//int tull=0;
 // 		a = motor_read_encoder(1);
 // 		printf("Motor Position: %x \n\r", a);
 		

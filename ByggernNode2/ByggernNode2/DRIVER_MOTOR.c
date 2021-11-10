@@ -13,12 +13,12 @@
 
 //pin til DACC = PB16. på shield A_out
 
-//motor
-//actaviate oe! pin
-
-
-//PC1-PC8=DO0-D07
-//!OE=pd0, !RST= PD1, SEL=PD2, EN=PD9, DIR=PD10
+//	DO0-D07 = PC1-PC8
+//	!OE	=	PD0
+//	!RST=	PD1
+//	SEL	=	PD2
+//	EN	=	PD9
+//	DIR	=	PD10
 
 /*	
 eksempel på sette led pinne
@@ -27,46 +27,44 @@ PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
 PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
 PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register */
 
+
 void motor_init(void){
 	//enable PIO registers
-	//PB27=pwm13
-	PIOB->PIO_PER |= PIO_PER_P27;
+	PIOB->PIO_PER |= PIO_PER_P27; //pwm13
+	//MJ1
+	PIOD->PIO_PER |= PIO_PER_P0; //!OE
+	PIOD->PIO_PER |= PIO_PER_P1; //!RST
+	PIOD->PIO_PER |= PIO_PER_P2; //SEL
+	PIOD->PIO_PER |= PIO_PER_P9; //EN
+	PIOD->PIO_PER |= PIO_PER_P10;//DIR
+	//MJ2
+	PIOC->PIO_PER |= PIO_PER_P1; //D0
+	PIOC->PIO_PER |= PIO_PER_P2; //D1
+	PIOC->PIO_PER |= PIO_PER_P3; //D2
+	PIOC->PIO_PER |= PIO_PER_P4; //D3
+	PIOC->PIO_PER |= PIO_PER_P5; //D4
+	PIOC->PIO_PER |= PIO_PER_P6; //D5
+	PIOC->PIO_PER |= PIO_PER_P7; //D6
+	PIOC->PIO_PER |= PIO_PER_P8; //D7
 	
-	PIOC->PIO_PER |= PIO_PER_P1;	
-	PIOC->PIO_PER |= PIO_PER_P2;  
-	PIOC->PIO_PER |= PIO_PER_P3;  
-	PIOC->PIO_PER |= PIO_PER_P4;
-	PIOC->PIO_PER |= PIO_PER_P5;  
-	PIOC->PIO_PER |= PIO_PER_P6;  
-	PIOC->PIO_PER |= PIO_PER_P7;  
-	PIOC->PIO_PER |= PIO_PER_P8;
+	//enable input of MJ2 pins
+	PIOC->PIO_ODR |= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
 	
-	PIOD->PIO_PER |= PIO_PER_P0;
-	PIOD->PIO_PER |= PIO_PER_P1;
-	PIOD->PIO_PER |= PIO_PER_P2;
-	PIOD->PIO_PER |= PIO_PER_P9;
-	PIOD->PIO_PER |= PIO_PER_P10;
-	
-	//enable output
+	//enable output of MJ1 pins
 	PIOB->PIO_OER |= PIO_OER_P27;
+	PIOD->PIO_OER |= (PIO_OER_P0 | PIO_OER_P1 | PIO_OER_P2 | PIO_OER_P9 | PIO_OER_P10);
 	
-	PIOD->PIO_OER |= PIO_OER_P0;
-	PIOD->PIO_OER |= PIO_OER_P1;
-	PIOD->PIO_OER |= PIO_OER_P2;
-	PIOD->PIO_OER |= PIO_OER_P9;
-	PIOD->PIO_OER |= PIO_OER_P10;
-	
-	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN=1 to enable motor
+	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN to enable motor
 	PIOD->PIO_SODR |= PIO_SODR_P10; //set direction. USE CODR for the other direction
-	
 	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
 	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
 	
 	//mangler noe her?
 	//punkt 3.2 in user guide for dc motor interface. 
-	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output volatge to the motor
+	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output voltage to the motor
 		
 }
+
 
 
 
@@ -75,11 +73,13 @@ int motor_read_encoder(int doReset){
 	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
 	
 	for(int i =0; i<5000; i++);		//waiting..
-	int MSB = PIOC->PIO_PDSR;		//Read D0 to D7 to get the MSB
+	int MSB = PIOC->PIO_PDSR;
+	printf("MSB: %x \t", MSB);		//Read D0 to D7 to get the MSB
 	
 	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
 	for(int i =0; i<5000; i++);		//waiting..
 	int LSB = PIOC->PIO_PDSR;
+	printf("LSB: %x \t", LSB);
 	
 	if(doReset){
 		PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
@@ -89,8 +89,12 @@ int motor_read_encoder(int doReset){
 	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
 	int result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
 	return result;
-	
-} 
+}
+
+//TODO: motor calibrate.
+	//Kjør motoren helt til venstre, mål encoder, da vet vi max utfall til venstre. 
+	//Kjør så helt til høyre, mål encoder, da vet vi max utfall til høyre.
+	//styr deretter motoren til midten. 
 
 
 void motor_dac_init(void){
@@ -108,7 +112,7 @@ void motor_dac_init(void){
 
 void motor_dac_send(CAN_MESSAGE *msg){
 	uint16_t tall=msg->data[0];
-	uint16_t scaler=12; //DAC er 12 bit. kommer max opp til 4000 nå, som er under 2^12=4096.
+	uint16_t scaler=12; //DAC er 12 bit. Dersom scaler = 40, kommer max opp til 4000, som er under 2^12=4096. Satt til 12 for å roe ned pådrag. 
 	if(tall>=0 && tall<=100){
 		tall=tall*scaler;
 		PIOD->PIO_CODR |= PIO_CODR_P10; //set direction right?
@@ -119,11 +123,6 @@ void motor_dac_send(CAN_MESSAGE *msg){
 	}
 	REG_DACC_CDR=tall;
 }
-
-
-// void motor_dac_send(CAN_MESSAGE *msg){
-// 	REG_DACC_CDR=(msg->data[0]);
-// }
 
 void motor_solenoid(CAN_MESSAGE *msg){
 	if(msg->data[2]){

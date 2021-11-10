@@ -183,6 +183,12 @@
     <Compile Include="DRIVER_MOTOR.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_PID.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_PID.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_PWM.c">
       <SubType>compile</SubType>
     </Compile>

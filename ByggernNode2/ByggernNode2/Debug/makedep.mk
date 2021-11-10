@@ -12,6 +12,8 @@ Device_Startup\system_sam3xa.c
 
 DRIVER_MOTOR.c
 
+DRIVER_PID.c
+
 DRIVER_PWM.c
 
 DRIVER_ADC.c
