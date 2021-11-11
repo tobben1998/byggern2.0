@@ -7,6 +7,7 @@
 #include "can_interrupt.h"
 #include "can_controller.h"
 #include "printf-stdarg.h"
+#include "DRIVER_PID.h"
 
 
 
@@ -47,6 +48,9 @@ void motor_init(void){
 	PIOC->PIO_PER |= PIO_PER_P7; //D6
 	PIOC->PIO_PER |= PIO_PER_P8; //D7
 	
+	//Enable clock to PIOC peripheral, in order to be able to read pin input 
+	PMC->PMC_PCER0 |= (1 << 13);
+	
 	//enable input of MJ2 pins
 	PIOC->PIO_ODR |= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
 	
@@ -56,46 +60,38 @@ void motor_init(void){
 	
 	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN to enable motor
 	PIOD->PIO_SODR |= PIO_SODR_P10; //set direction. USE CODR for the other direction
-	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
+	PIOD->PIO_CODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
 	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
+	
 	
 	//mangler noe her?
 	//punkt 3.2 in user guide for dc motor interface. 
-	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output voltage to the motor
-		
+	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output voltage to the motor		
 }
 
-
-
-
-int motor_read_encoder(int doReset){
+int16_t motor_read_encoder(int doReset){
+	
 	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
 	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
 	
-	for(int i =0; i<5000; i++);		//waiting..
-	int MSB = PIOC->PIO_PDSR;
-	printf("MSB: %x \t", MSB);		//Read D0 to D7 to get the MSB
+	
+	for(int i =0; i<2000; i++);		//waiting..
+	int8_t MSB = PIOC->PIO_PDSR;
+	//printf("MSB: %x \t", (0xff & MSB));		//Read D0 to D7 to get the MSB
 	
 	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
-	for(int i =0; i<5000; i++);		//waiting..
-	int LSB = PIOC->PIO_PDSR;
-	printf("LSB: %x \t", LSB);
+	for(int i =0; i<2000; i++);		//waiting..
+	int8_t LSB = PIOC->PIO_PDSR;
+	//printf("LSB: %d \t", (0xff & LSB));
 	
 	if(doReset){
-		PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
-		PIOD->PIO_SODR |= PIO_SODR_P1;
+		motor_encoder_tglreset();
 	}
 
 	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
-	int result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
+	int16_t result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
 	return result;
 }
-
-//TODO: motor calibrate.
-	//Kjør motoren helt til venstre, mål encoder, da vet vi max utfall til venstre. 
-	//Kjør så helt til høyre, mål encoder, da vet vi max utfall til høyre.
-	//styr deretter motoren til midten. 
-
 
 void motor_dac_init(void){
 	//REG_PWM_CMR6 |= (PWM_CMR_CALG); eksemple pwm
@@ -107,7 +103,6 @@ void motor_dac_init(void){
 	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //freerunning mode
 	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //velg kanal 1
 	REG_DACC_CHER |= DACC_CHER_CH1;
-
 }
 
 void motor_dac_send(CAN_MESSAGE *msg){
@@ -131,4 +126,48 @@ void motor_solenoid(CAN_MESSAGE *msg){
 	else{
 	PIOB->PIO_SODR |= PIO_SODR_P27;		
 	}
+}
+
+void motor_encoder_tglreset(void){
+	PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
+	for(int i=0; i<2000; i++);		//Necessary for the motorbox to change value of 16-bit register
+	PIOD->PIO_SODR |= PIO_SODR_P1;
+}
+
+void motor_calibrate(void){ //Veldig hardkodet mtp. tid den kjører mot høyre.
+	for(int i =0; i < 5000000; i++){
+		motor_run(0,1000);	
+	}
+	motor_encoder_tglreset();
+	printf("Calibration finished, position value: %d", motor_read_encoder(0));
+}
+
+void motor_run(int dirLeft, int speed){
+	if(dirLeft){
+		PIOD->PIO_SODR |= PIO_SODR_P10; //DIR left
+	}
+	else{
+		PIOD->PIO_CODR |= PIO_CODR_P10; //DIR right
+	}
+	REG_DACC_CDR=speed;
+}
+
+void motor_calibrate2(void){
+	int pos = motor_read_encoder(0);
+	int prevPos = pos +200;
+	while(prevPos != pos){
+		prevPos = pos;
+		for(int i = 0; i < 100000; i++){
+			motor_run(0, 800); //Må ha nok pådrag til å orke å kjøre til enden, men ikke spinne på slutten. 900 fungerer såvidt. 
+		}
+		pos = motor_read_encoder(0);
+		printf("prevPos: %d, pos: %d \n\r", prevPos, pos);
+	}
+	motor_stop();
+	motor_encoder_tglreset();
+	printf("Calibration done, Position %d \n\r", motor_read_encoder(0));
+}
+
+void motor_stop(void){
+	motor_run(0,0);
 }

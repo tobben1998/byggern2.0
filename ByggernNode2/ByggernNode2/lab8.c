@@ -45,13 +45,25 @@ int main(void)
 		motor_init();
 		motor_dac_init();
 		
-		int encval = motor_read_encoder(0);
-		
-		//SysTick_init(209643);
 		
 		
+		motor_stop();
+		for(int i= 0; i < 1000000; i++);
+		
+		int16_t encval;
+		motor_encoder_tglreset();
+		//motor_calibrate();
+		motor_calibrate2();
+		
+		
+		SysTick_init(209643); //Reload value 209643 = 20 ms
+		printf("Kjørrr");
     while (1){
 		
+		
+		//encval = motor_read_encoder(0);
+		//for(int i = 0; i < 1000000; i++);
+		//printf("Encoder Value: %x \t Decimal val: %d \n\r", encval, encval);		
 		//encval = motor_read_encoder(0);
 		//printf("Encoder val: %x \n\r", encval);
 		

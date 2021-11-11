@@ -18,6 +18,7 @@
 #include "can_controller.h"
 #include "DRIVER_MOTOR.h"
 #include "DRIVER_PWM.h"
+#include "DRIVER_PID.h"
 
 #define DEBUG_INTERRUPT 0
 
@@ -62,9 +63,10 @@ void CAN0_Handler( void )
 		
 		//////////////////////////////////////////////
 		if (message.id=1){//joystick pos and button
-			pwm_update_duty_cycle(&message);
-			motor_dac_send(&message);
-			motor_solenoid(&message);
+			//pwm_update_duty_cycle(&message);
+			//motor_dac_send(&message);
+			//motor_solenoid(&message);
+			PID_update_refPos(&message);
 			
 			//printf("pos: %d, %d \n\r",message.data[0], message.data[1]);
 		}

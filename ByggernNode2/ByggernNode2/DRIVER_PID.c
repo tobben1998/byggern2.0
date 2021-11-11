@@ -1,10 +1,16 @@
 #include "sam.h"
+#include "DRIVER_PID.h"
+#include "DRIVER_MOTOR.h"
+#include "can_controller.h"
 
-volatile int32_t TimeDelay = 50;
-volatile int32_t LEDval = 1;
-int alarm = 0;
 
-void SysTick_init(uint32_t ticks){
+int refPos;
+int dt_ms = 20;
+double Kp = 1;
+double Kd = 1;
+double Ki = 1;
+
+void SysTick_init(uint32_t ticks){ //Formula for calculating number of tics: ticks = (desired period)/(clock period) -1
 	SysTick->CTRL = 0;									//Disable systick
 	
 	SysTick->LOAD = ticks - 1;							//Reload Register
@@ -21,29 +27,39 @@ void SysTick_init(uint32_t ticks){
 
 void SysTick_Handler(void){
 	//PID-regulering
-	  
-	//Les encoder-verdier
 	
+	//Sjukt primitiv p-regulator:
+	int pos = motor_read_encoder(0);
+	int ref = refPos; //RefPos might change at an interrupt.
+	int error = ref - pos; 
+	printf("Error: %d \t", error);
 	
-	//test ved å sette LED-pinner
-	
-	if(TimeDelay > 0){
-		TimeDelay--;
+	if(error > 1000){
+		if(error > 500){
+			for(int i = 0; i<16000; i++){
+				motor_run(1,500);
+			}
+		}
+		for(int i = 0; i<16000; i++){
+			motor_run(1,1000);
+		}
 	}
-	
-	else if(TimeDelay == 0){
-		if(LEDval){
-			PIOA->PIO_CODR |= PIO_CODR_P20;  //set output data register
-			LEDval = 0;
-			TimeDelay = 50;
+	else if(error < -1000){
+		if(error < -500){
+			for(int i = 0; i<16000; i++){
+				motor_run(1,500);
+			}
 		}
-		else{
-			PIOA->PIO_SODR |= PIO_SODR_P20;  //set output data register
-			LEDval = 1;
-			TimeDelay = 50;
-			alarm = 1;
+		for(int i = 0; i<16000; i++){
+			motor_run(0,1000);
 		}
+	}
+	else{
+		motor_stop();
+	}
+}
 
-	}
-	return;
+void PID_update_refPos(CAN_MESSAGE *msg){
+	int8_t posData = msg->data[0]; //[-100,100]
+	refPos = -(posData - 100)*190/2; //Converting [-100,100] to [19000,0]
 }
