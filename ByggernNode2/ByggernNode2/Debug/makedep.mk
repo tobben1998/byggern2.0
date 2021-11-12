@@ -18,7 +18,7 @@ DRIVER_PWM.c
 
 DRIVER_ADC.c
 
-lab8.c
+main.c
 
 printf-stdarg.c
 

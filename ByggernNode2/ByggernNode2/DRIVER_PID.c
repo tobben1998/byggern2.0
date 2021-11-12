@@ -32,7 +32,7 @@ void SysTick_Handler(void){
 	int pos = motor_read_encoder(0);
 	int ref = refPos; //RefPos might change at an interrupt.
 	int error = ref - pos; 
-	printf("Error: %d \t", error);
+	//printf("Error: %d \t", error);
 	
 	if(error > 1000){
 		if(error > 500){

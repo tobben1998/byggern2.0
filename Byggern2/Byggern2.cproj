@@ -166,10 +166,22 @@
     <Compile Include="DRIVER_OLED.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="DRIVER_SLIDER.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_SLIDER.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="DRIVER_SPI.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="DRIVER_SPI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_TIMER.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="DRIVER_TIMER.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="DRIVER_USART.c">
@@ -193,7 +205,10 @@
     <Compile Include="DRIVER_MCP2515.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab6.c">
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="progmem.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="util.c">

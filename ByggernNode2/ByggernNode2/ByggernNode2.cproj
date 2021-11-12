@@ -201,7 +201,7 @@
     <Compile Include="DRIVER_ADC.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lab8.c">
+    <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="printf-stdarg.c">

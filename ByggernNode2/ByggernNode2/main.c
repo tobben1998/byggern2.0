@@ -53,11 +53,12 @@ int main(void)
 		int16_t encval;
 		motor_encoder_tglreset();
 		//motor_calibrate();
-		//motor_calibrate2();
+		
+		motor_calibrate2();
 		
 		
 		SysTick_init(209643); //Reload value 209643 = 20 ms
-		//printf("Kjørrr");
+	
     while (1){
 		encval = motor_read_encoder(0);
 		printf("Encoder Value: %d \n\r", encval);

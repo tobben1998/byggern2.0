@@ -12,7 +12,11 @@ DRIVER_MENU.c
 
 DRIVER_OLED.c
 
+DRIVER_SLIDER.c
+
 DRIVER_SPI.c
+
+DRIVER_TIMER.c
 
 DRIVER_USART.c
 
@@ -20,7 +24,7 @@ DRIVER_XMEM.c
 
 DRIVER_MCP2515.c
 
-lab6.c
+main.c
 
 util.c
 

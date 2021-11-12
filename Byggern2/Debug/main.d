@@ -1,4 +1,4 @@
-lab6.d lab6.o: .././lab6.c \
+main.d main.o: .././main.c \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sfr_defs.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\inttypes.h \
@@ -22,7 +22,7 @@ lab6.d lab6.o: .././lab6.c \
  .././DRIVER_JOYSTICK.h .././DRIVER_OLED.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  .././DRIVER_MENU.h .././DRIVER_SPI.h .././DRIVER_MCP2515.h \
- .././DRIVER_CAN.h
+ .././DRIVER_CAN.h .././DRIVER_SLIDER.h .././DRIVER_TIMER.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
 
@@ -81,3 +81,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././DRIVER_MCP2515.h:
 
 .././DRIVER_CAN.h:
+
+.././DRIVER_SLIDER.h:
+
+.././DRIVER_TIMER.h:
