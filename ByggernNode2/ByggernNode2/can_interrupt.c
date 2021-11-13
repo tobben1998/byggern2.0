@@ -20,7 +20,7 @@
 #include "DRIVER_PWM.h"
 #include "DRIVER_PID.h"
 
-#define DEBUG_INTERRUPT 1
+#define DEBUG_INTERRUPT 0
 
 /**
  * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
@@ -66,7 +66,7 @@ void CAN0_Handler( void )
 			//pwm_update_duty_cycle(&message);
 			//motor_dac_send(&message);
 			//motor_solenoid(&message);
-			//PID_update_refPos(&message);
+			PID_update_refPos(&message);
 			
 			//printf("pos: %d, %d \n\r",message.data[0], message.data[1]);
 		}

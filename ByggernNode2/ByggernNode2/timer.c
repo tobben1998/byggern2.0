@@ -1,29 +1,12 @@
 #include "sam.h"
 #include <stdio.h>
 
-static int count = 0;
 static int SysTick_counter = 0;
 static int SysTick_seconds = 0;
-static uint8_t busywait_alarm = 0;
+static volatile uint8_t busywait_alarm = 0;
 static uint32_t CompareValms;
 
-void timer_rtt_init(int mseconds){
-	
-	int16_t prescaler = 3; //Gives highest possible resolution of timer
-	RTT->RTT_MR |= (prescaler << RTT_MR_RTPRES_Pos);
-	RTT->RTT_MR |= RTT_MR_ALMIEN; //Enable interrupt when alarmvalue matches counter
-	
-	RTT->RTT_AR |= 11 * mseconds; //10.9 ish 11. 
-	
-	NVIC_SetPriority(RTT_IRQn, 1);
-}
 
-void RTT_Handler(){
-	count++;
-	printf("Count: %d", count);
-	RTT->RTT_MR |= (1 << RTT_MR_RTTRST);
-	
-}
 
 void SysTick_init(uint32_t ticks){ //Formula for calculating number of ticks: ticks = (desired period)/(clock period) -1
 	
@@ -49,7 +32,7 @@ void SysTick_disable(void){
 void SysTick_Handler(void){
 	
 	SysTick_counter++;
-	if(SysTick_counter >= CompareValms){
+	if(SysTick_counter == CompareValms){
 		busywait_alarm = 1;
 	}
 	
@@ -60,36 +43,6 @@ void SysTick_Handler(void){
 		printf("busywait: %d", busywait_alarm);
 		printf("Seconds: %d \n\r", SysTick_seconds);
 	}
-	
-	//Sjukt primitiv p-regulator:
-	// 	int pos = motor_read_encoder(0);
-	// 	int ref = refPos; //RefPos might change at an interrupt.
-	// 	int error = ref - pos;
-	// 	//printf("Error: %d \t", error);
-	//
-	// 	if(error > 1000){
-	// 		if(error > 500){
-	// 			for(int i = 0; i<16000; i++){
-	// 				motor_run(1,500);
-	// 			}
-	// 		}
-	// 		for(int i = 0; i<16000; i++){
-	// 			motor_run(1,1000);
-	// 		}
-	// 	}
-	// 	else if(error < -1000){
-	// 		if(error < -500){
-	// 			for(int i = 0; i<16000; i++){
-	// 				motor_run(1,500);
-	// 			}
-	// 		}
-	// 		for(int i = 0; i<16000; i++){
-	// 			motor_run(0,1000);
-	// 		}
-	// 	}
-	// 	else{
-	// 		motor_stop();
-	// 	}
 }
 
 void timer_busywaitms(uint32_t mseconds){
@@ -97,9 +50,7 @@ void timer_busywaitms(uint32_t mseconds){
 	
 	CompareValms = mseconds;
 	printf("Timer started... \n\r");
-	while(!busywait_alarm){
-		printf("--");
-	};
+	while(!busywait_alarm){};
 	busywait_alarm = 0;
 	printf("...Timer stopped\n\r");
 	SysTick_disable();

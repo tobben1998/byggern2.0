@@ -45,23 +45,23 @@ int main(void)
 		adc_init();
 		motor_init();
 		motor_dac_init();
-		timer_rtt_init(100);
+		
 		
 		
 		motor_stop();
-		for(int i= 0; i < 1000000; i++);
+		//for(int i= 0; i < 1000000; i++);
 		
 		int16_t encval;
 		motor_encoder_tglreset();
-		//motor_calibrate();
+		motor_calibrate();
 		//motor_calibrate2();
-		
-		
+		PID_rtt_init(20);
+	
 		
 		
 	
     while (1){
-		
+			
 		//encval = motor_read_encoder(0);
 		//printf("Encoder Value: %d \n\r", encval);
 		
