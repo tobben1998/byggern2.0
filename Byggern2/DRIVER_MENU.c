@@ -14,17 +14,6 @@
 
 //OLED string ascces defines
 
-#define s_page 8 //used to move to by one page. each page is size 8
-
-#define s_main 0
-#define s_mainP 8
-#define s_p1 16
-#define s_p2 24
-#define s_controller 32
-#define s_controllerP 40
-
-
-
 
 static controller ctrl = JOYSTICK;
 
@@ -56,28 +45,15 @@ void menu_init(){
 	main_menu->function = NULL;
 	main_menu->oledOffset=s_main;
 	
-/*	Menu_new_submenu(main_menu, "NEW GAME", ">NEW GAME<", &f_newgame);
-	Menu_new_submenu(main_menu, "HIGH SCORE", ">HIGH SCORE<", &f_high_score);
-	Menu_new_submenu(main_menu, "CALIBRATE", ">CALIBRATE<", &f_calibrate);
-	Menu_new_submenu(main_menu, "DIFFICULTY", ">DIFFICULTY<", &f_difficulty);
-	Menu_new_submenu(main_menu, "DEBUGGING", ">DEBUGGING<", &f_debugging); */
 	
 	Menu_new_submenu(main_menu, "1PLAYER", &f_1player, s_p1);
 	Menu_new_submenu(main_menu, "2PLAYER", &f_2player, s_p2);
 	menu_item* controller_menu=Menu_new_submenu(main_menu, "CONTROLLER", &f_controller,s_controller);
-	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick,s_controller);
-	Menu_new_submenu(controller_menu, "SLIDER", &f_slider,s_controller);
+	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick,s_joystick);
+	Menu_new_submenu(controller_menu, "SLIDER", &f_slider,s_slider);
+	Menu_new_submenu(main_menu, "CALIBRATE", &f_calibrate,s_calibrate);
 	
-	//Menu_new_submenu(main_menu, "HIGH SCORE", &f_high_score);
-	//Menu_new_submenu(main_menu, "CALIBRATE", &f_calibrate);
-	//Menu_new_submenu(main_menu, "DIFFICULTY", &f_difficulty);
-	//Menu_new_submenu(main_menu, "DEBUGGING", &f_debugging);
-	
-// 	oled_center_print("PINGPONG",8);
-// 	for (int i=0; i < (main_menu->numOfChildren); i++){
-// 		oled_goto_page(header_pages+i);
-// 		oled_center_print(main_menu->children[i]->name, fontsize);
-// 	}
+
 	oled_reset();
 	char buffer[16];
 	for(unsigned char i=0; i<6; i++){
@@ -132,12 +108,12 @@ void f_1player(){
 		
 		//start timer
 	
-	
+					printf("JOYSTIadasdasasdT");		
 	switch(ctrl){
 		case JOYSTICK:
 
 		//starter counter
-			while (1){ //stopper n?r snor treffes					
+			while (1){ //stopper n?r snor treffes			
 				joystick_sendPositionButtonCan(joystick_getPosition());
 				//tiden kan telle p? skjermen
 				
@@ -145,7 +121,7 @@ void f_1player(){
 		//	
 		break;
 		case SLIDER:
-			while (1){ //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
+			while (1){	 //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
 				slider_sendPositionButtonCan(slider_getPosition());
 			}
 		break;
@@ -154,7 +130,12 @@ void f_1player(){
 
 void f_2player(){
 	oled_reset();
-	oled_center_print("2PLAYER", 8);
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p2]));
+		oled_center_print(buffer,8);
+	}
 }
 
 void f_controller(){
@@ -173,42 +154,58 @@ void f_controller(){
 
 void f_joystick(){
 	oled_reset();
-	oled_goto_page(3);
-	oled_center_print("JOYSTICK",8);
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_joystick]));
+		oled_center_print(buffer,8);
+	}
+	controller ctrl = JOYSTICK;
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
 	pos_child=0;
-	(*curr_menu->function)(curr_menu->name);
+	(*curr_menu->function)(main_menu->name);
 		
 	
 }
 void f_slider(){
 	oled_reset();
-	oled_center_print("SLIDER",8);
-}
-
-
-
-void f_debugging(){
-	oled_reset();
-	oled_center_print("Debugging", 8);
-}
-
-void f_difficulty(){
-	oled_reset();
-	oled_center_print("Difficulty", 8);
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_slider]));
+		oled_center_print(buffer,8);
+	}
+	controller ctrl = SLIDER;
+	_delay_ms(1000);
+	
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
+	
 }
 
 void f_calibrate(){
 	oled_reset();
-	oled_center_print("Calibrate", 8);
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_calibrate]));
+		oled_center_print(buffer,8);
+	}
+	
+	//funskjon her ||||||||||||||||||||||||||||
+	//send over canbuss til node 2 at det skal bli kalibrert nå
+	_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
+		
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
+	
+	
 }
 
-void f_high_score(){
-	oled_reset();
-	oled_center_print("High Score", 8);
-}
 
 
 void navigate(){
@@ -235,7 +232,7 @@ if(joystick_getDirection()!=NEUTRAL){
 			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child-1+(curr_menu->oledOffset)+s_page+header_pages])); //s_page to get to arrow page
 			oled_center_print(buffer,8);
 			
-			printf("----------------- \n");
+			
 			pos_child -= 1;
 		}
 		break;
