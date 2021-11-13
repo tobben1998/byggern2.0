@@ -17,6 +17,7 @@
 #include "uart.h"
 #include "sam.h"
 #include "DRIVER_PID.h"
+#include "timer.h"
 
 #define CAN_BR 0x00290561
 //#include <util/delay.h>
@@ -44,7 +45,7 @@ int main(void)
 		adc_init();
 		motor_init();
 		motor_dac_init();
-		
+		timer_rtt_init(100);
 		
 		
 		motor_stop();
@@ -53,15 +54,16 @@ int main(void)
 		int16_t encval;
 		motor_encoder_tglreset();
 		//motor_calibrate();
+		//motor_calibrate2();
 		
-		motor_calibrate2();
 		
 		
-		SysTick_init(209643); //Reload value 209643 = 20 ms
+		
 	
     while (1){
-		encval = motor_read_encoder(0);
-		printf("Encoder Value: %d \n\r", encval);
+		
+		//encval = motor_read_encoder(0);
+		//printf("Encoder Value: %d \n\r", encval);
 		
 		//encval = motor_read_encoder(0);
 		//for(int i = 0; i < 1000000; i++);

@@ -22,5 +22,7 @@ main.c
 
 printf-stdarg.c
 
+timer.c
+
 uart.c
 

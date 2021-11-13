@@ -12,6 +12,19 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+//OLED string ascces defines
+
+#define s_page 8 //used to move to by one page. each page is size 8
+
+#define s_main 0
+#define s_mainP 8
+#define s_p1 16
+#define s_p2 24
+#define s_controller 32
+#define s_controllerP 40
+
+
+
 
 static controller ctrl = JOYSTICK;
 
@@ -41,6 +54,7 @@ void menu_init(){
 	main_menu->numOfChildren = 0;
 	main_menu->parent = NULL;
 	main_menu->function = NULL;
+	main_menu->oledOffset=s_main;
 	
 /*	Menu_new_submenu(main_menu, "NEW GAME", ">NEW GAME<", &f_newgame);
 	Menu_new_submenu(main_menu, "HIGH SCORE", ">HIGH SCORE<", &f_high_score);
@@ -48,11 +62,11 @@ void menu_init(){
 	Menu_new_submenu(main_menu, "DIFFICULTY", ">DIFFICULTY<", &f_difficulty);
 	Menu_new_submenu(main_menu, "DEBUGGING", ">DEBUGGING<", &f_debugging); */
 	
-	Menu_new_submenu(main_menu, "1PLAYER", &f_1player);
-	Menu_new_submenu(main_menu, "2PLAYER", &f_2player);
-	menu_item* controller_menu=Menu_new_submenu(main_menu, "CONTROLLER", &f_controller);
-	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick);
-	Menu_new_submenu(controller_menu, "SLIDER", &f_slider);
+	Menu_new_submenu(main_menu, "1PLAYER", &f_1player, s_p1);
+	Menu_new_submenu(main_menu, "2PLAYER", &f_2player, s_p2);
+	menu_item* controller_menu=Menu_new_submenu(main_menu, "CONTROLLER", &f_controller,s_controller);
+	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick,s_controller);
+	Menu_new_submenu(controller_menu, "SLIDER", &f_slider,s_controller);
 	
 	//Menu_new_submenu(main_menu, "HIGH SCORE", &f_high_score);
 	//Menu_new_submenu(main_menu, "CALIBRATE", &f_calibrate);
@@ -68,18 +82,18 @@ void menu_init(){
 	char buffer[16];
 	for(unsigned char i=0; i<6; i++){
 		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&menu_table[i]));
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i]));
 		oled_center_print(buffer,8);
 	}
 	oled_goto_page(header_pages);
-	strcpy_P(buffer,(PGM_P)pgm_read_word(&menuP_table[0]));
+	strcpy_P(buffer,(PGM_P)pgm_read_word(&table[s_mainP+2]));
 	oled_center_print(buffer,8);
 	
 	curr_menu = main_menu;
 	
 }
 
-menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)){
+menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*), int oledOffset){
 	menu_item* new_submenu = malloc(sizeof(menu_item));
 
 	new_submenu->parent=self;
@@ -88,6 +102,7 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 	new_submenu->name=name;
 	new_submenu->nameArrow=oled_arrow(name);
 	new_submenu->function = function;
+	new_submenu->oledOffset=oledOffset;
 		
 	self->children=realloc(self->children, (self->numOfChildren+1)*sizeof(menu_item*));
 
@@ -102,9 +117,9 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 void f_1player(){
 	oled_reset();
 	char buffer[16];
-	for(unsigned char i=0; i<4; i++){
-		oled_goto_page(i+1);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&p1_table[i]));
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p1]));
 		oled_center_print(buffer,8);	
 	}
 	while(!(PINB & (1<<0))){ //
@@ -122,15 +137,15 @@ void f_1player(){
 		case JOYSTICK:
 
 		//starter counter
-			while (1){ //stopper når snor treffes					
+			while (1){ //stopper n?r snor treffes					
 				joystick_sendPositionButtonCan(joystick_getPosition());
-				//tiden kan telle på skjermen
+				//tiden kan telle p? skjermen
 				
 			}
 		//	
 		break;
 		case SLIDER:
-			while (1){ //legge inn en variabel som gjør at når man taper kommer man tl main menu for eksempel
+			while (1){ //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
 				slider_sendPositionButtonCan(slider_getPosition());
 			}
 		break;
@@ -144,11 +159,15 @@ void f_2player(){
 
 void f_controller(){
 	oled_reset();
-	oled_center_print("CONTROLLER",8);
-	oled_goto_page(header_pages);
-	oled_center_print(curr_menu->children[0]->nameArrow, fontsize);
-	oled_goto_page(header_pages+1);
-	oled_center_print(curr_menu->children[1]->name, fontsize);		
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_controller]));
+		oled_center_print(buffer,8);
+	}
+		oled_goto_page(header_pages);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[s_controllerP+header_pages]));
+		oled_center_print(buffer,8);
 
 }
 
@@ -204,11 +223,18 @@ if(joystick_getDirection()!=NEUTRAL){
 		if(pos_child>0){
 			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
-			oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			//oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			char buffer[16];
+			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+(curr_menu->oledOffset)+header_pages]));
+			oled_center_print(buffer,8);
+			
 			
 			oled_goto_page(pos_child+header_pages-1);
 			oled_clear_page(pos_child+header_pages-1);
-			oled_center_print(curr_menu->children[pos_child-1]->nameArrow,fontsize);
+			//oled_center_print(curr_menu->children[pos_child-1]->nameArrow,fontsize);
+			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child-1+(curr_menu->oledOffset)+s_page+header_pages])); //s_page to get to arrow page
+			oled_center_print(buffer,8);
+			
 			printf("----------------- \n");
 			pos_child -= 1;
 		}
@@ -218,12 +244,16 @@ if(joystick_getDirection()!=NEUTRAL){
 		if(pos_child < curr_menu->numOfChildren-1){
 			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
-			oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			//oled_center_print(curr_menu->children[pos_child]->name,fontsize);
+			char buffer[16];
+			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+(curr_menu->oledOffset)+header_pages]));
+			oled_center_print(buffer,8);
 			
 			oled_goto_page(pos_child+header_pages+1);
 			oled_clear_page(pos_child+header_pages+1);
-			oled_center_print(curr_menu->children[pos_child+1]->nameArrow,fontsize);
-			
+			//oled_center_print(curr_menu->children[pos_child+1]->nameArrow,fontsize);
+			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+1+(curr_menu->oledOffset)+s_page+header_pages])); //s_page to get to arrow page
+			oled_center_print(buffer,8);
 			pos_child += 1;
 		}
 		break;

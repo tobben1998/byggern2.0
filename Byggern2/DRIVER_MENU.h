@@ -14,8 +14,9 @@ typedef struct menu_struct{
 	void (*function)(char*);
 	menu_item** children;
 	int numOfChildren;
+	int oledOffset;
 	char* name;
-    char* nameArrow;
+	char* nameArrow;
 	
 } menu_item;
 
@@ -29,7 +30,7 @@ void f_2player();
 void f_controller();
 void f_joystick();
 void f_slider();
-menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*));
+menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*), int oledOffset);
 
 void navigate();
 
