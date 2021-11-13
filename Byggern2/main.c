@@ -33,6 +33,8 @@ int main(void){
 	can_init();
 	timer_init();
 	
+	//oled_animation(8);
+	
 	while(1){
 		_delay_us(1);
 		navigate();

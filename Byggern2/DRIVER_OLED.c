@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <util/delay.h>
 #include "DRIVER_ADC.h"
 #include "DRIVER_OLED.h"
 #include "fonts.h"
@@ -129,6 +130,12 @@ void oled_write_char(char c, int fs){
 				oled_position.coloumn++;
 			}
 			break;
+		case 0 :
+			for(int i=0; i<fontsize;i++){
+				oled_wrd(pgm_read_word(&font_animation[c][i]));
+				oled_position.coloumn++;
+			}
+			break;
 	}
 	
 	
@@ -155,6 +162,34 @@ char* oled_arrow(char* name){
 	strcat(str,name);
 	strcat(str,"<");
 	return str;
+}
+
+void oled_animation_frame(char c, int col){
+	oled_goto_col(0);
+	oled_write_char(c,0);
+	_delay_ms(300);
+}
+
+void oled_animation(int page){
+	oled_goto_page(page);
+	oled_goto_col(0);
+	for( int i = 0; i < 5; i++){
+		oled_animation_frame('A',0);
+		oled_animation_frame('B',0);
+		oled_animation_frame('C',0);
+		oled_animation_frame('D',0);
+		oled_animation_frame('E',0);
+		oled_animation_frame('F',0);
+		oled_animation_frame('G',0);
+		oled_animation_frame('F',0);
+		oled_animation_frame('E',0);
+		oled_animation_frame('D',0);
+		oled_animation_frame('C',0);
+		oled_animation_frame('B',0);
+		oled_animation_frame('A',0);
+	
+	}
+
 }
 
 
