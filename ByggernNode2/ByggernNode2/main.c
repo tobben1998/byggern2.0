@@ -55,7 +55,7 @@ int main(void)
 		motor_encoder_tglreset();
 		motor_calibrate();
 		//motor_calibrate2();
-		PID_rtt_init(20);
+		PID_rtt_init();
 	
 		
 		
@@ -71,12 +71,12 @@ int main(void)
 		//encval = motor_read_encoder(0);
 		//printf("Encoder val: %x \n\r", encval);
 		
-		//int tull=0;
+		int tull=0;
 // 		a = motor_read_encoder(1);
 // 		printf("Motor Position: %x \n\r", a);
 		
 		//adc_read_putty();
-		//adc_ballpoint(&tull);
+		adc_ballpoint(&tull);
 
 		//can_send(&msg,0);
 

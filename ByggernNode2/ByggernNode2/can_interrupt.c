@@ -63,11 +63,11 @@ void CAN0_Handler( void )
 		
 		//////////////////////////////////////////////
 		if (message.id=1){//joystick pos and button
-			//pwm_update_duty_cycle(&message);
+			pwm_update_duty_cycle(&message);
 			//motor_dac_send(&message);
-			//motor_solenoid(&message);
+			motor_solenoid(&message);
 			PID_update_refPos(&message);
-			
+			//PID_update_rightSlider_refPos(&message);
 			//printf("pos: %d, %d \n\r",message.data[0], message.data[1]);
 		}
 		/*

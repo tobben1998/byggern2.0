@@ -91,7 +91,7 @@ void joystick_sendPositionButtonCan(joystick_position pos){
 	
 	//button
 	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
-	printf("Button value: %d \n\r", msg.data[2]);
+	//printf("Button value: %d \n\r", msg.data[2]);
 	
 	
 	can_send_message(&msg);

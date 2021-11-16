@@ -24,15 +24,15 @@ static int goalCount=0; //global variable
 //A7 på shieldet er valhgt
 
 void adc_init(void){
-		REG_PMC_PCER1	|= PMC_PCER1_PID37; 	//enable clock
-		REG_ADC_CHER	|= ADC_CHDR_CH0; // Valgte kanal 0. medfører at pa2 blir valgt=A7/AD/ 
-		REG_ADC_MR		|= ADC_MR_FREERUN_ON;
-		//REG_ADC_MR |= ADC_MR_PRESCAL(???);
-		//REG_ADC_MR |= ADC_MR_TRACKTIM(???);
-		//REG_ADC_MR |= ADC_MR_TRANSFER(???);
-		REG_ADC_CR		|= ADC_CR_START; //The software trigger that starts ADC conversion
-		
-		//adc_cwr for comparing settings of ADC_EMR
+	REG_PMC_PCER1	|= PMC_PCER1_PID37; 	//enable clock
+	REG_ADC_CHER	|= ADC_CHDR_CH0; // Valgte kanal 0. medfører at pa2 blir valgt=A7/AD/
+	REG_ADC_MR		|= ADC_MR_FREERUN_ON;
+	//REG_ADC_MR |= ADC_MR_PRESCAL(???);
+	//REG_ADC_MR |= ADC_MR_TRACKTIM(???);
+	//REG_ADC_MR |= ADC_MR_TRANSFER(???);
+	REG_ADC_CR		|= ADC_CR_START; //The software trigger that starts ADC conversion
+	
+	//adc_cwr for comparing settings of ADC_EMR
 	
 }
 
@@ -47,6 +47,11 @@ void adc_ballpoint(int *goal){
 		goalCount++;
 		activateGoal=0;
 		printf("Goal Count: %d \n\r", goalCount);
+		CAN_MESSAGE msg;
+		msg.id = 0;
+		msg.data_length = 1;
+		msg.data[0] = 1;
+		can_send(&msg, 0);
 		
 	}
 	if (adcval> 4000 && activateGoal==0){
