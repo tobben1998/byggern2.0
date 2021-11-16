@@ -16,9 +16,6 @@ volatile struct{
 	int coloumn;
 } oled_position;
 
-
-void oled_animation(int page);
-void oled_animation_frame(char c, int col);
 void oled_reset(void);
 void oled_home(void);
 void oled_init(void);
@@ -37,6 +34,7 @@ void oled_center_print(char* word, int fs);
 void oled_write_data(char data);
 void oled_write_char(char c, int fs);
 char* oled_arrow(char* name);
+
 
 
 

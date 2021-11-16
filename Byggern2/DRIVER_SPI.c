@@ -10,6 +10,10 @@ void spi_init(void){
 	/* Set MOSI, SCK , Slave select output, all others become input*/
 	DDRB = (1<<DDB5)|(1<<DDB7)|(1<<DDB4);
 	
+	//vet ikke hvorfor denne mp?tte v?re output, men f?r excercise 5 til ? funke. blir masse loopingom ikke.
+	DDRD |= (1<<PD2);
+
+	
 	/* Enable SPI, Master, set clock rate fck/16 */
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 	

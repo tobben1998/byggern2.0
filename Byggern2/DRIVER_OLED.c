@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include <util/delay.h>
 #include "DRIVER_ADC.h"
 #include "DRIVER_OLED.h"
 #include "fonts.h"
@@ -46,13 +45,13 @@ void oled_clear_page(uint8_t page){
 	}
 }
 void oled_goto_page(uint8_t page){
-		if(page>7 || page<0){
-			printf("denne posisjonen eksisterer ikke");
-		}
-		else{
-			oled_wrc(0xB0+page);
-			oled_position.page = page;
-		}
+	if(page>7 || page<0){
+		printf("denne posisjonen eksisterer ikke");
+	}
+	else{
+		oled_wrc(0xB0+page);
+		oled_position.page = page;
+	}
 }
 void oled_goto_col(uint8_t col){
 	if(col<0 || col>127){
@@ -88,8 +87,8 @@ void oled_clear_screen(void){
 
 void oled_brightness(uint8_t lvl){
 	if(lvl < 0 || lvl>255){
-		lvl = lvl%255; //error correction 
-	} 
+		lvl = lvl%255; //error correction
+	}
 	oled_wrc(0x81); //Command "Set Contrast Control"
 	oled_wrc(lvl);
 }
@@ -113,29 +112,23 @@ void oled_write_char(char c, int fs){
 	
 	switch(fs){
 		case 8 :
-			for(int i=0; i<fontsize;i++){
-				oled_wrd(pgm_read_word(&font8[c][i]));
-				oled_position.coloumn++;
-			}
-			break;
+		for(int i=0; i<fontsize;i++){
+			oled_wrd(pgm_read_word(&font8[c][i]));
+			oled_position.coloumn++;
+		}
+		break;
 		case 6 :
-			for(int i=0; i<6;i++){
-				oled_wrd(pgm_read_word(&font6[c][i]));
-				oled_position.coloumn++;
-			}
-			break;
+		for(int i=0; i<6;i++){
+			oled_wrd(pgm_read_word(&font6[c][i]));
+			oled_position.coloumn++;
+		}
+		break;
 		case 4 :
-			for(int i=0; i<4;i++){
-				oled_wrd(pgm_read_word(&font4[c][i]));
-				oled_position.coloumn++;
-			}
-			break;
-		case 0 :
-			for(int i=0; i<fontsize;i++){
-				oled_wrd(pgm_read_word(&font_animation[c][i]));
-				oled_position.coloumn++;
-			}
-			break;
+		for(int i=0; i<4;i++){
+			oled_wrd(pgm_read_word(&font4[c][i]));
+			oled_position.coloumn++;
+		}
+		break;
 	}
 	
 	
@@ -164,60 +157,32 @@ char* oled_arrow(char* name){
 	return str;
 }
 
-void oled_animation_frame(char c, int col){
-	oled_goto_col(0);
-	oled_write_char(c,0);
-	_delay_ms(300);
-}
-
-void oled_animation(int page){
-	oled_goto_page(page);
-	oled_goto_col(0);
-	for( int i = 0; i < 5; i++){
-		oled_animation_frame('A',0);
-		oled_animation_frame('B',0);
-		oled_animation_frame('C',0);
-		oled_animation_frame('D',0);
-		oled_animation_frame('E',0);
-		oled_animation_frame('F',0);
-		oled_animation_frame('G',0);
-		oled_animation_frame('F',0);
-		oled_animation_frame('E',0);
-		oled_animation_frame('D',0);
-		oled_animation_frame('C',0);
-		oled_animation_frame('B',0);
-		oled_animation_frame('A',0);
-	
-	}
-
-}
-
 
 void oled_init (void){
-	      oled_wrc(0xae);        // display off
-	      oled_wrc(0xa1);        //segment remap
-	      oled_wrc(0xda);        //common pads hardware: alternative
-	      oled_wrc(0x12);
-	      oled_wrc(0xc8);        //common  output scan direction:com63~com0
-	      oled_wrc(0xa8);        //multiplex ration mode:63
-	      oled_wrc(0x3f);
-	      oled_wrc(0xd5);        //display  divide ratio/osc. freq. mode
-	      oled_wrc(0x80);
-	      oled_wrc(0x81);        //contrast control
-	      oled_wrc(0x50);
-	      oled_wrc(0xd9);        //set pre-charge period
-	      oled_wrc(0x21);
-	      oled_wrc(0x20);        //Set Memory Addressing Mode
-	      oled_wrc(0x02);
-	      oled_wrc(0xdb);        //VCOM deselect level mode
-	      oled_wrc(0x30);
-	      oled_wrc(0xad);        //master configuration
-	      oled_wrc(0x00);
-	      oled_wrc(0xa4);        //out follows RAM content
-	      oled_wrc(0xa6);        //set normal display
-	      oled_wrc(0xaf);        // display on
-		  oled_clear_screen();
-		  oled_goto_pos(0,0);
+	oled_wrc(0xae);        // display off
+	oled_wrc(0xa1);        //segment remap
+	oled_wrc(0xda);        //common pads hardware: alternative
+	oled_wrc(0x12);
+	oled_wrc(0xc8);        //common  output scan direction:com63~com0
+	oled_wrc(0xa8);        //multiplex ration mode:63
+	oled_wrc(0x3f);
+	oled_wrc(0xd5);        //display  divide ratio/osc. freq. mode
+	oled_wrc(0x80);
+	oled_wrc(0x81);        //contrast control
+	oled_wrc(0x50);
+	oled_wrc(0xd9);        //set pre-charge period
+	oled_wrc(0x21);
+	oled_wrc(0x20);        //Set Memory Addressing Mode
+	oled_wrc(0x02);
+	oled_wrc(0xdb);        //VCOM deselect level mode
+	oled_wrc(0x30);
+	oled_wrc(0xad);        //master configuration
+	oled_wrc(0x00);
+	oled_wrc(0xa4);        //out follows RAM content
+	oled_wrc(0xa6);        //set normal display
+	oled_wrc(0xaf);        // display on
+	oled_clear_screen();
+	oled_goto_pos(0,0);
 
 	
 }

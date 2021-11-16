@@ -33,14 +33,11 @@ int main(void){
 	can_init();
 	timer_init();
 	
-	//oled_animation(8);
-	
 	while(1){
 		_delay_us(1);
-		can_interrupt_handler();
-		//navigate();
+		navigate();
 		//_delay_ms(80);
-		joystick_sendPositionButtonCan(joystick_getPosition());
+		//joystick_sendPositionButtonCan(joystick_getPosition());
 		//slider_sendPositionButtonCan(slider_getPosition());
 		
 	}

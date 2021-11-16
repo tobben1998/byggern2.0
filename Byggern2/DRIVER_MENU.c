@@ -196,8 +196,8 @@ void f_calibrate(){
 	}
 	
 	//funskjon her ||||||||||||||||||||||||||||
-	//send over canbuss til node 2 at det skal bli kalibrert nå
-	_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
+	//send over canbuss til node 2 at det skal bli kalibrert n?
+	_delay_ms(1000); //juster denne opp til ?s lang tid calibreringa tar
 		
 	curr_menu=main_menu;
 	pos_child=0;

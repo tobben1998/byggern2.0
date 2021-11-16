@@ -32,7 +32,7 @@ joystick_position joystick_getPosition(void){
 	uint8_t y = adc_read(0);
 
 	if(x > x_offset){
-			position.x_pos = (int8_t)100*(x-x_offset)/(0xFF - x_offset);
+		position.x_pos = (int8_t)100*(x-x_offset)/(0xFF - x_offset);
 	}
 	else if (x < x_offset){
 		position.x_pos = 100*(x-x_offset)/(x_offset - 0);
@@ -65,7 +65,7 @@ joystick_direction joystick_getDirection(void){
 		return LEFT;
 	}
 	else if(position.x_pos > 50){
-		return RIGHT;	
+		return RIGHT;
 	}
 
 	if(position.y_pos < -50){
@@ -91,7 +91,7 @@ void joystick_sendPositionButtonCan(joystick_position pos){
 	
 	//button
 	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
-	//printf("Button value: %d \n\r", msg.data[2]);
+	printf("Button value: %d \n\r", msg.data[2]);
 	
 	
 	can_send_message(&msg);

@@ -7,7 +7,7 @@ static int seconds = 0;
 static int mseconds = 0;
 
 void timer_init(void){
-	//TCCR0 |= (1<< CS00); //Clock with no prescaling 4.9 MHz? Change to get higher period. 
+	//TCCR0 |= (1<< CS00); //Clock with no prescaling 4.9 MHz? Change to get higher period.
 	TCCR0 |= (1<<CS02);
 	
 	
