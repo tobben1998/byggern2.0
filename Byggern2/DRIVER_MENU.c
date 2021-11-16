@@ -52,11 +52,12 @@ void menu_init(){
 	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick,s_joystick);
 	Menu_new_submenu(controller_menu, "SLIDER", &f_slider,s_slider);
 	Menu_new_submenu(main_menu, "CALIBRATE", &f_calibrate,s_calibrate);
+	Menu_new_submenu(main_menu, "ANIMATION", &f_animation,s_animation);
 	
 
 	oled_reset();
 	char buffer[16];
-	for(unsigned char i=0; i<6; i++){
+	for(unsigned char i=0; i<7; i++){
 		oled_goto_page(i);
 		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i]));
 		oled_center_print(buffer,8);
@@ -199,6 +200,25 @@ void f_calibrate(){
 	//send over canbuss til node 2 at det skal bli kalibrert nå
 	_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
 		
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
+	
+	
+}
+
+void f_animation(){
+	oled_reset();
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_animation]));
+		oled_center_print(buffer,8);
+	}
+	
+	//funksjon her fjern delay
+	oled_animation(4);
+	
 	curr_menu=main_menu;
 	pos_child=0;
 	(*curr_menu->function)(main_menu->name);

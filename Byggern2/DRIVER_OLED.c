@@ -164,32 +164,64 @@ char* oled_arrow(char* name){
 	return str;
 }
 
-void oled_animation_frame(char c, int col){
-	oled_goto_col(0);
+void oled_animation_frame(char c, int col,char c1,int col1){
+	oled_goto_col(col);
 	oled_write_char(c,0);
-	_delay_ms(300);
+	oled_goto_col(col1);
+	oled_write_char(c1,0);
+	_delay_ms(50);
+	oled_goto_col(col1);
+	oled_write_char('H',0);
 }
 
 void oled_animation(int page){
 	oled_goto_page(page);
-	oled_goto_col(0);
-	for( int i = 0; i < 5; i++){
-		oled_animation_frame('A',0);
-		oled_animation_frame('B',0);
-		oled_animation_frame('C',0);
-		oled_animation_frame('D',0);
-		oled_animation_frame('E',0);
-		oled_animation_frame('F',0);
-		oled_animation_frame('G',0);
-		oled_animation_frame('F',0);
-		oled_animation_frame('E',0);
-		oled_animation_frame('D',0);
-		oled_animation_frame('C',0);
-		oled_animation_frame('B',0);
-		oled_animation_frame('A',0);
-	
-	}
+	oled_goto_col(120);
+	oled_write_char('J',0);
+	for( int i = 0; i < 3; i++){
+		oled_animation_frame('A',0,'I',2);
+		oled_animation_frame('B',0,'I',3);
+		oled_animation_frame('C',0,'I',4);
+		oled_animation_frame('D',0,'I',5);
+		oled_animation_frame('E',0,'I',6);
+		oled_animation_frame('F',0,'I',7);
+		oled_animation_frame('G',0,'I',8);
+		oled_animation_frame('F',0,'I',9);
+		oled_animation_frame('E',0,'I',10);
+		oled_animation_frame('D',0,'I',11);
+		oled_animation_frame('C',0,'I',12);
+		oled_animation_frame('B',0,'I',13);
+		oled_animation_frame('A',0,'I',14);
+		
+		for(int i=15; i<118; i++){
+			oled_goto_col(i);
+			oled_write_char('I',0);
+			_delay_ms(50);
+			oled_goto_col(i);
+			oled_write_char('H',0);
+		}
 
+		oled_animation_frame('J',120,'I',118);
+		oled_animation_frame('K',120,'I',117);
+		oled_animation_frame('L',120,'I',116);
+		oled_animation_frame('M',120,'I',115);
+		oled_animation_frame('N',120,'I',114);
+		oled_animation_frame('O',120,'I',113);
+		oled_animation_frame('P',120,'I',112);
+		oled_animation_frame('O',120,'I',111);
+		oled_animation_frame('N',120,'I',110);
+		oled_animation_frame('M',120,'I',109);
+		oled_animation_frame('L',120,'I',108);
+		oled_animation_frame('K',120,'I',107);
+		oled_animation_frame('J',120,'I',106);
+		for(int i=105; i>1; i--){
+			oled_goto_col(i);
+			oled_write_char('I',0);
+			_delay_ms(50);
+			oled_goto_col(i);
+			oled_write_char('H',0);
+		}
+	}
 }
 
 

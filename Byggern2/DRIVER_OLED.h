@@ -18,7 +18,7 @@ volatile struct{
 
 
 void oled_animation(int page);
-void oled_animation_frame(char c, int col);
+void oled_animation_frame(char c, int col,char c1,int col1);
 void oled_reset(void);
 void oled_home(void);
 void oled_init(void);

@@ -9,7 +9,7 @@ const char main_3[] PROGMEM="1PLAYER";
 const char main_4[] PROGMEM="2PLAYER";
 const char main_5[] PROGMEM="CONTROLLER";
 const char main_6[] PROGMEM="CALIBRATE";
-const char main_7[] PROGMEM="";
+const char main_7[] PROGMEM="ANIMATION";
 const char main_8[] PROGMEM="";
 
 const char mainP_1[] PROGMEM="";
@@ -18,7 +18,7 @@ const char mainP_3[] PROGMEM=">1PLAYER<";
 const char mainP_4[] PROGMEM=">2PLAYER<";
 const char mainP_5[] PROGMEM=">CONTROLLER<";
 const char mainP_6[] PROGMEM=">CALIBRATE<";
-const char mainP_7[] PROGMEM="";
+const char mainP_7[] PROGMEM=">ANIMATION<";
 const char mainP_8[] PROGMEM="";
 
 const char p1_1[] PROGMEM="";
@@ -31,8 +31,8 @@ const char p1_7[] PROGMEM="";
 const char p1_8[] PROGMEM="";
 
 const char p2_1[] PROGMEM="";
-const char p2_2[] PROGMEM="INSTRUCTIONS";
-const char p2_3[] PROGMEM="HERE";
+const char p2_2[] PROGMEM="COMING";
+const char p2_3[] PROGMEM="SOON";
 const char p2_4[] PROGMEM="";
 const char p2_5[] PROGMEM="";
 const char p2_6[] PROGMEM="";
@@ -84,6 +84,16 @@ const char calibrate_6[] PROGMEM="THE CONTROLLER";
 const char calibrate_7[] PROGMEM="";
 const char calibrate_8[] PROGMEM="";
 
+const char animation_1[] PROGMEM="ANIMATION";
+const char animation_2[] PROGMEM="";
+const char animation_3[] PROGMEM="";
+const char animation_4[] PROGMEM="";
+const char animation_5[] PROGMEM="";
+const char animation_6[] PROGMEM="";
+const char animation_7[] PROGMEM="";
+const char animation_8[] PROGMEM="";
+
+
 
 
 #define s_page 8 //used to move to by one page. each page is size 8
@@ -97,6 +107,7 @@ const char calibrate_8[] PROGMEM="";
 #define s_joystick 48
 #define s_slider 56
 #define s_calibrate 64
+#define s_animation 72
 
 
 
@@ -109,7 +120,8 @@ PGM_P const table[] PROGMEM={
 	controllerP_1,controllerP_2,controllerP_3,controllerP_4,controllerP_5,controllerP_6,controllerP_7,controllerP_8,
 	joystick_1,joystick_2,joystick_3,joystick_4,joystick_5,joystick_6,joystick_7,joystick_8,
 	slider_1,slider_2,slider_3,slider_4,slider_5,slider_6,slider_7,slider_8,
-	calibrate_1,calibrate_2,calibrate_3,calibrate_4,calibrate_5,calibrate_6,calibrate_7,calibrate_8
+	calibrate_1,calibrate_2,calibrate_3,calibrate_4,calibrate_5,calibrate_6,calibrate_7,calibrate_8,
+	animation_1,animation_2,animation_3,animation_4,animation_5,animation_6,animation_7,animation_8
 
 };
 

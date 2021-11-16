@@ -30,6 +30,7 @@ void f_2player();
 void f_controller();
 void f_joystick();
 void f_slider();
+void f_animation();
 menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*), int oledOffset);
 
 void navigate();
