@@ -140,7 +140,7 @@ void can_interrupt_handler(void){
 }
 
 
-
+/*
 
 ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2 
 	CAN_flag = 1;
@@ -160,7 +160,7 @@ ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2
 }
 
 
-
+*/
 
 
 

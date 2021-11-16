@@ -37,10 +37,10 @@ int main(void){
 	
 	while(1){
 		_delay_us(1);
-		can_interrupt_handler();
-		//navigate();
+		//can_interrupt_handler();
+		navigate();
 		//_delay_ms(80);
-		joystick_sendPositionButtonCan(joystick_getPosition());
+		//joystick_sendPositionButtonCan(joystick_getPosition());
 		//slider_sendPositionButtonCan(slider_getPosition());
 		
 	}
