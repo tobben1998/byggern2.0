@@ -112,15 +112,16 @@ void f_1player(){
 	}
 	
 	while(!(PINB & (1<<0))){ //
-		printf("hei");
+		printf("--");
 	}
 		can_message msg;
 		msg.id=1;
 		msg.length=3;
 		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
-		
-		printf("%d",ctrl);
+		uint8_t ctrl = xmem_read(0x800); //Leser variabelen fra SRAM. Viktig at adressen stemmer med der man skrev til.
+		printf("\n\r%d \n\r",ctrl);
+		//printf("%d",ctrl);
 		//start timer
 		timer_init();		
 	switch(ctrl){
@@ -210,6 +211,7 @@ void f_joystick(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = JOYSTICK;
+	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	printf("%d",ctrl);
 	_delay_ms(1000);
 	
@@ -228,6 +230,7 @@ void f_slider(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = SLIDER;
+	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	printf("%d",ctrl);
 	_delay_ms(1000);
 	

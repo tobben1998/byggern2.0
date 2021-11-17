@@ -34,6 +34,8 @@ int main(void){
 	//timer_init();
 	
 	//oled_animation(8);
+	//SRAM_test();	
+	
 	
 	while(1){
 		_delay_us(1);
@@ -42,6 +44,7 @@ int main(void){
 		//_delay_ms(80);
 		//joystick_sendPositionButtonCan(joystick_getPosition());
 		//slider_sendPositionButtonCan(slider_getPosition());
+		
 		
 	}
 	
