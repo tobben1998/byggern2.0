@@ -21,19 +21,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   8 .debug_abbrev 00001a62  00000000  00000000  0002a57c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    000016c5  00000000  00000000  0002bfde  2**0
+  9 .debug_loc    000016c0  00000000  00000000  0002bfde  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_aranges 00000280  00000000  00000000  0002d6a3  2**0
+ 10 .debug_aranges 00000280  00000000  00000000  0002d69e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000220  00000000  00000000  0002d923  2**0
+ 11 .debug_ranges 00000220  00000000  00000000  0002d91e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  000137f3  00000000  00000000  0002db43  2**0
+ 12 .debug_macro  000137f3  00000000  00000000  0002db3e  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   00005e8e  00000000  00000000  00041336  2**0
+ 13 .debug_line   00005e8e  00000000  00000000  00041331  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00054e7f  00000000  00000000  000471c4  2**0
+ 14 .debug_str    00054e7f  00000000  00000000  000471bf  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  0000081c  00000000  00000000  0009c044  2**2
+ 15 .debug_frame  0000081c  00000000  00000000  0009c040  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -308,89 +308,40 @@ __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
    8036c:	400b4000 	.word	0x400b4000
 
 00080370 <CAN0_Handler>:
- * \param void
- *
- * \retval 
- */
-void CAN0_Handler( void )
-{
    80370:	b530      	push	{r4, r5, lr}
    80372:	b085      	sub	sp, #20
-	if(DEBUG_INTERRUPT)printf("CAN0 interrupt\n\r");
-	char can_sr = CAN0->CAN_SR; 
    80374:	4b1c      	ldr	r3, [pc, #112]	; (803e8 <CAN0_Handler+0x78>)
    80376:	691c      	ldr	r4, [r3, #16]
-	
-	//RX interrupt
-	if(can_sr & (CAN_SR_MB1 | CAN_SR_MB2) )//Only mailbox 1 and 2 specified for receiving
    80378:	f014 0f06 	tst.w	r4, #6
    8037c:	d01d      	beq.n	803ba <CAN0_Handler+0x4a>
-	{
-		CAN_MESSAGE message;
-		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
    8037e:	f014 0f02 	tst.w	r4, #2
    80382:	d127      	bne.n	803d4 <CAN0_Handler+0x64>
-		{
-			can_receive(&message, 1);
-
-		}
-		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
    80384:	f014 0f04 	tst.w	r4, #4
    80388:	d029      	beq.n	803de <CAN0_Handler+0x6e>
-		
-		{
-			can_receive(&message, 2);
    8038a:	2102      	movs	r1, #2
    8038c:	a801      	add	r0, sp, #4
    8038e:	4b17      	ldr	r3, [pc, #92]	; (803ec <CAN0_Handler+0x7c>)
    80390:	4798      	blx	r3
-			printf("CAN0 message arrived in non-used mailbox\n\r");
-		}
-
-		if(DEBUG_INTERRUPT)printf("message id: %d\n\r", message.id);
-		if(DEBUG_INTERRUPT)printf("message data length: %d\n\r", message.data_length);
-		for (int i = 0; i < message.data_length; i++)
    80392:	f89d 2006 	ldrb.w	r2, [sp, #6]
    80396:	b11a      	cbz	r2, 803a0 <CAN0_Handler+0x30>
    80398:	2300      	movs	r3, #0
    8039a:	3301      	adds	r3, #1
    8039c:	4293      	cmp	r3, r2
    8039e:	d1fc      	bne.n	8039a <CAN0_Handler+0x2a>
-			if(DEBUG_INTERRUPT)printf("%d ", message.data[i]);
-		}
-		if(DEBUG_INTERRUPT)printf("\n\r");
-		
-		//////////////////////////////////////////////
-		if (message.id=1){//joystick pos and button
    803a0:	ad04      	add	r5, sp, #16
    803a2:	2301      	movs	r3, #1
    803a4:	f825 3d0c 	strh.w	r3, [r5, #-12]!
-			pwm_update_duty_cycle(&message);
    803a8:	4628      	mov	r0, r5
    803aa:	4b11      	ldr	r3, [pc, #68]	; (803f0 <CAN0_Handler+0x80>)
    803ac:	4798      	blx	r3
-			//motor_dac_send(&message);
-			motor_solenoid(&message);
    803ae:	4628      	mov	r0, r5
    803b0:	4b10      	ldr	r3, [pc, #64]	; (803f4 <CAN0_Handler+0x84>)
    803b2:	4798      	blx	r3
-			PID_update_refPos(&message);
    803b4:	4628      	mov	r0, r5
    803b6:	4b10      	ldr	r3, [pc, #64]	; (803f8 <CAN0_Handler+0x88>)
    803b8:	4798      	blx	r3
-		*/
-
-	}
-
-	
-	if(can_sr & CAN_SR_MB0)
    803ba:	f014 0f01 	tst.w	r4, #1
    803be:	d002      	beq.n	803c6 <CAN0_Handler+0x56>
-	{
-		if(DEBUG_INTERRUPT) printf("CAN0 MB0 ready to send \n\r");
-		
-	//Disable interrupt
-		CAN0->CAN_IDR = CAN_IER_MB0;
    803c0:	2201      	movs	r2, #1
    803c2:	4b09      	ldr	r3, [pc, #36]	; (803e8 <CAN0_Handler+0x78>)
    803c4:	609a      	str	r2, [r3, #8]
@@ -403,21 +354,13 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    803c6:	f44f 6200 	mov.w	r2, #2048	; 0x800
    803ca:	4b0c      	ldr	r3, [pc, #48]	; (803fc <CAN0_Handler+0x8c>)
    803cc:	f8c3 2184 	str.w	r2, [r3, #388]	; 0x184
-
-	}
-	
-	NVIC_ClearPendingIRQ(ID_CAN0);
-	//sei();*/
-}
    803d0:	b005      	add	sp, #20
    803d2:	bd30      	pop	{r4, r5, pc}
-			can_receive(&message, 1);
    803d4:	2101      	movs	r1, #1
    803d6:	a801      	add	r0, sp, #4
    803d8:	4b04      	ldr	r3, [pc, #16]	; (803ec <CAN0_Handler+0x7c>)
    803da:	4798      	blx	r3
    803dc:	e7d9      	b.n	80392 <CAN0_Handler+0x22>
-			printf("CAN0 message arrived in non-used mailbox\n\r");
    803de:	4808      	ldr	r0, [pc, #32]	; (80400 <CAN0_Handler+0x90>)
    803e0:	4b08      	ldr	r3, [pc, #32]	; (80404 <CAN0_Handler+0x94>)
    803e2:	4798      	blx	r3
@@ -433,24 +376,15 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80404:	00080d95 	.word	0x00080d95
 
 00080408 <Dummy_Handler>:
-
-/**
- * \brief Default interrupt handler for unused IRQs.
- */
-void Dummy_Handler(void)
-{
    80408:	e7fe      	b.n	80408 <Dummy_Handler>
 	...
 
 0008040c <Reset_Handler>:
-{
    8040c:	b508      	push	{r3, lr}
-        if (pSrc != pDest) {
    8040e:	4b18      	ldr	r3, [pc, #96]	; (80470 <Reset_Handler+0x64>)
    80410:	4a18      	ldr	r2, [pc, #96]	; (80474 <Reset_Handler+0x68>)
    80412:	429a      	cmp	r2, r3
    80414:	d010      	beq.n	80438 <Reset_Handler+0x2c>
-                for (; pDest < &_erelocate;) {
    80416:	4b18      	ldr	r3, [pc, #96]	; (80478 <Reset_Handler+0x6c>)
    80418:	4a15      	ldr	r2, [pc, #84]	; (80470 <Reset_Handler+0x64>)
    8041a:	429a      	cmp	r2, r3
@@ -461,13 +395,10 @@ void Dummy_Handler(void)
    80426:	3304      	adds	r3, #4
    80428:	4413      	add	r3, r2
    8042a:	4912      	ldr	r1, [pc, #72]	; (80474 <Reset_Handler+0x68>)
-                        *pDest++ = *pSrc++;
    8042c:	f851 0b04 	ldr.w	r0, [r1], #4
    80430:	f842 0b04 	str.w	r0, [r2], #4
-                for (; pDest < &_erelocate;) {
    80434:	429a      	cmp	r2, r3
    80436:	d1f9      	bne.n	8042c <Reset_Handler+0x20>
-        for (pDest = &_szero; pDest < &_ezero;) {
    80438:	4b10      	ldr	r3, [pc, #64]	; (8047c <Reset_Handler+0x70>)
    8043a:	4a11      	ldr	r2, [pc, #68]	; (80480 <Reset_Handler+0x74>)
    8043c:	429a      	cmp	r2, r3
@@ -477,22 +408,17 @@ void Dummy_Handler(void)
    80444:	f023 0303 	bic.w	r3, r3, #3
    80448:	3304      	adds	r3, #4
    8044a:	4413      	add	r3, r2
-                *pDest++ = 0;
    8044c:	2100      	movs	r1, #0
    8044e:	f842 1b04 	str.w	r1, [r2], #4
-        for (pDest = &_szero; pDest < &_ezero;) {
    80452:	4293      	cmp	r3, r2
    80454:	d1fb      	bne.n	8044e <Reset_Handler+0x42>
-        SCB->VTOR = ((uint32_t) pSrc & SCB_VTOR_TBLOFF_Msk);
    80456:	4b0b      	ldr	r3, [pc, #44]	; (80484 <Reset_Handler+0x78>)
    80458:	f023 4360 	bic.w	r3, r3, #3758096384	; 0xe0000000
    8045c:	f023 037f 	bic.w	r3, r3, #127	; 0x7f
    80460:	4a09      	ldr	r2, [pc, #36]	; (80488 <Reset_Handler+0x7c>)
    80462:	6093      	str	r3, [r2, #8]
-        __libc_init_array();
    80464:	4b09      	ldr	r3, [pc, #36]	; (8048c <Reset_Handler+0x80>)
    80466:	4798      	blx	r3
-        main();
    80468:	4b09      	ldr	r3, [pc, #36]	; (80490 <Reset_Handler+0x84>)
    8046a:	4798      	blx	r3
    8046c:	e7fe      	b.n	8046c <Reset_Handler+0x60>
@@ -508,105 +434,58 @@ void Dummy_Handler(void)
    80490:	00080a15 	.word	0x00080a15
 
 00080494 <SystemInit>:
- * Initialize the System and update the SystemFrequency variable.
- */
-void SystemInit( void )
-{
-  /* Set FWS according to SYS_BOARD_MCKR configuration */
-  EFC0->EEFC_FMR = EEFC_FMR_FWS(4);
    80494:	f44f 6380 	mov.w	r3, #1024	; 0x400
    80498:	4a20      	ldr	r2, [pc, #128]	; (8051c <SystemInit+0x88>)
    8049a:	6013      	str	r3, [r2, #0]
-  EFC1->EEFC_FMR = EEFC_FMR_FWS(4);
    8049c:	f502 7200 	add.w	r2, r2, #512	; 0x200
    804a0:	6013      	str	r3, [r2, #0]
-
-  /* Initialize main oscillator */
-  if ( !(PMC->CKGR_MOR & CKGR_MOR_MOSCSEL) )
    804a2:	4b1f      	ldr	r3, [pc, #124]	; (80520 <SystemInit+0x8c>)
    804a4:	6a1b      	ldr	r3, [r3, #32]
    804a6:	f013 7f80 	tst.w	r3, #16777216	; 0x1000000
    804aa:	d107      	bne.n	804bc <SystemInit+0x28>
-  {
-    PMC->CKGR_MOR = CKGR_MOR_KEY_PASSWD | SYS_BOARD_OSCOUNT | CKGR_MOR_MOSCRCEN | CKGR_MOR_MOSCXTEN;
    804ac:	4a1d      	ldr	r2, [pc, #116]	; (80524 <SystemInit+0x90>)
    804ae:	4b1c      	ldr	r3, [pc, #112]	; (80520 <SystemInit+0x8c>)
    804b0:	621a      	str	r2, [r3, #32]
-    while ( !(PMC->PMC_SR & PMC_SR_MOSCXTS) )
    804b2:	461a      	mov	r2, r3
    804b4:	6e93      	ldr	r3, [r2, #104]	; 0x68
    804b6:	f013 0f01 	tst.w	r3, #1
    804ba:	d0fb      	beq.n	804b4 <SystemInit+0x20>
-    {
-    }
-  }
-
-  /* Switch to 3-20MHz Xtal oscillator */
-  PMC->CKGR_MOR = CKGR_MOR_KEY_PASSWD | SYS_BOARD_OSCOUNT | CKGR_MOR_MOSCRCEN | CKGR_MOR_MOSCXTEN | CKGR_MOR_MOSCSEL;
    804bc:	4a1a      	ldr	r2, [pc, #104]	; (80528 <SystemInit+0x94>)
    804be:	4b18      	ldr	r3, [pc, #96]	; (80520 <SystemInit+0x8c>)
    804c0:	621a      	str	r2, [r3, #32]
-
-  while ( !(PMC->PMC_SR & PMC_SR_MOSCSELS) )
    804c2:	461a      	mov	r2, r3
    804c4:	6e93      	ldr	r3, [r2, #104]	; 0x68
    804c6:	f413 3f80 	tst.w	r3, #65536	; 0x10000
    804ca:	d0fb      	beq.n	804c4 <SystemInit+0x30>
-  {
-  }
- 	PMC->PMC_MCKR = (PMC->PMC_MCKR & ~(uint32_t)PMC_MCKR_CSS_Msk) | PMC_MCKR_CSS_MAIN_CLK;
    804cc:	4a14      	ldr	r2, [pc, #80]	; (80520 <SystemInit+0x8c>)
    804ce:	6b13      	ldr	r3, [r2, #48]	; 0x30
    804d0:	f023 0303 	bic.w	r3, r3, #3
    804d4:	f043 0301 	orr.w	r3, r3, #1
    804d8:	6313      	str	r3, [r2, #48]	; 0x30
-  while (!(PMC->PMC_SR & PMC_SR_MCKRDY))
    804da:	6e93      	ldr	r3, [r2, #104]	; 0x68
    804dc:	f013 0f08 	tst.w	r3, #8
    804e0:	d0fb      	beq.n	804da <SystemInit+0x46>
-  {
-  }
-
-  /* Initialize PLLA */
-  PMC->CKGR_PLLAR = SYS_BOARD_PLLAR;
    804e2:	4a12      	ldr	r2, [pc, #72]	; (8052c <SystemInit+0x98>)
    804e4:	4b0e      	ldr	r3, [pc, #56]	; (80520 <SystemInit+0x8c>)
    804e6:	629a      	str	r2, [r3, #40]	; 0x28
-  while ( !(PMC->PMC_SR & PMC_SR_LOCKA) )
    804e8:	461a      	mov	r2, r3
    804ea:	6e93      	ldr	r3, [r2, #104]	; 0x68
    804ec:	f013 0f02 	tst.w	r3, #2
    804f0:	d0fb      	beq.n	804ea <SystemInit+0x56>
-  {
-  }
-
-  /* Switch to main clock */
-  PMC->PMC_MCKR = (SYS_BOARD_MCKR & ~PMC_MCKR_CSS_Msk) | PMC_MCKR_CSS_MAIN_CLK;
    804f2:	2211      	movs	r2, #17
    804f4:	4b0a      	ldr	r3, [pc, #40]	; (80520 <SystemInit+0x8c>)
    804f6:	631a      	str	r2, [r3, #48]	; 0x30
-  while ( !(PMC->PMC_SR & PMC_SR_MCKRDY) )
    804f8:	461a      	mov	r2, r3
    804fa:	6e93      	ldr	r3, [r2, #104]	; 0x68
    804fc:	f013 0f08 	tst.w	r3, #8
    80500:	d0fb      	beq.n	804fa <SystemInit+0x66>
-  {
-  }
-
-  /* Switch to PLLA */
-  PMC->PMC_MCKR = SYS_BOARD_MCKR;
    80502:	2212      	movs	r2, #18
    80504:	4b06      	ldr	r3, [pc, #24]	; (80520 <SystemInit+0x8c>)
    80506:	631a      	str	r2, [r3, #48]	; 0x30
-  while ( !(PMC->PMC_SR & PMC_SR_MCKRDY) )
    80508:	461a      	mov	r2, r3
    8050a:	6e93      	ldr	r3, [r2, #104]	; 0x68
    8050c:	f013 0f08 	tst.w	r3, #8
    80510:	d0fb      	beq.n	8050a <SystemInit+0x76>
-  {
-  }
-
-  SystemCoreClock = CHIP_FREQ_CPU_MAX;
    80512:	4a07      	ldr	r2, [pc, #28]	; (80530 <SystemInit+0x9c>)
    80514:	4b07      	ldr	r3, [pc, #28]	; (80534 <SystemInit+0xa0>)
    80516:	601a      	str	r2, [r3, #0]
@@ -621,122 +500,78 @@ void SystemInit( void )
    80534:	20000000 	.word	0x20000000
 
 00080538 <motor_init>:
-PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
-PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
-PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register */
-
-
-void motor_init(void){
    80538:	b410      	push	{r4}
-	//enable PIO registers
-	PIOB->PIO_PER |= PIO_PER_P27; //pwm13
    8053a:	4930      	ldr	r1, [pc, #192]	; (805fc <motor_init+0xc4>)
    8053c:	680b      	ldr	r3, [r1, #0]
    8053e:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
    80542:	600b      	str	r3, [r1, #0]
-	//MJ1
-	PIOD->PIO_PER |= PIO_PER_P0; //!OE
    80544:	4b2e      	ldr	r3, [pc, #184]	; (80600 <motor_init+0xc8>)
    80546:	681a      	ldr	r2, [r3, #0]
    80548:	f042 0201 	orr.w	r2, r2, #1
    8054c:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P1; //!RST
    8054e:	681a      	ldr	r2, [r3, #0]
    80550:	f042 0202 	orr.w	r2, r2, #2
    80554:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P2; //SEL
    80556:	681a      	ldr	r2, [r3, #0]
    80558:	f042 0204 	orr.w	r2, r2, #4
    8055c:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P9; //EN
    8055e:	681a      	ldr	r2, [r3, #0]
    80560:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    80564:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P10;//DIR
    80566:	681a      	ldr	r2, [r3, #0]
    80568:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    8056c:	601a      	str	r2, [r3, #0]
-	//MJ2
-	PIOC->PIO_PER |= PIO_PER_P1; //D0
    8056e:	4a25      	ldr	r2, [pc, #148]	; (80604 <motor_init+0xcc>)
    80570:	6810      	ldr	r0, [r2, #0]
    80572:	f040 0002 	orr.w	r0, r0, #2
    80576:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P2; //D1
    80578:	6810      	ldr	r0, [r2, #0]
    8057a:	f040 0004 	orr.w	r0, r0, #4
    8057e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P3; //D2
    80580:	6810      	ldr	r0, [r2, #0]
    80582:	f040 0008 	orr.w	r0, r0, #8
    80586:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P4; //D3
    80588:	6810      	ldr	r0, [r2, #0]
    8058a:	f040 0010 	orr.w	r0, r0, #16
    8058e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P5; //D4
    80590:	6810      	ldr	r0, [r2, #0]
    80592:	f040 0020 	orr.w	r0, r0, #32
    80596:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P6; //D5
    80598:	6810      	ldr	r0, [r2, #0]
    8059a:	f040 0040 	orr.w	r0, r0, #64	; 0x40
    8059e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P7; //D6
    805a0:	6810      	ldr	r0, [r2, #0]
    805a2:	f040 0080 	orr.w	r0, r0, #128	; 0x80
    805a6:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P8; //D7
    805a8:	6810      	ldr	r0, [r2, #0]
    805aa:	f440 7080 	orr.w	r0, r0, #256	; 0x100
    805ae:	6010      	str	r0, [r2, #0]
-	
-	//Enable clock to PIOC peripheral, in order to be able to read pin input 
-	PMC->PMC_PCER0 |= (1 << 13);
    805b0:	4c15      	ldr	r4, [pc, #84]	; (80608 <motor_init+0xd0>)
    805b2:	6920      	ldr	r0, [r4, #16]
    805b4:	f440 5000 	orr.w	r0, r0, #8192	; 0x2000
    805b8:	6120      	str	r0, [r4, #16]
-	
-	//enable input of MJ2 pins
-	PIOC->PIO_ODR |= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
    805ba:	6950      	ldr	r0, [r2, #20]
    805bc:	f440 70ff 	orr.w	r0, r0, #510	; 0x1fe
    805c0:	6150      	str	r0, [r2, #20]
-	
-	//enable output of MJ1 pins
-	PIOB->PIO_OER |= PIO_OER_P27;
    805c2:	690a      	ldr	r2, [r1, #16]
    805c4:	f042 6200 	orr.w	r2, r2, #134217728	; 0x8000000
    805c8:	610a      	str	r2, [r1, #16]
-	PIOD->PIO_OER |= (PIO_OER_P0 | PIO_OER_P1 | PIO_OER_P2 | PIO_OER_P9 | PIO_OER_P10);
    805ca:	691a      	ldr	r2, [r3, #16]
    805cc:	f442 62c0 	orr.w	r2, r2, #1536	; 0x600
    805d0:	f042 0207 	orr.w	r2, r2, #7
    805d4:	611a      	str	r2, [r3, #16]
-	
-	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN to enable motor
    805d6:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805d8:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    805dc:	631a      	str	r2, [r3, #48]	; 0x30
-	PIOD->PIO_SODR |= PIO_SODR_P10; //set direction. USE CODR for the other direction
    805de:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805e0:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    805e4:	631a      	str	r2, [r3, #48]	; 0x30
-	PIOD->PIO_CODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    805e6:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    805e8:	f042 0201 	orr.w	r2, r2, #1
    805ec:	635a      	str	r2, [r3, #52]	; 0x34
-	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
    805ee:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805f0:	f042 0202 	orr.w	r2, r2, #2
    805f4:	631a      	str	r2, [r3, #48]	; 0x30
-	
-	
-	//mangler noe her?
-	//punkt 3.2 in user guide for dc motor interface. 
-	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output voltage to the motor		
-}
    805f6:	bc10      	pop	{r4}
    805f8:	4770      	bx	lr
    805fa:	bf00      	nop
@@ -746,25 +581,16 @@ void motor_init(void){
    80608:	400e0600 	.word	0x400e0600
 
 0008060c <motor_dac_init>:
-	//REG_PWM_CMR6 |= (PWM_CMR_CALG); eksemple pwm
-	//enable clock. pheriperhal
-	//acess DACC_MR DACC_CHER and DACC_CDR
-	
-	
-	REG_PMC_PCER1 |= PMC_PCER1_PID38; //enable clock
    8060c:	4a08      	ldr	r2, [pc, #32]	; (80630 <motor_dac_init+0x24>)
    8060e:	6813      	ldr	r3, [r2, #0]
    80610:	f043 0340 	orr.w	r3, r3, #64	; 0x40
    80614:	6013      	str	r3, [r2, #0]
-	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //freerunning mode
    80616:	4b07      	ldr	r3, [pc, #28]	; (80634 <motor_dac_init+0x28>)
    80618:	681a      	ldr	r2, [r3, #0]
    8061a:	601a      	str	r2, [r3, #0]
-	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //velg kanal 1
    8061c:	681a      	ldr	r2, [r3, #0]
    8061e:	f442 3280 	orr.w	r2, r2, #65536	; 0x10000
    80622:	601a      	str	r2, [r3, #0]
-	REG_DACC_CHER |= DACC_CHER_CH1;
    80624:	4a04      	ldr	r2, [pc, #16]	; (80638 <motor_dac_init+0x2c>)
    80626:	6813      	ldr	r3, [r2, #0]
    80628:	f043 0302 	orr.w	r3, r3, #2
@@ -775,24 +601,13 @@ void motor_init(void){
    80638:	400c8010 	.word	0x400c8010
 
 0008063c <motor_solenoid>:
-	}
-	REG_DACC_CDR=tall;
-}
-
-void motor_solenoid(CAN_MESSAGE *msg){
-	if(msg->data[2]){
    8063c:	7943      	ldrb	r3, [r0, #5]
    8063e:	b92b      	cbnz	r3, 8064c <motor_solenoid+0x10>
-	PIOB->PIO_CODR |= PIO_CODR_P27; //Pinne 13 på shield? Lurer på om må bytte sånn at knappetrykket gir 0 V (aktivt lav)
-	}
-	else{
-	PIOB->PIO_SODR |= PIO_SODR_P27;		
    80640:	4a05      	ldr	r2, [pc, #20]	; (80658 <motor_solenoid+0x1c>)
    80642:	6b13      	ldr	r3, [r2, #48]	; 0x30
    80644:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
    80648:	6313      	str	r3, [r2, #48]	; 0x30
    8064a:	4770      	bx	lr
-	PIOB->PIO_CODR |= PIO_CODR_P27; //Pinne 13 på shield? Lurer på om må bytte sånn at knappetrykket gir 0 V (aktivt lav)
    8064c:	4a02      	ldr	r2, [pc, #8]	; (80658 <motor_solenoid+0x1c>)
    8064e:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80650:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
@@ -801,20 +616,13 @@ void motor_solenoid(CAN_MESSAGE *msg){
    80658:	400e1000 	.word	0x400e1000
 
 0008065c <motor_encoder_tglreset>:
-	}
-}
-
-void motor_encoder_tglreset(void){
-	PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
    8065c:	4a07      	ldr	r2, [pc, #28]	; (8067c <motor_encoder_tglreset+0x20>)
    8065e:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80660:	f043 0302 	orr.w	r3, r3, #2
    80664:	6353      	str	r3, [r2, #52]	; 0x34
    80666:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
-	for(int i=0; i<2000; i++);		//Necessary for the motorbox to change value of 16-bit register
    8066a:	3b01      	subs	r3, #1
    8066c:	d1fd      	bne.n	8066a <motor_encoder_tglreset+0xe>
-	PIOD->PIO_SODR |= PIO_SODR_P1;
    8066e:	4a03      	ldr	r2, [pc, #12]	; (8067c <motor_encoder_tglreset+0x20>)
    80670:	6b13      	ldr	r3, [r2, #48]	; 0x30
    80672:	f043 0302 	orr.w	r3, r3, #2
@@ -824,51 +632,38 @@ void motor_encoder_tglreset(void){
    8067c:	400e1400 	.word	0x400e1400
 
 00080680 <motor_read_encoder>:
-int16_t motor_read_encoder(int doReset){
    80680:	b538      	push	{r3, r4, r5, lr}
-	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
    80682:	4b14      	ldr	r3, [pc, #80]	; (806d4 <motor_read_encoder+0x54>)
    80684:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    80686:	f042 0201 	orr.w	r2, r2, #1
    8068a:	635a      	str	r2, [r3, #52]	; 0x34
-	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
    8068c:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    8068e:	f042 0204 	orr.w	r2, r2, #4
    80692:	635a      	str	r2, [r3, #52]	; 0x34
    80694:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
-	for(int i =0; i<2000; i++);		//waiting..
    80698:	3b01      	subs	r3, #1
    8069a:	d1fd      	bne.n	80698 <motor_read_encoder+0x18>
-	int8_t MSB = PIOC->PIO_PDSR;
    8069c:	4b0e      	ldr	r3, [pc, #56]	; (806d8 <motor_read_encoder+0x58>)
    8069e:	6bdd      	ldr	r5, [r3, #60]	; 0x3c
    806a0:	b26d      	sxtb	r5, r5
-	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
    806a2:	4a0c      	ldr	r2, [pc, #48]	; (806d4 <motor_read_encoder+0x54>)
    806a4:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806a6:	f043 0304 	orr.w	r3, r3, #4
    806aa:	6313      	str	r3, [r2, #48]	; 0x30
    806ac:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
-	for(int i =0; i<2000; i++);		//waiting..
    806b0:	3b01      	subs	r3, #1
    806b2:	d1fd      	bne.n	806b0 <motor_read_encoder+0x30>
-	int8_t LSB = PIOC->PIO_PDSR;
    806b4:	4b08      	ldr	r3, [pc, #32]	; (806d8 <motor_read_encoder+0x58>)
    806b6:	6bdc      	ldr	r4, [r3, #60]	; 0x3c
    806b8:	b264      	sxtb	r4, r4
-	if(doReset){
    806ba:	b940      	cbnz	r0, 806ce <motor_read_encoder+0x4e>
-	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    806bc:	4a05      	ldr	r2, [pc, #20]	; (806d4 <motor_read_encoder+0x54>)
    806be:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806c0:	f043 0301 	orr.w	r3, r3, #1
    806c4:	6313      	str	r3, [r2, #48]	; 0x30
-	int16_t result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
    806c6:	b2e0      	uxtb	r0, r4
-}
    806c8:	ea40 2005 	orr.w	r0, r0, r5, lsl #8
    806cc:	bd38      	pop	{r3, r4, r5, pc}
-		motor_encoder_tglreset();
    806ce:	4b03      	ldr	r3, [pc, #12]	; (806dc <motor_read_encoder+0x5c>)
    806d0:	4798      	blx	r3
    806d2:	e7f3      	b.n	806bc <motor_read_encoder+0x3c>
@@ -877,32 +672,18 @@ int16_t motor_read_encoder(int doReset){
    806dc:	0008065d 	.word	0x0008065d
 
 000806e0 <motor_run>:
-	motor_encoder_tglreset();
-	printf("Calibration finished, position value: %d", motor_read_encoder(0));
-}
-
-void motor_run(int dirLeft, int speed){
-	if(dirLeft){
    806e0:	b170      	cbz	r0, 80700 <motor_run+0x20>
-		PIOD->PIO_SODR |= PIO_SODR_P10; //DIR left
    806e2:	4a0a      	ldr	r2, [pc, #40]	; (8070c <motor_run+0x2c>)
    806e4:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806e6:	f443 6380 	orr.w	r3, r3, #1024	; 0x400
    806ea:	6313      	str	r3, [r2, #48]	; 0x30
    806ec:	ea21 71e1 	bic.w	r1, r1, r1, asr #31
-		speed = threshold;
-	}
-	else if( speed < 0){
-		speed = 0;
-	}
-	REG_DACC_CDR=speed;
    806f0:	f5b1 7f7a 	cmp.w	r1, #1000	; 0x3e8
    806f4:	bfa8      	it	ge
    806f6:	f44f 717a 	movge.w	r1, #1000	; 0x3e8
    806fa:	4b05      	ldr	r3, [pc, #20]	; (80710 <motor_run+0x30>)
    806fc:	6019      	str	r1, [r3, #0]
    806fe:	4770      	bx	lr
-		PIOD->PIO_CODR |= PIO_CODR_P10; //DIR right
    80700:	4a02      	ldr	r2, [pc, #8]	; (8070c <motor_run+0x2c>)
    80702:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80704:	f443 6380 	orr.w	r3, r3, #1024	; 0x400
@@ -912,23 +693,18 @@ void motor_run(int dirLeft, int speed){
    80710:	400c8020 	.word	0x400c8020
 
 00080714 <motor_calibrate>:
-void motor_calibrate(void){ //Veldig hardkodet mtp. tid den kjører mot høyre.
    80714:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
    80716:	4c0a      	ldr	r4, [pc, #40]	; (80740 <motor_calibrate+0x2c>)
-		motor_run(0,1000);	
    80718:	f44f 777a 	mov.w	r7, #1000	; 0x3e8
    8071c:	2600      	movs	r6, #0
    8071e:	4d09      	ldr	r5, [pc, #36]	; (80744 <motor_calibrate+0x30>)
    80720:	4639      	mov	r1, r7
    80722:	4630      	mov	r0, r6
    80724:	47a8      	blx	r5
-	for(int i =0; i < 5000000; i++){
    80726:	3c01      	subs	r4, #1
    80728:	d1fa      	bne.n	80720 <motor_calibrate+0xc>
-	motor_encoder_tglreset();
    8072a:	4b07      	ldr	r3, [pc, #28]	; (80748 <motor_calibrate+0x34>)
    8072c:	4798      	blx	r3
-	printf("Calibration finished, position value: %d", motor_read_encoder(0));
    8072e:	2000      	movs	r0, #0
    80730:	4b06      	ldr	r3, [pc, #24]	; (8074c <motor_calibrate+0x38>)
    80732:	4798      	blx	r3
@@ -946,14 +722,7 @@ void motor_calibrate(void){ //Veldig hardkodet mtp. tid den kjører mot høyre.
    80754:	00080d95 	.word	0x00080d95
 
 00080758 <motor_stop>:
-	motor_stop();
-	motor_encoder_tglreset();
-	printf("Calibration done, Position %d \n\r", motor_read_encoder(0));
-}
-
-void motor_stop(void){
    80758:	b508      	push	{r3, lr}
-	motor_run(0,0);
    8075a:	2100      	movs	r1, #0
    8075c:	4608      	mov	r0, r1
    8075e:	4b01      	ldr	r3, [pc, #4]	; (80764 <motor_stop+0xc>)
@@ -962,19 +731,11 @@ void motor_stop(void){
    80764:	000806e1 	.word	0x000806e1
 
 00080768 <PID_rtt_init>:
-double dt = 0.010;
-double kp = 1;
-double ki = 0.5;
-double kd = 0.01;
-
-void PID_rtt_init(void){
    80768:	b510      	push	{r4, lr}
     NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
    8076a:	2208      	movs	r2, #8
    8076c:	4b0c      	ldr	r3, [pc, #48]	; (807a0 <PID_rtt_init+0x38>)
    8076e:	601a      	str	r2, [r3, #0]
-	NVIC_EnableIRQ(RTT_IRQn); // Enable RTT interrupts in NVIC
-	uint8_t mseconds = 1000*dt;
    80770:	2200      	movs	r2, #0
    80772:	4b0c      	ldr	r3, [pc, #48]	; (807a4 <PID_rtt_init+0x3c>)
    80774:	490c      	ldr	r1, [pc, #48]	; (807a8 <PID_rtt_init+0x40>)
@@ -983,18 +744,14 @@ void PID_rtt_init(void){
    8077c:	47a0      	blx	r4
    8077e:	4b0c      	ldr	r3, [pc, #48]	; (807b0 <PID_rtt_init+0x48>)
    80780:	4798      	blx	r3
-	uint32_t prescaler = mseconds * 33; //Blir en litt unøyaktig teller
    80782:	b2c0      	uxtb	r0, r0
    80784:	eb00 1040 	add.w	r0, r0, r0, lsl #5
-	REG_RTT_MR = 0;
    80788:	4b0a      	ldr	r3, [pc, #40]	; (807b4 <PID_rtt_init+0x4c>)
    8078a:	2200      	movs	r2, #0
    8078c:	601a      	str	r2, [r3, #0]
-	REG_RTT_MR |= (prescaler << RTT_MR_RTPRES_Pos);
    8078e:	681a      	ldr	r2, [r3, #0]
    80790:	4310      	orrs	r0, r2
    80792:	6018      	str	r0, [r3, #0]
-	REG_RTT_MR |= RTT_MR_RTTINCIEN;
    80794:	681a      	ldr	r2, [r3, #0]
    80796:	f442 3200 	orr.w	r2, r2, #131072	; 0x20000
    8079a:	601a      	str	r2, [r3, #0]
@@ -1008,36 +765,22 @@ void PID_rtt_init(void){
    807b4:	400e1a30 	.word	0x400e1a30
 
 000807b8 <RTT_Handler>:
-};
-
-
-
-void RTT_Handler(void){
    807b8:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
    807bc:	b085      	sub	sp, #20
-	
-	//Denne interrupt-handleren kan brukes til å styre regulatoren! Husk å kalle pid_rtt_init();
-	int pos = motor_read_encoder(0);
    807be:	2000      	movs	r0, #0
    807c0:	4b2f      	ldr	r3, [pc, #188]	; (80880 <RTT_Handler+0xc8>)
    807c2:	4798      	blx	r3
-	int ref = refPos; //RefPos might change at an interrupt.
    807c4:	4b2f      	ldr	r3, [pc, #188]	; (80884 <RTT_Handler+0xcc>)
-	int error = ref - pos;
    807c6:	681c      	ldr	r4, [r3, #0]
    807c8:	1a24      	subs	r4, r4, r0
-	sumError += error;
    807ca:	4f2f      	ldr	r7, [pc, #188]	; (80888 <RTT_Handler+0xd0>)
    807cc:	683b      	ldr	r3, [r7, #0]
    807ce:	eb04 0b03 	add.w	fp, r4, r3
    807d2:	f8c7 b000 	str.w	fp, [r7]
-
-	int derivative = kd/dt*(error-prevError);
    807d6:	f8df a0c4 	ldr.w	sl, [pc, #196]	; 8089c <RTT_Handler+0xe4>
    807da:	e9da 2300 	ldrd	r2, r3, [sl]
    807de:	4610      	mov	r0, r2
    807e0:	4619      	mov	r1, r3
-	int integral = dt*ki*sumError;
    807e2:	4e2a      	ldr	r6, [pc, #168]	; (8088c <RTT_Handler+0xd4>)
    807e4:	e9da 2302 	ldrd	r2, r3, [sl, #8]
    807e8:	e9cd 0100 	strd	r0, r1, [sp]
@@ -1054,8 +797,6 @@ void RTT_Handler(void){
    80800:	47b0      	blx	r6
    80802:	f8df b09c 	ldr.w	fp, [pc, #156]	; 808a0 <RTT_Handler+0xe8>
    80806:	47d8      	blx	fp
-	
-	int power = kp*error + integral + derivative;
    80808:	47a8      	blx	r5
    8080a:	e9cd 0102 	strd	r0, r1, [sp, #8]
    8080e:	4620      	mov	r0, r4
@@ -1068,7 +809,6 @@ void RTT_Handler(void){
    80820:	e9dd 0102 	ldrd	r0, r1, [sp, #8]
    80824:	47c8      	blx	r9
    80826:	e9cd 0102 	strd	r0, r1, [sp, #8]
-	int derivative = kd/dt*(error-prevError);
    8082a:	e9dd 2300 	ldrd	r2, r3, [sp]
    8082e:	e9da 0106 	ldrd	r0, r1, [sl, #24]
    80832:	f8df 8074 	ldr.w	r8, [pc, #116]	; 808a8 <RTT_Handler+0xf0>
@@ -1082,54 +822,27 @@ void RTT_Handler(void){
    80846:	e9dd 0100 	ldrd	r0, r1, [sp]
    8084a:	47b0      	blx	r6
    8084c:	47d8      	blx	fp
-	int power = kp*error + integral + derivative;
    8084e:	47a8      	blx	r5
    80850:	4602      	mov	r2, r0
    80852:	460b      	mov	r3, r1
    80854:	e9dd 0102 	ldrd	r0, r1, [sp, #8]
    80858:	47c8      	blx	r9
    8085a:	47d8      	blx	fp
-	
-	bool dir = 0;
-	if(power < 0){
    8085c:	1e01      	subs	r1, r0, #0
    8085e:	db0c      	blt.n	8087a <RTT_Handler+0xc2>
-		dir = 0;
-		power = -power;
-	}
-	else if(power > 0){
    80860:	2900      	cmp	r1, #0
    80862:	bfd4      	ite	le
    80864:	2000      	movle	r0, #0
    80866:	2001      	movgt	r0, #1
-		dir = 1;
-	}
-	motor_run(dir,power);
    80868:	4b0a      	ldr	r3, [pc, #40]	; (80894 <RTT_Handler+0xdc>)
    8086a:	4798      	blx	r3
-	
-	prevError = error;
    8086c:	4b06      	ldr	r3, [pc, #24]	; (80888 <RTT_Handler+0xd0>)
    8086e:	605c      	str	r4, [r3, #4]
-	// 	else{
-	// 		motor_stop();
-	// 	}
-	
-	//reading status register will clear interrupt flags
-	uint32_t status = REG_RTT_SR;
    80870:	4b09      	ldr	r3, [pc, #36]	; (80898 <RTT_Handler+0xe0>)
    80872:	681b      	ldr	r3, [r3, #0]
-	// 		if(count%50 == 0){
-	// 			seconds++;
-	// 			//printf("Seconds: %d \n\r", seconds);
-	// 		}
-	// 	}
-}
    80874:	b005      	add	sp, #20
    80876:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
-		power = -power;
    8087a:	4249      	negs	r1, r1
-		dir = 0;
    8087c:	2000      	movs	r0, #0
    8087e:	e7f3      	b.n	80868 <RTT_Handler+0xb0>
    80880:	00080681 	.word	0x00080681
@@ -1145,11 +858,6 @@ void RTT_Handler(void){
    808a8:	000814d5 	.word	0x000814d5
 
 000808ac <PID_update_refPos>:
-
-
-void PID_update_refPos(CAN_MESSAGE *msg){
-	int8_t posData = msg->data[0]; //[-100,100]
-	refPos = -(posData - 100)*190/2; //Converting [-100,100] to [19000,0]
    808ac:	f990 3003 	ldrsb.w	r3, [r0, #3]
    808b0:	f1c3 0264 	rsb	r2, r3, #100	; 0x64
    808b4:	23be      	movs	r3, #190	; 0xbe
@@ -1241,8 +949,8 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
 	 int16_t dutyCycle = tall*5+1500; //Presisjonen til joystick er rævva, går fra 1050 til 1850 ish. Fiks joystick-funksjonene. joystick går fra -100 til 70 ish.
    80944:	f990 3003 	ldrsb.w	r3, [r0, #3]
    80948:	eb03 0383 	add.w	r3, r3, r3, lsl #2
-   8094c:	f203 53dc 	addw	r3, r3, #1500	; 0x5dc
-   80950:	b21b      	sxth	r3, r3
+   8094c:	f5c3 63bb 	rsb	r3, r3, #1496	; 0x5d8
+   80950:	3304      	adds	r3, #4
    80952:	f5b3 7f7a 	cmp.w	r3, #1000	; 0x3e8
    80956:	bfb8      	it	lt
    80958:	f44f 737a 	movlt.w	r3, #1000	; 0x3e8
@@ -1261,31 +969,19 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    8096c:	400942c8 	.word	0x400942c8
 
 00080970 <adc_init>:
-//adc_cdr[n] only in free runing mode, but i chosse this- channel n data register
-
-//A7 på shieldet er valhgt
-
-void adc_init(void){
-	REG_PMC_PCER1	|= PMC_PCER1_PID37; 	//enable clock
    80970:	4a0b      	ldr	r2, [pc, #44]	; (809a0 <adc_init+0x30>)
    80972:	6813      	ldr	r3, [r2, #0]
    80974:	f043 0320 	orr.w	r3, r3, #32
    80978:	6013      	str	r3, [r2, #0]
-	REG_ADC_CHER	|= ADC_CHDR_CH0; // Valgte kanal 0. medfører at pa2 blir valgt=A7/AD/
    8097a:	f5a2 3201 	sub.w	r2, r2, #132096	; 0x20400
    8097e:	f5a2 723c 	sub.w	r2, r2, #752	; 0x2f0
    80982:	6813      	ldr	r3, [r2, #0]
    80984:	f043 0301 	orr.w	r3, r3, #1
    80988:	6013      	str	r3, [r2, #0]
-	REG_ADC_MR		|= ADC_MR_FREERUN_ON;
    8098a:	3a0c      	subs	r2, #12
    8098c:	6813      	ldr	r3, [r2, #0]
    8098e:	f043 0380 	orr.w	r3, r3, #128	; 0x80
    80992:	6013      	str	r3, [r2, #0]
-	//REG_ADC_MR |= ADC_MR_PRESCAL(???);
-	//REG_ADC_MR |= ADC_MR_TRACKTIM(???);
-	//REG_ADC_MR |= ADC_MR_TRANSFER(???);
-	REG_ADC_CR		|= ADC_CR_START; //The software trigger that starts ADC conversion
    80994:	3a04      	subs	r2, #4
    80996:	6813      	ldr	r3, [r2, #0]
    80998:	f043 0302 	orr.w	r3, r3, #2
@@ -1294,63 +990,40 @@ void adc_init(void){
    809a0:	400e0700 	.word	0x400e0700
 
 000809a4 <adc_ballpoint>:
-void adc_read_putty(void){
-	//printf("test");
-	printf("adc value: %d \n\r",REG_ADC_CDR);//used for reading current result
-}
-
-void adc_ballpoint(int *goal){
    809a4:	b530      	push	{r4, r5, lr}
    809a6:	b085      	sub	sp, #20
-	int adcval = REG_ADC_CDR;
    809a8:	4b14      	ldr	r3, [pc, #80]	; (809fc <adc_ballpoint+0x58>)
    809aa:	681c      	ldr	r4, [r3, #0]
-	if(adcval < 1000  && activateGoal==1){ // eller annen tersekl verdi
    809ac:	f5b4 7f7a 	cmp.w	r4, #1000	; 0x3e8
    809b0:	da03      	bge.n	809ba <adc_ballpoint+0x16>
    809b2:	4b13      	ldr	r3, [pc, #76]	; (80a00 <adc_ballpoint+0x5c>)
    809b4:	681b      	ldr	r3, [r3, #0]
    809b6:	2b01      	cmp	r3, #1
    809b8:	d00a      	beq.n	809d0 <adc_ballpoint+0x2c>
-		msg.data_length = 1;
-		msg.data[0] = 1;
-		can_send(&msg, 0);
-		
-	}
-	if (adcval> 4000 && activateGoal==0){
    809ba:	f5b4 6f7a 	cmp.w	r4, #4000	; 0xfa0
    809be:	dd05      	ble.n	809cc <adc_ballpoint+0x28>
    809c0:	4b0f      	ldr	r3, [pc, #60]	; (80a00 <adc_ballpoint+0x5c>)
    809c2:	681b      	ldr	r3, [r3, #0]
    809c4:	b913      	cbnz	r3, 809cc <adc_ballpoint+0x28>
-		activateGoal=1;
    809c6:	2201      	movs	r2, #1
    809c8:	4b0d      	ldr	r3, [pc, #52]	; (80a00 <adc_ballpoint+0x5c>)
    809ca:	601a      	str	r2, [r3, #0]
-	}
    809cc:	b005      	add	sp, #20
    809ce:	bd30      	pop	{r4, r5, pc}
-		goalCount++;
    809d0:	4b0c      	ldr	r3, [pc, #48]	; (80a04 <adc_ballpoint+0x60>)
    809d2:	6819      	ldr	r1, [r3, #0]
    809d4:	3101      	adds	r1, #1
    809d6:	6019      	str	r1, [r3, #0]
-		activateGoal=0;
    809d8:	2500      	movs	r5, #0
    809da:	4b09      	ldr	r3, [pc, #36]	; (80a00 <adc_ballpoint+0x5c>)
    809dc:	601d      	str	r5, [r3, #0]
-		printf("Goal Count: %d \n\r", goalCount);
    809de:	480a      	ldr	r0, [pc, #40]	; (80a08 <adc_ballpoint+0x64>)
    809e0:	4b0a      	ldr	r3, [pc, #40]	; (80a0c <adc_ballpoint+0x68>)
    809e2:	4798      	blx	r3
-		msg.id = 0;
    809e4:	f8ad 5004 	strh.w	r5, [sp, #4]
-		msg.data_length = 1;
    809e8:	2301      	movs	r3, #1
    809ea:	f88d 3006 	strb.w	r3, [sp, #6]
-		msg.data[0] = 1;
    809ee:	f88d 3007 	strb.w	r3, [sp, #7]
-		can_send(&msg, 0);
    809f2:	4629      	mov	r1, r5
    809f4:	a801      	add	r0, sp, #4
    809f6:	4b06      	ldr	r3, [pc, #24]	; (80a10 <adc_ballpoint+0x6c>)
@@ -1455,7 +1128,6 @@ int main(void)
    80a82:	2500      	movs	r5, #0
 // 		a = motor_read_encoder(1);
 // 		printf("Motor Position: %x \n\r", a);
-		
 		//adc_read_putty();
 		adc_ballpoint(&tull);
    80a84:	4c10      	ldr	r4, [pc, #64]	; (80ac8 <main+0xb4>)
@@ -1483,22 +1155,10 @@ int main(void)
    80ac8:	000809a5 	.word	0x000809a5
 
 00080acc <prints>:
-
-#define PAD_RIGHT 1
-#define PAD_ZERO 2
-
-static int prints(char **out, const char *string, int width, int pad)
-{
    80acc:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
    80ad0:	460d      	mov	r5, r1
-	register int pc = 0, padchar = ' ';
-
-	if (width > 0) {
    80ad2:	1e16      	subs	r6, r2, #0
    80ad4:	dd48      	ble.n	80b68 <prints+0x9c>
-		register int len = 0;
-		register const char *ptr;
-		for (ptr = string; *ptr; ++ptr) ++len;
    80ad6:	780a      	ldrb	r2, [r1, #0]
    80ad8:	2a00      	cmp	r2, #0
    80ada:	d035      	beq.n	80b48 <prints+0x7c>
@@ -1508,188 +1168,103 @@ static int prints(char **out, const char *string, int width, int pad)
    80ae2:	f812 1f01 	ldrb.w	r1, [r2, #1]!
    80ae6:	2900      	cmp	r1, #0
    80ae8:	d1fa      	bne.n	80ae0 <prints+0x14>
-		if (len >= width) width = 0;
    80aea:	42a6      	cmp	r6, r4
    80aec:	dc2d      	bgt.n	80b4a <prints+0x7e>
    80aee:	2400      	movs	r4, #0
-		else width -= len;
-		if (pad & PAD_ZERO) padchar = '0';
    80af0:	f003 0202 	and.w	r2, r3, #2
    80af4:	2a00      	cmp	r2, #0
    80af6:	bf0c      	ite	eq
    80af8:	f04f 0820 	moveq.w	r8, #32
    80afc:	f04f 0830 	movne.w	r8, #48	; 0x30
-	}
-	if (!(pad & PAD_RIGHT)) {
    80b00:	f013 0301 	ands.w	r3, r3, #1
    80b04:	d123      	bne.n	80b4e <prints+0x82>
-		for ( ; width > 0; --width) {
    80b06:	2c00      	cmp	r4, #0
    80b08:	dd28      	ble.n	80b5c <prints+0x90>
    80b0a:	4626      	mov	r6, r4
-	(void) uart_putchar(c);  //Send characters to uart
    80b0c:	fa5f f988 	uxtb.w	r9, r8
    80b10:	4f18      	ldr	r7, [pc, #96]	; (80b74 <prints+0xa8>)
    80b12:	4648      	mov	r0, r9
    80b14:	47b8      	blx	r7
-		for ( ; width > 0; --width) {
    80b16:	3e01      	subs	r6, #1
    80b18:	d1fb      	bne.n	80b12 <prints+0x46>
-			printchar (out, padchar);
-			++pc;
-		}
-	}
-	for ( ; *string ; ++string) {
    80b1a:	7828      	ldrb	r0, [r5, #0]
    80b1c:	b188      	cbz	r0, 80b42 <prints+0x76>
-	(void) uart_putchar(c);  //Send characters to uart
    80b1e:	4f15      	ldr	r7, [pc, #84]	; (80b74 <prints+0xa8>)
    80b20:	47b8      	blx	r7
-		printchar (out, *string);
-		++pc;
    80b22:	3401      	adds	r4, #1
-	for ( ; *string ; ++string) {
    80b24:	f815 0f01 	ldrb.w	r0, [r5, #1]!
    80b28:	2800      	cmp	r0, #0
    80b2a:	d1f9      	bne.n	80b20 <prints+0x54>
-	}
-	for ( ; width > 0; --width) {
    80b2c:	2e00      	cmp	r6, #0
    80b2e:	dd08      	ble.n	80b42 <prints+0x76>
    80b30:	4635      	mov	r5, r6
-	(void) uart_putchar(c);  //Send characters to uart
    80b32:	fa5f f888 	uxtb.w	r8, r8
    80b36:	4f0f      	ldr	r7, [pc, #60]	; (80b74 <prints+0xa8>)
    80b38:	4640      	mov	r0, r8
    80b3a:	47b8      	blx	r7
-	for ( ; width > 0; --width) {
    80b3c:	3d01      	subs	r5, #1
    80b3e:	d1fb      	bne.n	80b38 <prints+0x6c>
    80b40:	4434      	add	r4, r6
-		printchar (out, padchar);
-		++pc;
-	}
-
-	return pc;
-}
    80b42:	4620      	mov	r0, r4
    80b44:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
-		for (ptr = string; *ptr; ++ptr) ++len;
    80b48:	2400      	movs	r4, #0
-		else width -= len;
    80b4a:	1b34      	subs	r4, r6, r4
    80b4c:	e7d0      	b.n	80af0 <prints+0x24>
    80b4e:	4626      	mov	r6, r4
-	for ( ; *string ; ++string) {
    80b50:	7828      	ldrb	r0, [r5, #0]
    80b52:	b108      	cbz	r0, 80b58 <prints+0x8c>
-	register int pc = 0, padchar = ' ';
    80b54:	2400      	movs	r4, #0
    80b56:	e7e2      	b.n	80b1e <prints+0x52>
    80b58:	2400      	movs	r4, #0
    80b5a:	e7e7      	b.n	80b2c <prints+0x60>
-		for ( ; width > 0; --width) {
    80b5c:	4626      	mov	r6, r4
    80b5e:	461c      	mov	r4, r3
    80b60:	e7db      	b.n	80b1a <prints+0x4e>
-	register int pc = 0, padchar = ' ';
    80b62:	f04f 0820 	mov.w	r8, #32
    80b66:	e7d8      	b.n	80b1a <prints+0x4e>
-	if (!(pad & PAD_RIGHT)) {
    80b68:	f013 0401 	ands.w	r4, r3, #1
    80b6c:	d0f9      	beq.n	80b62 <prints+0x96>
-	register int pc = 0, padchar = ' ';
    80b6e:	f04f 0820 	mov.w	r8, #32
    80b72:	e7ed      	b.n	80b50 <prints+0x84>
    80b74:	00080e85 	.word	0x00080e85
 
 00080b78 <printi>:
-
-/* the following should be enough for 32 bit int */
-#define PRINT_BUF_LEN 12
-
-static int printi(char **out, int i, int b, int sg, int width, int pad, int letbase)
-{
    80b78:	b5f0      	push	{r4, r5, r6, r7, lr}
    80b7a:	b085      	sub	sp, #20
    80b7c:	4607      	mov	r7, r0
-	char print_buf[PRINT_BUF_LEN];
-	register char *s;
-	register int t, neg = 0, pc = 0;
-	register unsigned int u = i;
-
-	if (i == 0) {
    80b7e:	b381      	cbz	r1, 80be2 <printi+0x6a>
    80b80:	460c      	mov	r4, r1
-		print_buf[0] = '0';
-		print_buf[1] = '\0';
-		return prints (out, print_buf, width, pad);
-	}
-
-	if (sg && b == 10 && i < 0) {
    80b82:	b10b      	cbz	r3, 80b88 <printi+0x10>
    80b84:	2a0a      	cmp	r2, #10
    80b86:	d038      	beq.n	80bfa <printi+0x82>
-		neg = 1;
-		u = -i;
-	}
-
-	s = print_buf + PRINT_BUF_LEN-1;
-	*s = '\0';
    80b88:	2300      	movs	r3, #0
    80b8a:	f88d 300f 	strb.w	r3, [sp, #15]
-
-	while (u) {
    80b8e:	2600      	movs	r6, #0
    80b90:	2900      	cmp	r1, #0
    80b92:	d046      	beq.n	80c22 <printi+0xaa>
    80b94:	f10d 050f 	add.w	r5, sp, #15
-		t = u % b;
-		if( t >= 10 )
-			t += letbase - '0' - 10;
    80b98:	990c      	ldr	r1, [sp, #48]	; 0x30
    80b9a:	393a      	subs	r1, #58	; 0x3a
-		t = u % b;
    80b9c:	fbb4 f3f2 	udiv	r3, r4, r2
    80ba0:	fb02 4313 	mls	r3, r2, r3, r4
-		if( t >= 10 )
    80ba4:	2b09      	cmp	r3, #9
-			t += letbase - '0' - 10;
    80ba6:	bfc8      	it	gt
    80ba8:	185b      	addgt	r3, r3, r1
-		*--s = t + '0';
    80baa:	3330      	adds	r3, #48	; 0x30
    80bac:	f805 3d01 	strb.w	r3, [r5, #-1]!
-		u /= b;
    80bb0:	fbb4 f4f2 	udiv	r4, r4, r2
-	while (u) {
    80bb4:	2c00      	cmp	r4, #0
    80bb6:	d1f1      	bne.n	80b9c <printi+0x24>
-	}
-
-	if (neg) {
    80bb8:	b156      	cbz	r6, 80bd0 <printi+0x58>
-		if( width && (pad & PAD_ZERO) ) {
    80bba:	9b0a      	ldr	r3, [sp, #40]	; 0x28
    80bbc:	b11b      	cbz	r3, 80bc6 <printi+0x4e>
    80bbe:	9b0b      	ldr	r3, [sp, #44]	; 0x2c
    80bc0:	f013 0f02 	tst.w	r3, #2
    80bc4:	d125      	bne.n	80c12 <printi+0x9a>
-			printchar (out, '-');
-			++pc;
-			--width;
-		}
-		else {
-			*--s = '-';
    80bc6:	232d      	movs	r3, #45	; 0x2d
    80bc8:	f805 3c01 	strb.w	r3, [r5, #-1]
    80bcc:	3d01      	subs	r5, #1
-	register int t, neg = 0, pc = 0;
    80bce:	2600      	movs	r6, #0
-		}
-	}
-
-	return pc + prints (out, s, width, pad);
    80bd0:	9b0b      	ldr	r3, [sp, #44]	; 0x2c
    80bd2:	9a0a      	ldr	r2, [sp, #40]	; 0x28
    80bd4:	4629      	mov	r1, r5
@@ -1697,53 +1272,37 @@ static int printi(char **out, int i, int b, int sg, int width, int pad, int letb
    80bd8:	4c14      	ldr	r4, [pc, #80]	; (80c2c <printi+0xb4>)
    80bda:	47a0      	blx	r4
    80bdc:	4430      	add	r0, r6
-}
    80bde:	b005      	add	sp, #20
    80be0:	bdf0      	pop	{r4, r5, r6, r7, pc}
-		print_buf[0] = '0';
    80be2:	2330      	movs	r3, #48	; 0x30
    80be4:	f88d 3004 	strb.w	r3, [sp, #4]
-		print_buf[1] = '\0';
    80be8:	2300      	movs	r3, #0
    80bea:	f88d 3005 	strb.w	r3, [sp, #5]
-		return prints (out, print_buf, width, pad);
    80bee:	9b0b      	ldr	r3, [sp, #44]	; 0x2c
    80bf0:	9a0a      	ldr	r2, [sp, #40]	; 0x28
    80bf2:	a901      	add	r1, sp, #4
    80bf4:	4c0d      	ldr	r4, [pc, #52]	; (80c2c <printi+0xb4>)
    80bf6:	47a0      	blx	r4
    80bf8:	e7f1      	b.n	80bde <printi+0x66>
-	if (sg && b == 10 && i < 0) {
    80bfa:	2900      	cmp	r1, #0
    80bfc:	dac4      	bge.n	80b88 <printi+0x10>
-		u = -i;
    80bfe:	424c      	negs	r4, r1
-	*s = '\0';
    80c00:	2300      	movs	r3, #0
    80c02:	f88d 300f 	strb.w	r3, [sp, #15]
-	s = print_buf + PRINT_BUF_LEN-1;
    80c06:	f10d 050f 	add.w	r5, sp, #15
-	while (u) {
    80c0a:	2c00      	cmp	r4, #0
    80c0c:	d0d5      	beq.n	80bba <printi+0x42>
-		neg = 1;
    80c0e:	2601      	movs	r6, #1
    80c10:	e7c0      	b.n	80b94 <printi+0x1c>
-	(void) uart_putchar(c);  //Send characters to uart
    80c12:	202d      	movs	r0, #45	; 0x2d
    80c14:	4b06      	ldr	r3, [pc, #24]	; (80c30 <printi+0xb8>)
    80c16:	4798      	blx	r3
-			--width;
    80c18:	9b0a      	ldr	r3, [sp, #40]	; 0x28
    80c1a:	3b01      	subs	r3, #1
    80c1c:	930a      	str	r3, [sp, #40]	; 0x28
-			++pc;
    80c1e:	2601      	movs	r6, #1
-			--width;
    80c20:	e7d6      	b.n	80bd0 <printi+0x58>
-	register int t, neg = 0, pc = 0;
    80c22:	461e      	mov	r6, r3
-	s = print_buf + PRINT_BUF_LEN-1;
    80c24:	f10d 050f 	add.w	r5, sp, #15
    80c28:	e7d2      	b.n	80bd0 <printi+0x58>
    80c2a:	bf00      	nop
@@ -1751,42 +1310,23 @@ static int printi(char **out, int i, int b, int sg, int width, int pad, int letb
    80c30:	00080e85 	.word	0x00080e85
 
 00080c34 <print>:
-
-static int print( char **out, const char *format, va_list args )
-{
    80c34:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
    80c38:	b087      	sub	sp, #28
    80c3a:	4680      	mov	r8, r0
-	register int width, pad;
-	register int pc = 0;
-	char scr[2];
-
-	for (; *format != 0; ++format) {
    80c3c:	780b      	ldrb	r3, [r1, #0]
    80c3e:	2b00      	cmp	r3, #0
    80c40:	f000 8094 	beq.w	80d6c <print+0x138>
    80c44:	468b      	mov	fp, r1
    80c46:	4617      	mov	r7, r2
    80c48:	2500      	movs	r5, #0
-	(void) uart_putchar(c);  //Send characters to uart
    80c4a:	4e4e      	ldr	r6, [pc, #312]	; (80d84 <print+0x150>)
-			}
-			if( *format == 'c' ) {
-				/* char are converted to int then pushed on the stack */
-				scr[0] = (char)va_arg( args, int );
-				scr[1] = '\0';
-				pc += prints (out, scr, width, pad);
    80c4c:	f8df a13c 	ldr.w	sl, [pc, #316]	; 80d8c <print+0x158>
-				pc += printi (out, va_arg( args, int ), 10, 0, width, pad, 'a');
    80c50:	f8df 913c 	ldr.w	r9, [pc, #316]	; 80d90 <print+0x15c>
    80c54:	e046      	b.n	80ce4 <print+0xb0>
-			for ( ; *format >= '0' && *format <= '9'; ++format) {
    80c56:	2200      	movs	r2, #0
    80c58:	e070      	b.n	80d3c <print+0x108>
-				register char *s = (char *)va_arg( args, int );
    80c5a:	6839      	ldr	r1, [r7, #0]
    80c5c:	3704      	adds	r7, #4
-				pc += prints (out, s?s:"(null)", width, pad);
    80c5e:	484a      	ldr	r0, [pc, #296]	; (80d88 <print+0x154>)
    80c60:	2900      	cmp	r1, #0
    80c62:	bf08      	it	eq
@@ -1794,9 +1334,7 @@ static int print( char **out, const char *format, va_list args )
    80c66:	4640      	mov	r0, r8
    80c68:	47d0      	blx	sl
    80c6a:	4405      	add	r5, r0
-				continue;
    80c6c:	e035      	b.n	80cda <print+0xa6>
-				pc += printi (out, va_arg( args, int ), 10, 1, width, pad, 'a');
    80c6e:	6839      	ldr	r1, [r7, #0]
    80c70:	3704      	adds	r7, #4
    80c72:	2061      	movs	r0, #97	; 0x61
@@ -1808,9 +1346,7 @@ static int print( char **out, const char *format, va_list args )
    80c7e:	4640      	mov	r0, r8
    80c80:	47c8      	blx	r9
    80c82:	4405      	add	r5, r0
-				continue;
    80c84:	e029      	b.n	80cda <print+0xa6>
-				pc += printi (out, va_arg( args, int ), 16, 0, width, pad, 'a');
    80c86:	6839      	ldr	r1, [r7, #0]
    80c88:	3704      	adds	r7, #4
    80c8a:	2061      	movs	r0, #97	; 0x61
@@ -1822,9 +1358,7 @@ static int print( char **out, const char *format, va_list args )
    80c96:	4640      	mov	r0, r8
    80c98:	47c8      	blx	r9
    80c9a:	4405      	add	r5, r0
-				continue;
    80c9c:	e01d      	b.n	80cda <print+0xa6>
-				pc += printi (out, va_arg( args, int ), 16, 0, width, pad, 'A');
    80c9e:	6839      	ldr	r1, [r7, #0]
    80ca0:	3704      	adds	r7, #4
    80ca2:	2041      	movs	r0, #65	; 0x41
@@ -1836,9 +1370,7 @@ static int print( char **out, const char *format, va_list args )
    80cae:	4640      	mov	r0, r8
    80cb0:	47c8      	blx	r9
    80cb2:	4405      	add	r5, r0
-				continue;
    80cb4:	e011      	b.n	80cda <print+0xa6>
-				pc += printi (out, va_arg( args, int ), 10, 0, width, pad, 'a');
    80cb6:	6839      	ldr	r1, [r7, #0]
    80cb8:	3704      	adds	r7, #4
    80cba:	2061      	movs	r0, #97	; 0x61
@@ -1850,120 +1382,78 @@ static int print( char **out, const char *format, va_list args )
    80cc6:	4640      	mov	r0, r8
    80cc8:	47c8      	blx	r9
    80cca:	4405      	add	r5, r0
-				continue;
    80ccc:	e005      	b.n	80cda <print+0xa6>
-			++format;
    80cce:	46a3      	mov	fp, r4
-	(void) uart_putchar(c);  //Send characters to uart
    80cd0:	f89b 0000 	ldrb.w	r0, [fp]
    80cd4:	47b0      	blx	r6
-			}
-		}
-		else {
-		out:
-			printchar (out, *format);
-			++pc;
    80cd6:	3501      	adds	r5, #1
    80cd8:	465c      	mov	r4, fp
-	for (; *format != 0; ++format) {
    80cda:	f104 0b01 	add.w	fp, r4, #1
    80cde:	7863      	ldrb	r3, [r4, #1]
    80ce0:	2b00      	cmp	r3, #0
    80ce2:	d044      	beq.n	80d6e <print+0x13a>
-		if (*format == '%') {
    80ce4:	2b25      	cmp	r3, #37	; 0x25
    80ce6:	d1f3      	bne.n	80cd0 <print+0x9c>
-			++format;
    80ce8:	f10b 0401 	add.w	r4, fp, #1
-			if (*format == '\0') break;
    80cec:	f89b 3001 	ldrb.w	r3, [fp, #1]
    80cf0:	2b00      	cmp	r3, #0
    80cf2:	d03c      	beq.n	80d6e <print+0x13a>
-			if (*format == '%') goto out;
    80cf4:	2b25      	cmp	r3, #37	; 0x25
    80cf6:	d0ea      	beq.n	80cce <print+0x9a>
-			if (*format == '-') {
    80cf8:	2b2d      	cmp	r3, #45	; 0x2d
-				++format;
    80cfa:	bf06      	itte	eq
    80cfc:	f10b 0402 	addeq.w	r4, fp, #2
-				pad = PAD_RIGHT;
    80d00:	2301      	moveq	r3, #1
-			width = pad = 0;
    80d02:	2300      	movne	r3, #0
-			while (*format == '0') {
    80d04:	7822      	ldrb	r2, [r4, #0]
    80d06:	2a30      	cmp	r2, #48	; 0x30
    80d08:	d105      	bne.n	80d16 <print+0xe2>
-				pad |= PAD_ZERO;
    80d0a:	f043 0302 	orr.w	r3, r3, #2
-			while (*format == '0') {
    80d0e:	f814 2f01 	ldrb.w	r2, [r4, #1]!
    80d12:	2a30      	cmp	r2, #48	; 0x30
    80d14:	d0f9      	beq.n	80d0a <print+0xd6>
-			for ( ; *format >= '0' && *format <= '9'; ++format) {
    80d16:	7821      	ldrb	r1, [r4, #0]
    80d18:	f1a1 0230 	sub.w	r2, r1, #48	; 0x30
    80d1c:	b2d2      	uxtb	r2, r2
    80d1e:	2a09      	cmp	r2, #9
    80d20:	d899      	bhi.n	80c56 <print+0x22>
    80d22:	2200      	movs	r2, #0
-				width *= 10;
    80d24:	eb02 0282 	add.w	r2, r2, r2, lsl #2
-				width += *format - '0';
    80d28:	3930      	subs	r1, #48	; 0x30
    80d2a:	eb01 0242 	add.w	r2, r1, r2, lsl #1
-			for ( ; *format >= '0' && *format <= '9'; ++format) {
    80d2e:	f814 1f01 	ldrb.w	r1, [r4, #1]!
    80d32:	f1a1 0030 	sub.w	r0, r1, #48	; 0x30
    80d36:	b2c0      	uxtb	r0, r0
    80d38:	2809      	cmp	r0, #9
    80d3a:	d9f3      	bls.n	80d24 <print+0xf0>
-			if( *format == 's' ) {
    80d3c:	2973      	cmp	r1, #115	; 0x73
    80d3e:	d08c      	beq.n	80c5a <print+0x26>
-			if( *format == 'd' ) {
    80d40:	2964      	cmp	r1, #100	; 0x64
    80d42:	d094      	beq.n	80c6e <print+0x3a>
-			if( *format == 'x' ) {
    80d44:	2978      	cmp	r1, #120	; 0x78
    80d46:	d09e      	beq.n	80c86 <print+0x52>
-			if( *format == 'X' ) {
    80d48:	2958      	cmp	r1, #88	; 0x58
    80d4a:	d0a8      	beq.n	80c9e <print+0x6a>
-			if( *format == 'u' ) {
    80d4c:	2975      	cmp	r1, #117	; 0x75
    80d4e:	d0b2      	beq.n	80cb6 <print+0x82>
-			if( *format == 'c' ) {
    80d50:	2963      	cmp	r1, #99	; 0x63
    80d52:	d1c2      	bne.n	80cda <print+0xa6>
-				scr[0] = (char)va_arg( args, int );
    80d54:	6839      	ldr	r1, [r7, #0]
    80d56:	3704      	adds	r7, #4
    80d58:	f88d 1014 	strb.w	r1, [sp, #20]
-				scr[1] = '\0';
    80d5c:	2100      	movs	r1, #0
    80d5e:	f88d 1015 	strb.w	r1, [sp, #21]
-				pc += prints (out, scr, width, pad);
    80d62:	a905      	add	r1, sp, #20
    80d64:	4640      	mov	r0, r8
    80d66:	47d0      	blx	sl
    80d68:	4405      	add	r5, r0
-				continue;
    80d6a:	e7b6      	b.n	80cda <print+0xa6>
-	register int pc = 0;
    80d6c:	2500      	movs	r5, #0
-		}
-	}
-	if (out) **out = '\0';
    80d6e:	f1b8 0f00 	cmp.w	r8, #0
    80d72:	d003      	beq.n	80d7c <print+0x148>
    80d74:	f8d8 3000 	ldr.w	r3, [r8]
    80d78:	2200      	movs	r2, #0
    80d7a:	701a      	strb	r2, [r3, #0]
-	va_end( args );
-	return pc;
-}
    80d7c:	4628      	mov	r0, r5
    80d7e:	b007      	add	sp, #28
    80d80:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
@@ -1973,23 +1463,15 @@ static int print( char **out, const char *format, va_list args )
    80d90:	00080b79 	.word	0x00080b79
 
 00080d94 <printf>:
-
-int printf(const char *format, ...)
-{
    80d94:	b40f      	push	{r0, r1, r2, r3}
    80d96:	b500      	push	{lr}
    80d98:	b083      	sub	sp, #12
    80d9a:	aa04      	add	r2, sp, #16
    80d9c:	f852 1b04 	ldr.w	r1, [r2], #4
-        va_list args;
-        
-        va_start( args, format );
    80da0:	9201      	str	r2, [sp, #4]
-        return print( 0, format, args );
    80da2:	2000      	movs	r0, #0
    80da4:	4b03      	ldr	r3, [pc, #12]	; (80db4 <printf+0x20>)
    80da6:	4798      	blx	r3
-}
    80da8:	b003      	add	sp, #12
    80daa:	f85d eb04 	ldr.w	lr, [sp], #4
    80dae:	b004      	add	sp, #16
@@ -2040,38 +1522,88 @@ int printf(const char *format, ...)
    80e18:	00081984 	.word	0x00081984
 
 00080e1c <configure_uart>:
+	uint32_t ul_sr;
+
+/*
+Initialize UART ring buffer as empty
+*/
+rx_buffer.head=0;
    80e1c:	4b16      	ldr	r3, [pc, #88]	; (80e78 <configure_uart+0x5c>)
    80e1e:	2200      	movs	r2, #0
    80e20:	701a      	strb	r2, [r3, #0]
+rx_buffer.tail=0;
    80e22:	705a      	strb	r2, [r3, #1]
+/*
+Initialize UART communication
+*/
+	// Pin configuration
+	// Disable interrupts on Uart receive (URXD) and transmit (UTXD) pins
+	PIOA->PIO_IDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
    80e24:	4b15      	ldr	r3, [pc, #84]	; (80e7c <configure_uart+0x60>)
    80e26:	f44f 7140 	mov.w	r1, #768	; 0x300
    80e2a:	6459      	str	r1, [r3, #68]	; 0x44
+
+	// Disable the Parallel IO (PIO) of the URXD and UTXD pins so that the peripheral controller can use them
+	PIOA->PIO_PDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
    80e2c:	6059      	str	r1, [r3, #4]
+
+	// Read current peripheral AB select register and set the UTXD and URXD pins to 0 (UART is connected as peripheral A)
+	ul_sr = PIOA->PIO_ABSR;
    80e2e:	6f1a      	ldr	r2, [r3, #112]	; 0x70
+	PIOA->PIO_ABSR &= ~(PIO_PA8A_URXD | PIO_PA9A_UTXD) & ul_sr;
    80e30:	6f18      	ldr	r0, [r3, #112]	; 0x70
    80e32:	4002      	ands	r2, r0
    80e34:	f422 7240 	bic.w	r2, r2, #768	; 0x300
    80e38:	671a      	str	r2, [r3, #112]	; 0x70
+
+	// Enable pull up resistor on URXD and UTXD pin
+	PIOA->PIO_PUER = PIO_PA8A_URXD | PIO_PA9A_UTXD;
    80e3a:	6659      	str	r1, [r3, #100]	; 0x64
+
+	// Uart configuration
+	
+	// Enable the peripheral UART controller in Power Management Controller (PMC)
+	PMC->PMC_PCER0 = 1 << ID_UART;
    80e3c:	f44f 7280 	mov.w	r2, #256	; 0x100
    80e40:	f5a3 6300 	sub.w	r3, r3, #2048	; 0x800
    80e44:	611a      	str	r2, [r3, #16]
+
+	// Reset and disable receiver and transmitter
+	UART->UART_CR = UART_CR_RSTRX | UART_CR_RSTTX | UART_CR_RXDIS | UART_CR_TXDIS;
    80e46:	f503 7300 	add.w	r3, r3, #512	; 0x200
    80e4a:	21ac      	movs	r1, #172	; 0xac
    80e4c:	6019      	str	r1, [r3, #0]
+
+	// Set the baudrate
+	UART->UART_BRGR = 547; // MCK / 16 * x = BaudRate (write x into UART_BRGR)  
    80e4e:	f240 2123 	movw	r1, #547	; 0x223
    80e52:	6219      	str	r1, [r3, #32]
+
+	// No parity bits
+	UART->UART_MR = UART_MR_PAR_NO | UART_MR_CHMODE_NORMAL;	
    80e54:	f44f 6100 	mov.w	r1, #2048	; 0x800
    80e58:	6059      	str	r1, [r3, #4]
+
+	// Disable PDC channel
+	UART->UART_PTCR = UART_PTCR_RXTDIS | UART_PTCR_TXTDIS;
    80e5a:	f240 2102 	movw	r1, #514	; 0x202
    80e5e:	f8c3 1120 	str.w	r1, [r3, #288]	; 0x120
+
+	// Configure interrupts on receive ready and errors
+	UART->UART_IDR = 0xFFFFFFFF;
    80e62:	f04f 31ff 	mov.w	r1, #4294967295
    80e66:	60d9      	str	r1, [r3, #12]
+	UART->UART_IER = UART_IER_RXRDY | UART_IER_OVRE | UART_IER_FRAME | UART_IER_PARE;
    80e68:	21e1      	movs	r1, #225	; 0xe1
    80e6a:	6099      	str	r1, [r3, #8]
    80e6c:	4904      	ldr	r1, [pc, #16]	; (80e80 <configure_uart+0x64>)
    80e6e:	600a      	str	r2, [r1, #0]
+
+	// Enable UART interrupt in the Nested Vectored Interrupt Controller(NVIC)
+	NVIC_EnableIRQ((IRQn_Type) ID_UART);
+
+	// Enable UART receiver and transmitter
+	UART->UART_CR = UART_CR_RXEN | UART_CR_TXEN;
    80e70:	2250      	movs	r2, #80	; 0x50
    80e72:	601a      	str	r2, [r3, #0]
    80e74:	4770      	bx	lr
@@ -2081,33 +1613,63 @@ int printf(const char *format, ...)
    80e80:	e000e100 	.word	0xe000e100
 
 00080e84 <uart_putchar>:
+ * \retval Success(0) or failure(1).
+ */
+int uart_putchar(const uint8_t c)
+{
+	// Check if the transmitter is ready
+	if((UART->UART_SR & UART_SR_TXRDY) != UART_SR_TXRDY)
    80e84:	4b07      	ldr	r3, [pc, #28]	; (80ea4 <uart_putchar+0x20>)
    80e86:	695b      	ldr	r3, [r3, #20]
    80e88:	f013 0f02 	tst.w	r3, #2
    80e8c:	d008      	beq.n	80ea0 <uart_putchar+0x1c>
+	return 1;
+
+	// Send the character
+	UART->UART_THR = c;
    80e8e:	4b05      	ldr	r3, [pc, #20]	; (80ea4 <uart_putchar+0x20>)
    80e90:	61d8      	str	r0, [r3, #28]
+	while(!((UART->UART_SR) & UART_SR_TXEMPTY)); // Wait for the character to be sent, can implement ring buffer to remove the wait
    80e92:	461a      	mov	r2, r3
    80e94:	6953      	ldr	r3, [r2, #20]
    80e96:	f413 7f00 	tst.w	r3, #512	; 0x200
    80e9a:	d0fb      	beq.n	80e94 <uart_putchar+0x10>
+	return 0;
    80e9c:	2000      	movs	r0, #0
    80e9e:	4770      	bx	lr
+	return 1;
    80ea0:	2001      	movs	r0, #1
+}
    80ea2:	4770      	bx	lr
    80ea4:	400e0800 	.word	0x400e0800
 
 00080ea8 <UART_Handler>:
+
+void UART_Handler(void)
+{
    80ea8:	b508      	push	{r3, lr}
+	uint32_t status = UART->UART_SR;
    80eaa:	4b15      	ldr	r3, [pc, #84]	; (80f00 <UART_Handler+0x58>)
    80eac:	695b      	ldr	r3, [r3, #20]
+	
+	//Reset UART at overflow error and frame error
+	if(status & (UART_SR_OVRE | UART_SR_FRAME | UART_SR_PARE))
    80eae:	f013 0fe0 	tst.w	r3, #224	; 0xe0
    80eb2:	d003      	beq.n	80ebc <UART_Handler+0x14>
+	{
+		UART->UART_CR = UART_CR_RXEN | UART_CR_TXEN | UART_CR_RSTSTA;
    80eb4:	f44f 71a8 	mov.w	r1, #336	; 0x150
    80eb8:	4a11      	ldr	r2, [pc, #68]	; (80f00 <UART_Handler+0x58>)
    80eba:	6011      	str	r1, [r2, #0]
+	}
+	
+	//Check if message is ready to be received
+	if(status & UART_SR_RXRDY)
    80ebc:	f013 0f01 	tst.w	r3, #1
    80ec0:	d012      	beq.n	80ee8 <UART_Handler+0x40>
+	{
+		//Check if receive ring buffer is full and 
+		if((rx_buffer.tail + 1) % UART_RINGBUFFER_SIZE == rx_buffer.head)
    80ec2:	4810      	ldr	r0, [pc, #64]	; (80f04 <UART_Handler+0x5c>)
    80ec4:	7842      	ldrb	r2, [r0, #1]
    80ec6:	1c53      	adds	r3, r2, #1
@@ -2119,22 +1681,32 @@ int printf(const char *format, ...)
    80ed6:	7801      	ldrb	r1, [r0, #0]
    80ed8:	428b      	cmp	r3, r1
    80eda:	d006      	beq.n	80eea <UART_Handler+0x42>
+		{
+			printf("ERR: UART RX buffer is full\n\r");
+			rx_buffer.data[rx_buffer.tail] = UART->UART_RHR; //Throw away message
+			return;
+		}
+		rx_buffer.data[rx_buffer.tail] = UART->UART_RHR;
    80edc:	4908      	ldr	r1, [pc, #32]	; (80f00 <UART_Handler+0x58>)
    80ede:	6988      	ldr	r0, [r1, #24]
    80ee0:	4908      	ldr	r1, [pc, #32]	; (80f04 <UART_Handler+0x5c>)
    80ee2:	440a      	add	r2, r1
    80ee4:	7090      	strb	r0, [r2, #2]
+		rx_buffer.tail = (rx_buffer.tail + 1) % UART_RINGBUFFER_SIZE;
    80ee6:	704b      	strb	r3, [r1, #1]
    80ee8:	bd08      	pop	{r3, pc}
+			printf("ERR: UART RX buffer is full\n\r");
    80eea:	4807      	ldr	r0, [pc, #28]	; (80f08 <UART_Handler+0x60>)
    80eec:	4b07      	ldr	r3, [pc, #28]	; (80f0c <UART_Handler+0x64>)
    80eee:	4798      	blx	r3
+			rx_buffer.data[rx_buffer.tail] = UART->UART_RHR; //Throw away message
    80ef0:	4b03      	ldr	r3, [pc, #12]	; (80f00 <UART_Handler+0x58>)
    80ef2:	699a      	ldr	r2, [r3, #24]
    80ef4:	4b03      	ldr	r3, [pc, #12]	; (80f04 <UART_Handler+0x5c>)
    80ef6:	7859      	ldrb	r1, [r3, #1]
    80ef8:	440b      	add	r3, r1
    80efa:	709a      	strb	r2, [r3, #2]
+			return;
    80efc:	bd08      	pop	{r3, pc}
    80efe:	bf00      	nop
    80f00:	400e0800 	.word	0x400e0800

@@ -140,14 +140,17 @@ void can_interrupt_handler(void){
 }
 
 
-/*
+
 
 ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2 
 	CAN_flag = 1;
-	printf("CAN INTERRUPT \t");
+	//printf("ied");
+	//can_interrupted();
 	
-	mcp_bit_modify(MCP_CANINTF, 0x01, 0);
-	mcp_bit_modify(MCP_CANINTF, 0x01, 0); //Må skrive to ganger. MCP må få det inn med teskje. 
+	//can_interrupted();
+	//printf("CAN INTERRUPT \t");
+	
+	/*mcp_bit_modify(MCP_CANINTF, 0x01, 0); //Må skrive to ganger. MCP må få det inn med teskje. 
 	
 	uint8_t test2 = mcp_read(MCP_CANSTAT);
 	uint8_t mask1 = 0xf0;
@@ -155,12 +158,20 @@ ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2
 	uint8_t test1 = test2 & mask1;
 	test2 = test2 & mask2;
 	printf("OPMODE: %d \t ICOD: %d \n\r", test1, test2);
-	
+	*/
 	
 }
 
-
-*/
+int can_interrupted(void){
+	if (CAN_flag==1){
+		CAN_flag=0;
+		mcp_bit_modify(MCP_CANINTF, 0x01, 0);
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
 
 
 

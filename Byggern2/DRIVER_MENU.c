@@ -15,7 +15,7 @@
 //OLED string ascces defines
 
 
-static controller ctrl = JOYSTICK;
+volatile static controller ctrl;
 
 
 
@@ -92,6 +92,7 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 
 
 void f_1player(){
+
 	oled_reset();
 	char buffer[16];
 	for(unsigned char i=0; i<8; i++){
@@ -99,22 +100,23 @@ void f_1player(){
 		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p1]));
 		oled_center_print(buffer,8);	
 	}
+	
 	while(!(PINB & (1<<0))){ //
+		printf("hei");
 	}
 		can_message msg;
 		msg.id=1;
 		msg.length=3;
-		msg.data[2]=(char)(PINB & (1<<0));
+		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
 		
-		//start timer
-	
-					printf("JOYSTIadasdasasdT");		
+		printf("%d",ctrl);
+		//start timer		
 	switch(ctrl){
 		case JOYSTICK:
 
 		//starter counter
-			while (1){ //stopper n?r snor treffes			
+			while (!can_interrupted()){ //stopper n?r snor treffes			
 				joystick_sendPositionButtonCan(joystick_getPosition());
 				//tiden kan telle p? skjermen
 				
@@ -122,11 +124,14 @@ void f_1player(){
 		//	
 		break;
 		case SLIDER:
-			while (1){	 //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
+			while (!can_interrupted()){	 //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
 				slider_sendPositionButtonCan(slider_getPosition());
 			}
 		break;
 	}	
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
 }
 
 void f_2player(){
@@ -162,6 +167,7 @@ void f_joystick(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = JOYSTICK;
+	printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -179,6 +185,7 @@ void f_slider(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = SLIDER;
+	printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
