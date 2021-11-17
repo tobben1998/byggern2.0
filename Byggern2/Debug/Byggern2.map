@@ -67,6 +67,7 @@ Common symbol       size              file
 digit2char          0x1               DRIVER_MENU.o
 secondsChar         0x1               DRIVER_MENU.o
 oled_position       0x4               DRIVER_MENU.o
+mdigitchar          0x1               DRIVER_MENU.o
 digit3char          0x1               DRIVER_MENU.o
 __brkval            0x2               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
 digit1char          0x1               DRIVER_MENU.o
@@ -135,8 +136,6 @@ Discarded input sections
  .text          0x00000000        0x0 DRIVER_TIMER.o
  .data          0x00000000        0x0 DRIVER_TIMER.o
  .bss           0x00000000        0x0 DRIVER_TIMER.o
- .text.timer_get_mseconds
-                0x00000000        0xa DRIVER_TIMER.o
  .text          0x00000000        0x0 DRIVER_USART.o
  .data          0x00000000        0x0 DRIVER_USART.o
  .bss           0x00000000        0x0 DRIVER_USART.o
@@ -555,7 +554,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x2ec2
+.text           0x00000000     0x2efe
  *(.vectors)
  .vectors       0x00000000       0x70 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega162.o
                 0x00000000                __vector_default
@@ -970,188 +969,191 @@ END GROUP
                 0x0000125e       0xc6 DRIVER_MENU.o
                 0x0000125e                f_slider
  .text.f_1player
-                0x00001324      0x1ae DRIVER_MENU.o
+                0x00001324      0x1e0 DRIVER_MENU.o
                 0x00001324                f_1player
  .text.f_animation
-                0x000014d2       0xa2 DRIVER_MENU.o
-                0x000014d2                f_animation
+                0x00001504       0xa2 DRIVER_MENU.o
+                0x00001504                f_animation
  .text.Menu_new_submenu
-                0x00001574       0x9a DRIVER_MENU.o
-                0x00001574                Menu_new_submenu
+                0x000015a6       0x9a DRIVER_MENU.o
+                0x000015a6                Menu_new_submenu
  .text.menu_init
-                0x0000160e      0x148 DRIVER_MENU.o
-                0x0000160e                menu_init
+                0x00001640      0x148 DRIVER_MENU.o
+                0x00001640                menu_init
  .text.navigate
-                0x00001756      0x248 DRIVER_MENU.o
-                0x00001756                navigate
+                0x00001788      0x248 DRIVER_MENU.o
+                0x00001788                navigate
  .text.oled_mode
-                0x0000199e       0x18 DRIVER_OLED.o
-                0x0000199e                oled_mode
+                0x000019d0       0x18 DRIVER_OLED.o
+                0x000019d0                oled_mode
  .text.oled_goto_page
-                0x000019b6       0x30 DRIVER_OLED.o
-                0x000019b6                oled_goto_page
+                0x000019e8       0x30 DRIVER_OLED.o
+                0x000019e8                oled_goto_page
  .text.oled_goto_col
-                0x000019e6       0x42 DRIVER_OLED.o
-                0x000019e6                oled_goto_col
+                0x00001a18       0x42 DRIVER_OLED.o
+                0x00001a18                oled_goto_col
  .text.oled_goto_pos
-                0x00001a28       0x12 DRIVER_OLED.o
-                0x00001a28                oled_goto_pos
+                0x00001a5a       0x12 DRIVER_OLED.o
+                0x00001a5a                oled_goto_pos
  .text.oled_home
-                0x00001a3a        0xa DRIVER_OLED.o
-                0x00001a3a                oled_home
+                0x00001a6c        0xa DRIVER_OLED.o
+                0x00001a6c                oled_home
  .text.oled_clear_page
-                0x00001a44       0x22 DRIVER_OLED.o
-                0x00001a44                oled_clear_page
+                0x00001a76       0x22 DRIVER_OLED.o
+                0x00001a76                oled_clear_page
  .text.oled_clear_screen
-                0x00001a66       0x56 DRIVER_OLED.o
-                0x00001a66                oled_clear_screen
+                0x00001a98       0x56 DRIVER_OLED.o
+                0x00001a98                oled_clear_screen
  .text.oled_reset
-                0x00001abc       0x10 DRIVER_OLED.o
-                0x00001abc                oled_reset
+                0x00001aee       0x10 DRIVER_OLED.o
+                0x00001aee                oled_reset
  .text.oled_write_char
-                0x00001acc      0x18a DRIVER_OLED.o
-                0x00001acc                oled_write_char
+                0x00001afe      0x18a DRIVER_OLED.o
+                0x00001afe                oled_write_char
  .text.oled_print
-                0x00001c56       0x54 DRIVER_OLED.o
-                0x00001c56                oled_print
+                0x00001c88       0x54 DRIVER_OLED.o
+                0x00001c88                oled_print
  .text.oled_center_print
-                0x00001caa       0x46 DRIVER_OLED.o
-                0x00001caa                oled_center_print
+                0x00001cdc       0x46 DRIVER_OLED.o
+                0x00001cdc                oled_center_print
  .text.oled_arrow
-                0x00001cf0       0x42 DRIVER_OLED.o
-                0x00001cf0                oled_arrow
+                0x00001d22       0x42 DRIVER_OLED.o
+                0x00001d22                oled_arrow
  .text.oled_animation_frame
-                0x00001d32       0x50 DRIVER_OLED.o
-                0x00001d32                oled_animation_frame
+                0x00001d64       0x50 DRIVER_OLED.o
+                0x00001d64                oled_animation_frame
  .text.oled_animation
-                0x00001d82      0x236 DRIVER_OLED.o
-                0x00001d82                oled_animation
+                0x00001db4      0x236 DRIVER_OLED.o
+                0x00001db4                oled_animation
  .text.oled_init
-                0x00001fb8      0x114 DRIVER_OLED.o
-                0x00001fb8                oled_init
+                0x00001fea      0x114 DRIVER_OLED.o
+                0x00001fea                oled_init
  .text.spi_init
-                0x000020cc        0xe DRIVER_SPI.o
-                0x000020cc                spi_init
+                0x000020fe        0xe DRIVER_SPI.o
+                0x000020fe                spi_init
  .text.spi_send
-                0x000020da        0x8 DRIVER_SPI.o
-                0x000020da                spi_send
+                0x0000210c        0x8 DRIVER_SPI.o
+                0x0000210c                spi_send
  .text.spi_read
-                0x000020e2        0xc DRIVER_SPI.o
-                0x000020e2                spi_read
+                0x00002114        0xc DRIVER_SPI.o
+                0x00002114                spi_read
  .text.timer_init
-                0x000020ee       0x3c DRIVER_TIMER.o
-                0x000020ee                timer_init
+                0x00002120       0x3c DRIVER_TIMER.o
+                0x00002120                timer_init
  .text.timer_get_seconds
-                0x0000212a        0xa DRIVER_TIMER.o
-                0x0000212a                timer_get_seconds
+                0x0000215c        0xa DRIVER_TIMER.o
+                0x0000215c                timer_get_seconds
+ .text.timer_get_mseconds
+                0x00002166        0xa DRIVER_TIMER.o
+                0x00002166                timer_get_mseconds
  .text.__vector_16
-                0x00002134       0xd0 DRIVER_TIMER.o
-                0x00002134                __vector_16
+                0x00002170       0xd0 DRIVER_TIMER.o
+                0x00002170                __vector_16
  .text.USART_Init
-                0x00002204       0x1a DRIVER_USART.o
-                0x00002204                USART_Init
+                0x00002240       0x1a DRIVER_USART.o
+                0x00002240                USART_Init
  .text.USART_Transmit
-                0x0000221e        0x8 DRIVER_USART.o
-                0x0000221e                USART_Transmit
+                0x0000225a        0x8 DRIVER_USART.o
+                0x0000225a                USART_Transmit
  .text.USART_PUTCHAR
-                0x00002226        0xa DRIVER_USART.o
-                0x00002226                USART_PUTCHAR
+                0x00002262        0xa DRIVER_USART.o
+                0x00002262                USART_PUTCHAR
  .text.xmem_init
-                0x00002230        0xe DRIVER_XMEM.o
-                0x00002230                xmem_init
+                0x0000226c        0xe DRIVER_XMEM.o
+                0x0000226c                xmem_init
  .text.xmem_write
-                0x0000223e        0x8 DRIVER_XMEM.o
-                0x0000223e                xmem_write
+                0x0000227a        0x8 DRIVER_XMEM.o
+                0x0000227a                xmem_write
  .text.xmem_read
-                0x00002246        0x8 DRIVER_XMEM.o
-                0x00002246                xmem_read
+                0x00002282        0x8 DRIVER_XMEM.o
+                0x00002282                xmem_read
  .text.mcp_read
-                0x0000224e       0x1c DRIVER_MCP2515.o
-                0x0000224e                mcp_read
+                0x0000228a       0x1c DRIVER_MCP2515.o
+                0x0000228a                mcp_read
  .text.mcp_write
-                0x0000226a       0x24 DRIVER_MCP2515.o
-                0x0000226a                mcp_write
+                0x000022a6       0x24 DRIVER_MCP2515.o
+                0x000022a6                mcp_write
  .text.mcp_req_to_send
-                0x0000228e        0xa DRIVER_MCP2515.o
-                0x0000228e                mcp_req_to_send
+                0x000022ca        0xa DRIVER_MCP2515.o
+                0x000022ca                mcp_req_to_send
  .text.mcp_bit_modify
-                0x00002298       0x30 DRIVER_MCP2515.o
-                0x00002298                mcp_bit_modify
+                0x000022d4       0x30 DRIVER_MCP2515.o
+                0x000022d4                mcp_bit_modify
  .text.mcp_reset
-                0x000022c8       0x18 DRIVER_MCP2515.o
-                0x000022c8                mcp_reset
+                0x00002304       0x18 DRIVER_MCP2515.o
+                0x00002304                mcp_reset
  .text.mcp_init
-                0x000022e0       0x3c DRIVER_MCP2515.o
-                0x000022e0                mcp_init
- .text.main     0x0000231c       0x2e main.o
-                0x0000231c                main
+                0x0000231c       0x3c DRIVER_MCP2515.o
+                0x0000231c                mcp_init
+ .text.main     0x00002358       0x2e main.o
+                0x00002358                main
  .text.util_sort
-                0x0000234a       0x58 util.o
-                0x0000234a                util_sort
+                0x00002386       0x58 util.o
+                0x00002386                util_sort
  .text.util_median
-                0x000023a2       0x30 util.o
-                0x000023a2                util_median
+                0x000023de       0x30 util.o
+                0x000023de                util_median
  .text.libgcc.div
-                0x000023d2       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
-                0x000023d2                _div
-                0x000023d2                __divmodhi4
+                0x0000240e       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_divmodhi4.o)
+                0x0000240e                _div
+                0x0000240e                __divmodhi4
  .text.libgcc.div
-                0x000023fa       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
-                0x000023fa                __udivmodhi4
+                0x00002436       0x28 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
+                0x00002436                __udivmodhi4
  .text.avr-libc
-                0x00002422      0x242 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x00002422                malloc
-                0x00002552                free
+                0x0000245e      0x242 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x0000245e                malloc
+                0x0000258e                free
  .text.avr-libc
-                0x00002664      0x18c c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(realloc.o)
-                0x00002664                realloc
+                0x000026a0      0x18c c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(realloc.o)
+                0x000026a0                realloc
  .text.avr-libc
-                0x000027f0        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
-                0x000027f0                strcpy_P
+                0x0000282c        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcpy_P.o)
+                0x0000282c                strcpy_P
  .text.avr-libc
-                0x000027fe       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memcpy.o)
-                0x000027fe                memcpy
+                0x0000283a       0x12 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                0x0000283a                memcpy
  .text.avr-libc
-                0x00002810       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcat.o)
-                0x00002810                strcat
+                0x0000284c       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strcat.o)
+                0x0000284c                strcat
  .text.avr-libc
-                0x00002826       0x96 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fdevopen.o)
-                0x00002826                fdevopen
+                0x00002862       0x96 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fdevopen.o)
+                0x00002862                fdevopen
  .text.avr-libc
-                0x000028bc       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(printf.o)
-                0x000028bc                printf
+                0x000028f8       0x2c c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(printf.o)
+                0x000028f8                printf
  .text.avr-libc
-                0x000028e8      0x3c2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
-                0x000028e8                vfprintf
+                0x00002924      0x3c2 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
+                0x00002924                vfprintf
  .text.avr-libc
-                0x00002caa       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(calloc.o)
-                0x00002caa                calloc
+                0x00002ce6       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(calloc.o)
+                0x00002ce6                calloc
  .text.avr-libc
-                0x00002ce2       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
-                0x00002ce2                strnlen_P
+                0x00002d1e       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen_P.o)
+                0x00002d1e                strnlen_P
  .text.avr-libc
-                0x00002cf8        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memset.o)
-                0x00002cf8                memset
+                0x00002d34        0xe c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(memset.o)
+                0x00002d34                memset
  .text.avr-libc
-                0x00002d06       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen.o)
-                0x00002d06                strnlen
+                0x00002d42       0x16 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(strnlen.o)
+                0x00002d42                strnlen
  .text.avr-libc
-                0x00002d1c       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fputc.o)
-                0x00002d1c                fputc
+                0x00002d58       0x78 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fputc.o)
+                0x00002d58                fputc
  .text.avr-libc
-                0x00002d94       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
-                0x00002d94                __ultoa_invert
+                0x00002dd0       0xbc c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(ultoa_invert.o)
+                0x00002dd0                __ultoa_invert
  .text.libgcc.prologue
-                0x00002e50       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
-                0x00002e50                __prologue_saves__
+                0x00002e8c       0x38 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
+                0x00002e8c                __prologue_saves__
  .text.libgcc.prologue
-                0x00002e88       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
-                0x00002e88                __epilogue_restores__
-                0x00002ebe                . = ALIGN (0x2)
+                0x00002ec4       0x36 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
+                0x00002ec4                __epilogue_restores__
+                0x00002efa                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00002ebe        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x00002ebe                _exit
-                0x00002ebe                exit
+ .fini9         0x00002efa        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00002efa                _exit
+                0x00002efa                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -1170,11 +1172,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00002ebe        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00002efa        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00002ec2                _etext = .
+                0x00002efe                _etext = .
 
-.data           0x00800100       0xba load address 0x00002ec2
+.data           0x00800100       0xba load address 0x00002efe
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
@@ -1208,7 +1210,7 @@ END GROUP
                 0x008001ba                _edata = .
                 0x008001ba                PROVIDE (__data_end, .)
 
-.bss            0x008001ba       0x25
+.bss            0x008001ba       0x26
                 0x008001ba                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
@@ -1225,30 +1227,31 @@ END GROUP
  COMMON         0x008001c5        0x2 DRIVER_JOYSTICK.o
                 0x008001c5                y_offset
                 0x008001c6                x_offset
- COMMON         0x008001c7        0xe DRIVER_MENU.o
+ COMMON         0x008001c7        0xf DRIVER_MENU.o
                 0x008001c7                digit2char
                 0x008001c8                secondsChar
                 0x008001c9                oled_position
-                0x008001cd                digit3char
-                0x008001ce                digit1char
-                0x008001cf                mseconds
-                0x008001d1                seconds
-                0x008001d3                main_menu
- COMMON         0x008001d5        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x008001d5                __brkval
-                0x008001d7                __flp
- COMMON         0x008001d9        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(iob.o)
-                0x008001d9                __iob
-                0x008001df                PROVIDE (__bss_end, .)
-                0x00002ec2                __data_load_start = LOADADDR (.data)
-                0x00002f7c                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x008001cd                mdigitchar
+                0x008001ce                digit3char
+                0x008001cf                digit1char
+                0x008001d0                mseconds
+                0x008001d2                seconds
+                0x008001d4                main_menu
+ COMMON         0x008001d6        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x008001d6                __brkval
+                0x008001d8                __flp
+ COMMON         0x008001da        0x6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(iob.o)
+                0x008001da                __iob
+                0x008001e0                PROVIDE (__bss_end, .)
+                0x00002efe                __data_load_start = LOADADDR (.data)
+                0x00002fb8                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008001df        0x0
+.noinit         0x008001e0        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x008001df                _end = .
-                0x008001df                PROVIDE (__heap_start, .)
+                0x008001e0                _end = .
+                0x008001e0                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -1362,21 +1365,21 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x4e73
+.debug_info     0x00000000     0x4ee1
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5d0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega162.o
  .debug_info    0x000005d0      0x23b DRIVER_ADC.o
  .debug_info    0x0000080b      0x454 DRIVER_CAN.o
  .debug_info    0x00000c5f      0x37f DRIVER_JOYSTICK.o
- .debug_info    0x00000fde     0x1c27 DRIVER_MENU.o
- .debug_info    0x00002c05     0x1413 DRIVER_OLED.o
- .debug_info    0x00004018       0xd8 DRIVER_SPI.o
- .debug_info    0x000040f0      0x16c DRIVER_TIMER.o
- .debug_info    0x0000425c      0x231 DRIVER_USART.o
- .debug_info    0x0000448d      0x22e DRIVER_XMEM.o
- .debug_info    0x000046bb      0x3d9 DRIVER_MCP2515.o
- .debug_info    0x00004a94      0x224 main.o
- .debug_info    0x00004cb8      0x1bb util.o
+ .debug_info    0x00000fde     0x1c95 DRIVER_MENU.o
+ .debug_info    0x00002c73     0x1413 DRIVER_OLED.o
+ .debug_info    0x00004086       0xd8 DRIVER_SPI.o
+ .debug_info    0x0000415e      0x16c DRIVER_TIMER.o
+ .debug_info    0x000042ca      0x231 DRIVER_USART.o
+ .debug_info    0x000044fb      0x22e DRIVER_XMEM.o
+ .debug_info    0x00004729      0x3d9 DRIVER_MCP2515.o
+ .debug_info    0x00004b02      0x224 main.o
+ .debug_info    0x00004d26      0x1bb util.o
 
 .debug_abbrev   0x00000000     0x17ed
  *(.debug_abbrev)
@@ -1394,21 +1397,21 @@ END GROUP
  .debug_abbrev  0x0000158e      0x12a main.o
  .debug_abbrev  0x000016b8      0x135 util.o
 
-.debug_line     0x00000000     0x1dea
+.debug_line     0x00000000     0x1e09
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0x1a c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega162.o
  .debug_line    0x0000001a      0x198 DRIVER_ADC.o
  .debug_line    0x000001b2      0x25c DRIVER_CAN.o
  .debug_line    0x0000040e      0x212 DRIVER_JOYSTICK.o
- .debug_line    0x00000620      0x71c DRIVER_MENU.o
- .debug_line    0x00000d3c      0x699 DRIVER_OLED.o
- .debug_line    0x000013d5      0x109 DRIVER_SPI.o
- .debug_line    0x000014de      0x157 DRIVER_TIMER.o
- .debug_line    0x00001635      0x12a DRIVER_USART.o
- .debug_line    0x0000175f      0x19a DRIVER_XMEM.o
- .debug_line    0x000018f9      0x26f DRIVER_MCP2515.o
- .debug_line    0x00001b68      0x1bf main.o
- .debug_line    0x00001d27       0xc3 util.o
+ .debug_line    0x00000620      0x73b DRIVER_MENU.o
+ .debug_line    0x00000d5b      0x699 DRIVER_OLED.o
+ .debug_line    0x000013f4      0x109 DRIVER_SPI.o
+ .debug_line    0x000014fd      0x157 DRIVER_TIMER.o
+ .debug_line    0x00001654      0x12a DRIVER_USART.o
+ .debug_line    0x0000177e      0x19a DRIVER_XMEM.o
+ .debug_line    0x00001918      0x26f DRIVER_MCP2515.o
+ .debug_line    0x00001b87      0x1bf main.o
+ .debug_line    0x00001d46       0xc3 util.o
 
 .debug_frame    0x00000000      0x934
  *(.debug_frame)
@@ -1425,7 +1428,7 @@ END GROUP
  .debug_frame   0x000008ac       0x24 main.o
  .debug_frame   0x000008d0       0x64 util.o
 
-.debug_str      0x00000000      0xf45
+.debug_str      0x00000000      0xf57
  *(.debug_str)
  .debug_str     0x00000000      0x1f6 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5/crtatmega162.o
  .debug_str     0x000001f6      0x1ea DRIVER_ADC.o
@@ -1434,38 +1437,38 @@ END GROUP
                                 0x261 (size before relaxing)
  .debug_str     0x0000050f       0xe5 DRIVER_JOYSTICK.o
                                 0x29e (size before relaxing)
- .debug_str     0x000005f4      0x5d3 DRIVER_MENU.o
-                                0x84e (size before relaxing)
- .debug_str     0x00000bc7      0x12d DRIVER_OLED.o
+ .debug_str     0x000005f4      0x5f8 DRIVER_MENU.o
+                                0x873 (size before relaxing)
+ .debug_str     0x00000bec      0x12d DRIVER_OLED.o
                                 0x3b6 (size before relaxing)
- .debug_str     0x00000cf4       0x3d DRIVER_SPI.o
+ .debug_str     0x00000d19       0x3d DRIVER_SPI.o
                                 0x1a2 (size before relaxing)
- .debug_str     0x00000d31       0x46 DRIVER_TIMER.o
+ .debug_str     0x00000d56       0x33 DRIVER_TIMER.o
                                 0x1e7 (size before relaxing)
- .debug_str     0x00000d77       0x7d DRIVER_USART.o
+ .debug_str     0x00000d89       0x7d DRIVER_USART.o
                                 0x1ec (size before relaxing)
- .debug_str     0x00000df4       0x85 DRIVER_XMEM.o
+ .debug_str     0x00000e06       0x85 DRIVER_XMEM.o
                                 0x21e (size before relaxing)
- .debug_str     0x00000e79       0x41 DRIVER_MCP2515.o
+ .debug_str     0x00000e8b       0x41 DRIVER_MCP2515.o
                                 0x26c (size before relaxing)
- .debug_str     0x00000eba       0x11 main.o
+ .debug_str     0x00000ecc       0x11 main.o
                                 0x23d (size before relaxing)
- .debug_str     0x00000ecb       0x7a util.o
+ .debug_str     0x00000edd       0x7a util.o
                                 0x19d (size before relaxing)
 
-.debug_loc      0x00000000     0x266a
+.debug_loc      0x00000000     0x268c
  *(.debug_loc)
  .debug_loc     0x00000000       0xe5 DRIVER_ADC.o
  .debug_loc     0x000000e5      0x374 DRIVER_CAN.o
  .debug_loc     0x00000459      0x278 DRIVER_JOYSTICK.o
- .debug_loc     0x000006d1      0xbc1 DRIVER_MENU.o
- .debug_loc     0x00001292      0xb76 DRIVER_OLED.o
- .debug_loc     0x00001e08      0x126 DRIVER_TIMER.o
- .debug_loc     0x00001f2e       0x6d DRIVER_USART.o
- .debug_loc     0x00001f9b      0x1f6 DRIVER_XMEM.o
- .debug_loc     0x00002191      0x2c6 DRIVER_MCP2515.o
- .debug_loc     0x00002457       0x44 main.o
- .debug_loc     0x0000249b      0x1cf util.o
+ .debug_loc     0x000006d1      0xbe3 DRIVER_MENU.o
+ .debug_loc     0x000012b4      0xb76 DRIVER_OLED.o
+ .debug_loc     0x00001e2a      0x126 DRIVER_TIMER.o
+ .debug_loc     0x00001f50       0x6d DRIVER_USART.o
+ .debug_loc     0x00001fbd      0x1f6 DRIVER_XMEM.o
+ .debug_loc     0x000021b3      0x2c6 DRIVER_MCP2515.o
+ .debug_loc     0x00002479       0x44 main.o
+ .debug_loc     0x000024bd      0x1cf util.o
 
 .debug_macinfo
  *(.debug_macinfo)

@@ -24,6 +24,7 @@ char secondsChar;
 char digit1char;
 char digit2char;
 char digit3char;
+char mdigitchar;
 
 static int pos_child=0;
 menu_item* main_menu;
@@ -139,15 +140,17 @@ void f_1player(){
 			}
 		break;
 	}	
-	
+		//Legge til Millisekunder også?
 		seconds = timer_get_seconds();
+		mseconds = timer_get_mseconds();
 		uint8_t digit3 =seconds/100;
 		uint8_t digit2 =seconds/10;
 		uint8_t digit1 =seconds%10;
+		uint8_t mdigit = mseconds;
 		digit3char = digit3+'0';
 		digit2char = digit2+'0';
 		digit1char = digit1+'0';
-		
+		mdigitchar = mdigit + '0';
 	
 		oled_reset();
 		//char buffer[16];
@@ -157,10 +160,12 @@ void f_1player(){
 			oled_center_print(buffer,8);
 		}
 		oled_goto_page(4);
-		oled_goto_col(52);
+		oled_goto_col(63-(5*(8/2)));
 		oled_write_char(digit3char,8);
 		oled_write_char(digit2char,8);
 		oled_write_char(digit1char,8);
+		oled_write_char(44,8);
+		oled_write_char(mdigitchar,8);
 		//char test = (char)seconds;
 		//oled_center_print(&test,8);
 		
