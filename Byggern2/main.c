@@ -31,7 +31,7 @@ int main(void){
 	adc_init();
 	joystick_calibrate();
 	can_init();
-	timer_init();
+	//timer_init();
 	
 	//oled_animation(8);
 	

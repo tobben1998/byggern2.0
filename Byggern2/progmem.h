@@ -93,6 +93,15 @@ const char animation_6[] PROGMEM="";
 const char animation_7[] PROGMEM="";
 const char animation_8[] PROGMEM="";
 
+const char gameover_1[] PROGMEM="";
+const char gameover_2[] PROGMEM="GAME OVER";
+const char gameover_3[] PROGMEM="";
+const char gameover_4[] PROGMEM="SECONDS USED:";
+const char gameover_5[] PROGMEM="";
+const char gameover_6[] PROGMEM="";
+const char gameover_7[] PROGMEM="";
+const char gameover_8[] PROGMEM="";
+
 
 
 
@@ -108,6 +117,7 @@ const char animation_8[] PROGMEM="";
 #define s_slider 56
 #define s_calibrate 64
 #define s_animation 72
+#define s_gameover 80
 
 
 
@@ -121,7 +131,8 @@ PGM_P const table[] PROGMEM={
 	joystick_1,joystick_2,joystick_3,joystick_4,joystick_5,joystick_6,joystick_7,joystick_8,
 	slider_1,slider_2,slider_3,slider_4,slider_5,slider_6,slider_7,slider_8,
 	calibrate_1,calibrate_2,calibrate_3,calibrate_4,calibrate_5,calibrate_6,calibrate_7,calibrate_8,
-	animation_1,animation_2,animation_3,animation_4,animation_5,animation_6,animation_7,animation_8
+	animation_1,animation_2,animation_3,animation_4,animation_5,animation_6,animation_7,animation_8,
+	gameover_1,gameover_2,gameover_3,gameover_4,gameover_5,gameover_6,gameover_7,gameover_8
 
 };
 

@@ -9,6 +9,7 @@ static int mseconds = 0;
 void timer_init(void){
 	//TCCR0 |= (1<< CS00); //Clock with no prescaling 4.9 MHz? Change to get higher period. 
 	cli();
+	counter = 0;
 	TCCR0 |= (1<<CS02);
 	
 	
@@ -20,6 +21,14 @@ void timer_init(void){
 
 	TIMSK |= (1<< OCIE0); //Enable interrupt by Ouput Compare
 	sei(); //Enable global interrupts
+}
+
+int timer_get_seconds(void){
+	return seconds;
+}
+
+int timer_get_mseconds(void){
+	return mseconds;
 }
 
 ISR(TIMER0_COMP_vect){

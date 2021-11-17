@@ -7,5 +7,8 @@
 #include <stdint.h>
 
 void timer_init(void);
+int timer_get_seconds(void);
+int timer_get_mseconds(void);
+
 
 #endif

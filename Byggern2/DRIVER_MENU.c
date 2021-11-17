@@ -6,6 +6,7 @@
 #include "DRIVER_OLED.h"
 #include "DRIVER_CAN.h"
 #include "progmem.h"
+#include "DRIVER_TIMER.h"
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -17,7 +18,8 @@
 
 volatile static controller ctrl;
 
-
+int seconds;
+int mseconds;
 
 static int pos_child=0;
 menu_item* main_menu;
@@ -46,13 +48,16 @@ void menu_init(){
 	main_menu->oledOffset=s_main;
 	
 	
-	Menu_new_submenu(main_menu, "1PLAYER", &f_1player, s_p1);
+
+	
+	menu_item* player_menu=Menu_new_submenu(main_menu, "1PLAYER", &f_1player, s_p1);
 	Menu_new_submenu(main_menu, "2PLAYER", &f_2player, s_p2);
 	menu_item* controller_menu=Menu_new_submenu(main_menu, "CONTROLLER", &f_controller,s_controller);
 	Menu_new_submenu(controller_menu, "JOYSTICK", &f_joystick,s_joystick);
 	Menu_new_submenu(controller_menu, "SLIDER", &f_slider,s_slider);
 	Menu_new_submenu(main_menu, "CALIBRATE", &f_calibrate,s_calibrate);
 	Menu_new_submenu(main_menu, "ANIMATION", &f_animation,s_animation);
+	//Menu_new_submenu(player_menu, "GAMEOVER", &f_gameover,s_gameover);
 	
 
 	oled_reset();
@@ -110,8 +115,9 @@ void f_1player(){
 		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
 		
-		printf("%d",ctrl);
-		//start timer		
+	//	printf("%d",ctrl);
+		//start timer
+		timer_init();		
 	switch(ctrl){
 		case JOYSTICK:
 
@@ -121,6 +127,7 @@ void f_1player(){
 				//tiden kan telle p? skjermen
 				
 			}
+			//seconds = timer_get_seconds();
 		//	
 		break;
 		case SLIDER:
@@ -129,9 +136,22 @@ void f_1player(){
 			}
 		break;
 	}	
-	curr_menu=main_menu;
-	pos_child=0;
-	(*curr_menu->function)(main_menu->name);
+	
+		oled_reset();
+		//char buffer[16];
+		for(unsigned char i=0; i<8; i++){
+			oled_goto_page(i);
+			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_gameover]));
+			oled_center_print(buffer,8);
+		}
+		oled_goto_page(4);
+		//char test = (char)seconds;
+		//oled_center_print(&test,8);
+		_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
+		
+		curr_menu=main_menu;
+		pos_child=0;
+		(*curr_menu->function)(main_menu->name);
 }
 
 void f_2player(){
@@ -167,7 +187,7 @@ void f_joystick(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = JOYSTICK;
-	printf("%d",ctrl);
+	//printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -185,7 +205,7 @@ void f_slider(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = SLIDER;
-	printf("%d",ctrl);
+	//printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -233,7 +253,25 @@ void f_animation(){
 	
 }
 
-
+/*
+void f_gameover(){
+	oled_reset();
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_gameover]));
+		oled_center_print(buffer,8);
+	}
+	oled_goto_page(4);
+	//char test = (char)seconds;
+	//oled_center_print(&test,8);
+	_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
+	
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
+}
+*/
 
 void navigate(){
 	
@@ -312,7 +350,7 @@ if(joystick_getDirection()!=NEUTRAL){
 			(*curr_menu->function)(curr_menu->name);
 		}
 		_delay_ms(200);
-		printf("button pressed");
+		//printf("button pressed");
 	}
 		
 }
