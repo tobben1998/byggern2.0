@@ -2909,17 +2909,17 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
 .debug_str      0x00000000    0x54e7f
  .debug_str     0x00000000    0x4f687 can_controller.o
                               0x4f85c (size before relaxing)
- .debug_str     0x0004f687     0x4180 can_interrupt.o
-                              0x536fb (size before relaxing)
- .debug_str     0x00053807      0x506 Device_Startup/startup_sam3xa.o
+ .debug_str     0x0004f687     0x4171 can_interrupt.o
+                              0x536ec (size before relaxing)
+ .debug_str     0x000537f8      0x56c Device_Startup/startup_sam3xa.o
                               0x4f640 (size before relaxing)
- .debug_str     0x00053d0d      0x195 Device_Startup/system_sam3xa.o
+ .debug_str     0x00053d64      0x195 Device_Startup/system_sam3xa.o
                               0x4f3d3 (size before relaxing)
- .debug_str     0x00053ea2       0xdd DRIVER_MOTOR.o
-                              0x536c5 (size before relaxing)
- .debug_str     0x00053f7f      0x93e DRIVER_PID.o
+ .debug_str     0x00053ef9       0xdd DRIVER_MOTOR.o
+                              0x536b6 (size before relaxing)
+ .debug_str     0x00053fd6      0x93e DRIVER_PID.o
                               0x53f64 (size before relaxing)
- .debug_str     0x000548bd       0x7c DRIVER_PWM.o
+ .debug_str     0x00054914       0x25 DRIVER_PWM.o
                               0x534fd (size before relaxing)
  .debug_str     0x00054939       0x6a DRIVER_ADC.o
                               0x5332f (size before relaxing)

@@ -10,6 +10,8 @@ void timer_init(void){
 	//TCCR0 |= (1<< CS00); //Clock with no prescaling 4.9 MHz? Change to get higher period. 
 	cli();
 	counter = 0;
+	seconds = 0;
+	mseconds = 0;
 	TCCR0 |= (1<<CS02);
 	
 	

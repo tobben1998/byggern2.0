@@ -16,10 +16,14 @@
 //OLED string ascces defines
 
 
-volatile static controller ctrl;
+static controller ctrl;
 
 int seconds;
 int mseconds;
+char secondsChar;
+char digit1char;
+char digit2char;
+char digit3char;
 
 static int pos_child=0;
 menu_item* main_menu;
@@ -115,7 +119,7 @@ void f_1player(){
 		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
 		
-	//	printf("%d",ctrl);
+		printf("%d",ctrl);
 		//start timer
 		timer_init();		
 	switch(ctrl){
@@ -127,7 +131,6 @@ void f_1player(){
 				//tiden kan telle p? skjermen
 				
 			}
-			//seconds = timer_get_seconds();
 		//	
 		break;
 		case SLIDER:
@@ -137,6 +140,15 @@ void f_1player(){
 		break;
 	}	
 	
+		seconds = timer_get_seconds();
+		uint8_t digit3 =seconds/100;
+		uint8_t digit2 =seconds/10;
+		uint8_t digit1 =seconds%10;
+		digit3char = digit3+'0';
+		digit2char = digit2+'0';
+		digit1char = digit1+'0';
+		
+	
 		oled_reset();
 		//char buffer[16];
 		for(unsigned char i=0; i<8; i++){
@@ -145,8 +157,14 @@ void f_1player(){
 			oled_center_print(buffer,8);
 		}
 		oled_goto_page(4);
+		oled_goto_col(52);
+		oled_write_char(digit3char,8);
+		oled_write_char(digit2char,8);
+		oled_write_char(digit1char,8);
 		//char test = (char)seconds;
 		//oled_center_print(&test,8);
+		
+		
 		_delay_ms(1000); //juster denne opp til ås lang tid calibreringa tar
 		
 		curr_menu=main_menu;
@@ -187,7 +205,7 @@ void f_joystick(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = JOYSTICK;
-	//printf("%d",ctrl);
+	printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -205,7 +223,7 @@ void f_slider(){
 		oled_center_print(buffer,8);
 	}
 	controller ctrl = SLIDER;
-	//printf("%d",ctrl);
+	printf("%d",ctrl);
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
