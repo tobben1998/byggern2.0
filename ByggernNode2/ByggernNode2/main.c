@@ -46,7 +46,7 @@ int main(void)
 		
 		motor_stop();
 		motor_encoder_tglreset();
-		motor_calibrate2();
+		motor_calibrate();
 		PID_rtt_init();
 	
 		

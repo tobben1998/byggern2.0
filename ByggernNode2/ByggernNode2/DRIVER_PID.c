@@ -15,12 +15,7 @@ static int sumError;
 static int prevError;
 
 
-//Viktig å tune disse litt nøyere.
-//Tror det har mye å si hva slags brett vi bruker. Da må vi sørge for å ha god tune før vi skal vise fram.
-//Kan bli hakkete dersom motoren ikke glir glatt, mulig å olje stangen?
-//printf i interrupthandleren tar for lang tid og vil påvirke systemet.
-//i Motor_run har jeg lagt inn en threshold som gir en øvre terskel for pådrag. Denne kan økes for at motoren skal få mer fart.
-
+//tuning parameters
 double dt = 0.010;
 double kp = 1;
 double ki = 0.5;

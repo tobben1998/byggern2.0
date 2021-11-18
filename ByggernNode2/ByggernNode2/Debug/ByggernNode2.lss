@@ -3,37 +3,37 @@ ByggernNode2.elf:     file format elf32-littlearm
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00001a30  00080000  00080000  00010000  2**2
+  0 .text         00001a04  00080000  00080000  00010000  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .relocate     0000045c  20000000  00081a30  00020000  2**3
+  1 .relocate     0000045c  20000000  00081a04  00020000  2**3
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          000000a4  2000045c  00081e8c  0002045c  2**2
+  2 .bss          000000a4  2000045c  00081e60  0002045c  2**2
                   ALLOC
-  3 .stack        00000400  20000500  00081f30  0002045c  2**0
+  3 .stack        00000400  20000500  00081f04  0002045c  2**0
                   ALLOC
-  4 .heap         00000200  20000900  00082330  0002045c  2**0
+  4 .heap         00000200  20000900  00082304  0002045c  2**0
                   ALLOC
   5 .ARM.attributes 00000029  00000000  00000000  0002045c  2**0
                   CONTENTS, READONLY
   6 .comment      00000059  00000000  00000000  00020485  2**0
                   CONTENTS, READONLY
-  7 .debug_info   0000a045  00000000  00000000  000204de  2**0
+  7 .debug_info   00009fc9  00000000  00000000  000204de  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_abbrev 00001a21  00000000  00000000  0002a523  2**0
+  8 .debug_abbrev 00001a21  00000000  00000000  0002a4a7  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_loc    0000167a  00000000  00000000  0002bf44  2**0
+  9 .debug_loc    0000160d  00000000  00000000  0002bec8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_aranges 00000280  00000000  00000000  0002d5be  2**0
+ 10 .debug_aranges 00000278  00000000  00000000  0002d4d5  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000220  00000000  00000000  0002d83e  2**0
+ 11 .debug_ranges 00000218  00000000  00000000  0002d74d  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  000137f3  00000000  00000000  0002da5e  2**0
+ 12 .debug_macro  000137f3  00000000  00000000  0002d965  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_line   00005e82  00000000  00000000  00041251  2**0
+ 13 .debug_line   00005e60  00000000  00000000  00041158  2**0
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_str    00054e6e  00000000  00000000  000470d3  2**0
+ 14 .debug_str    00054e62  00000000  00000000  00046fb8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_frame  0000081c  00000000  00000000  0009bf44  2**2
+ 15 .debug_frame  000007fc  00000000  00000000  0009be1c  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -70,7 +70,7 @@ Disassembly of section .text:
    8010a:	bd10      	pop	{r4, pc}
    8010c:	2000045c 	.word	0x2000045c
    80110:	00000000 	.word	0x00000000
-   80114:	00081a30 	.word	0x00081a30
+   80114:	00081a04 	.word	0x00081a04
 
 00080118 <frame_dummy>:
    80118:	4b0c      	ldr	r3, [pc, #48]	; (8014c <frame_dummy+0x34>)
@@ -98,9 +98,9 @@ Disassembly of section .text:
    80148:	4718      	bx	r3
    8014a:	bf00      	nop
    8014c:	00000000 	.word	0x00000000
-   80150:	00081a30 	.word	0x00081a30
+   80150:	00081a04 	.word	0x00081a04
    80154:	20000460 	.word	0x20000460
-   80158:	00081a30 	.word	0x00081a30
+   80158:	00081a04 	.word	0x00081a04
    8015c:	00000000 	.word	0x00000000
 
 00080160 <can_init>:
@@ -308,40 +308,88 @@ __STATIC_INLINE void __NVIC_EnableIRQ(IRQn_Type IRQn)
    8036c:	400b4000 	.word	0x400b4000
 
 00080370 <CAN0_Handler>:
+ * \param void
+ *
+ * \retval 
+ */
+void CAN0_Handler( void )
+{
    80370:	b530      	push	{r4, r5, lr}
    80372:	b085      	sub	sp, #20
+	if(DEBUG_INTERRUPT)printf("CAN0 interrupt\n\r");
+	char can_sr = CAN0->CAN_SR; 
    80374:	4b1c      	ldr	r3, [pc, #112]	; (803e8 <CAN0_Handler+0x78>)
    80376:	691c      	ldr	r4, [r3, #16]
+	
+	//RX interrupt
+	if(can_sr & (CAN_SR_MB1 | CAN_SR_MB2) )//Only mailbox 1 and 2 specified for receiving
    80378:	f014 0f06 	tst.w	r4, #6
    8037c:	d01d      	beq.n	803ba <CAN0_Handler+0x4a>
+	{
+		CAN_MESSAGE message;
+		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
    8037e:	f014 0f02 	tst.w	r4, #2
    80382:	d127      	bne.n	803d4 <CAN0_Handler+0x64>
+		{
+			can_receive(&message, 1);
+
+		}
+		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
    80384:	f014 0f04 	tst.w	r4, #4
    80388:	d029      	beq.n	803de <CAN0_Handler+0x6e>
+		
+		{
+			can_receive(&message, 2);
    8038a:	2102      	movs	r1, #2
    8038c:	a801      	add	r0, sp, #4
    8038e:	4b17      	ldr	r3, [pc, #92]	; (803ec <CAN0_Handler+0x7c>)
    80390:	4798      	blx	r3
+			printf("CAN0 message arrived in non-used mailbox\n\r");
+		}
+
+		if(DEBUG_INTERRUPT)printf("message id: %d\n\r", message.id);
+		if(DEBUG_INTERRUPT)printf("message data length: %d\n\r", message.data_length);
+		for (int i = 0; i < message.data_length; i++)
    80392:	f89d 2006 	ldrb.w	r2, [sp, #6]
    80396:	b11a      	cbz	r2, 803a0 <CAN0_Handler+0x30>
    80398:	2300      	movs	r3, #0
    8039a:	3301      	adds	r3, #1
    8039c:	4293      	cmp	r3, r2
    8039e:	d1fc      	bne.n	8039a <CAN0_Handler+0x2a>
+		{
+			if(DEBUG_INTERRUPT)printf("%d ", message.data[i]);
+		}
+		if(DEBUG_INTERRUPT)printf("\n\r");
+		
+		if (message.id=1){
    803a0:	ad04      	add	r5, sp, #16
    803a2:	2301      	movs	r3, #1
    803a4:	f825 3d0c 	strh.w	r3, [r5, #-12]!
+			pwm_update_duty_cycle(&message);
    803a8:	4628      	mov	r0, r5
    803aa:	4b11      	ldr	r3, [pc, #68]	; (803f0 <CAN0_Handler+0x80>)
    803ac:	4798      	blx	r3
+			//motor_dac_send(&message);
+			motor_solenoid(&message);
    803ae:	4628      	mov	r0, r5
    803b0:	4b10      	ldr	r3, [pc, #64]	; (803f4 <CAN0_Handler+0x84>)
    803b2:	4798      	blx	r3
+			PID_update_refPos(&message);
    803b4:	4628      	mov	r0, r5
    803b6:	4b10      	ldr	r3, [pc, #64]	; (803f8 <CAN0_Handler+0x88>)
    803b8:	4798      	blx	r3
+		}
+	}
+
+	
+	if(can_sr & CAN_SR_MB0)
    803ba:	f014 0f01 	tst.w	r4, #1
    803be:	d002      	beq.n	803c6 <CAN0_Handler+0x56>
+	{
+		if(DEBUG_INTERRUPT) printf("CAN0 MB0 ready to send \n\r");
+		
+	//Disable interrupt
+		CAN0->CAN_IDR = CAN_IER_MB0;
    803c0:	2201      	movs	r2, #1
    803c2:	4b09      	ldr	r3, [pc, #36]	; (803e8 <CAN0_Handler+0x78>)
    803c4:	609a      	str	r2, [r3, #8]
@@ -354,13 +402,21 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    803c6:	f44f 6200 	mov.w	r2, #2048	; 0x800
    803ca:	4b0c      	ldr	r3, [pc, #48]	; (803fc <CAN0_Handler+0x8c>)
    803cc:	f8c3 2184 	str.w	r2, [r3, #388]	; 0x184
+
+	}
+	
+	NVIC_ClearPendingIRQ(ID_CAN0);
+
+}
    803d0:	b005      	add	sp, #20
    803d2:	bd30      	pop	{r4, r5, pc}
+			can_receive(&message, 1);
    803d4:	2101      	movs	r1, #1
    803d6:	a801      	add	r0, sp, #4
    803d8:	4b04      	ldr	r3, [pc, #16]	; (803ec <CAN0_Handler+0x7c>)
    803da:	4798      	blx	r3
    803dc:	e7d9      	b.n	80392 <CAN0_Handler+0x22>
+			printf("CAN0 message arrived in non-used mailbox\n\r");
    803de:	4808      	ldr	r0, [pc, #32]	; (80400 <CAN0_Handler+0x90>)
    803e0:	4b08      	ldr	r3, [pc, #32]	; (80404 <CAN0_Handler+0x94>)
    803e2:	4798      	blx	r3
@@ -424,7 +480,7 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    8046c:	e7fe      	b.n	8046c <Reset_Handler+0x60>
    8046e:	bf00      	nop
    80470:	20000000 	.word	0x20000000
-   80474:	00081a30 	.word	0x00081a30
+   80474:	00081a04 	.word	0x00081a04
    80478:	2000045c 	.word	0x2000045c
    8047c:	20000500 	.word	0x20000500
    80480:	2000045c 	.word	0x2000045c
@@ -500,78 +556,118 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80534:	20000000 	.word	0x20000000
 
 00080538 <motor_init>:
+#include "printf-stdarg.h"
+#include "DRIVER_PID.h"
+
+
+
+void motor_init(void){
    80538:	b410      	push	{r4}
+	//enable PIO registers
+	PIOB->PIO_PER |= PIO_PER_P27; //pwm13
    8053a:	4930      	ldr	r1, [pc, #192]	; (805fc <motor_init+0xc4>)
    8053c:	680b      	ldr	r3, [r1, #0]
    8053e:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
    80542:	600b      	str	r3, [r1, #0]
+	//MJ1
+	PIOD->PIO_PER |= PIO_PER_P0; //!OE
    80544:	4b2e      	ldr	r3, [pc, #184]	; (80600 <motor_init+0xc8>)
    80546:	681a      	ldr	r2, [r3, #0]
    80548:	f042 0201 	orr.w	r2, r2, #1
    8054c:	601a      	str	r2, [r3, #0]
+	PIOD->PIO_PER |= PIO_PER_P1; //!RST
    8054e:	681a      	ldr	r2, [r3, #0]
    80550:	f042 0202 	orr.w	r2, r2, #2
    80554:	601a      	str	r2, [r3, #0]
+	PIOD->PIO_PER |= PIO_PER_P2; //SEL
    80556:	681a      	ldr	r2, [r3, #0]
    80558:	f042 0204 	orr.w	r2, r2, #4
    8055c:	601a      	str	r2, [r3, #0]
+	PIOD->PIO_PER |= PIO_PER_P9; //EN
    8055e:	681a      	ldr	r2, [r3, #0]
    80560:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    80564:	601a      	str	r2, [r3, #0]
+	PIOD->PIO_PER |= PIO_PER_P10;//DIR
    80566:	681a      	ldr	r2, [r3, #0]
    80568:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    8056c:	601a      	str	r2, [r3, #0]
+	//MJ2
+	PIOC->PIO_PER |= PIO_PER_P1; //D0
    8056e:	4a25      	ldr	r2, [pc, #148]	; (80604 <motor_init+0xcc>)
    80570:	6810      	ldr	r0, [r2, #0]
    80572:	f040 0002 	orr.w	r0, r0, #2
    80576:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P2; //D1
    80578:	6810      	ldr	r0, [r2, #0]
    8057a:	f040 0004 	orr.w	r0, r0, #4
    8057e:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P3; //D2
    80580:	6810      	ldr	r0, [r2, #0]
    80582:	f040 0008 	orr.w	r0, r0, #8
    80586:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P4; //D3
    80588:	6810      	ldr	r0, [r2, #0]
    8058a:	f040 0010 	orr.w	r0, r0, #16
    8058e:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P5; //D4
    80590:	6810      	ldr	r0, [r2, #0]
    80592:	f040 0020 	orr.w	r0, r0, #32
    80596:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P6; //D5
    80598:	6810      	ldr	r0, [r2, #0]
    8059a:	f040 0040 	orr.w	r0, r0, #64	; 0x40
    8059e:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P7; //D6
    805a0:	6810      	ldr	r0, [r2, #0]
    805a2:	f040 0080 	orr.w	r0, r0, #128	; 0x80
    805a6:	6010      	str	r0, [r2, #0]
+	PIOC->PIO_PER |= PIO_PER_P8; //D7
    805a8:	6810      	ldr	r0, [r2, #0]
    805aa:	f440 7080 	orr.w	r0, r0, #256	; 0x100
    805ae:	6010      	str	r0, [r2, #0]
+	
+	//Enable clock to PIOC peripheral, in order to be able to read pin input 
+	PMC->PMC_PCER0 |= (1 << 13);
    805b0:	4c15      	ldr	r4, [pc, #84]	; (80608 <motor_init+0xd0>)
    805b2:	6920      	ldr	r0, [r4, #16]
    805b4:	f440 5000 	orr.w	r0, r0, #8192	; 0x2000
    805b8:	6120      	str	r0, [r4, #16]
+	
+	//enable input of MJ2 pins
+	PIOC->PIO_ODR |= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
    805ba:	6950      	ldr	r0, [r2, #20]
    805bc:	f440 70ff 	orr.w	r0, r0, #510	; 0x1fe
    805c0:	6150      	str	r0, [r2, #20]
+	
+	//enable output of MJ1 pins
+	PIOB->PIO_OER |= PIO_OER_P27;
    805c2:	690a      	ldr	r2, [r1, #16]
    805c4:	f042 6200 	orr.w	r2, r2, #134217728	; 0x8000000
    805c8:	610a      	str	r2, [r1, #16]
+	PIOD->PIO_OER |= (PIO_OER_P0 | PIO_OER_P1 | PIO_OER_P2 | PIO_OER_P9 | PIO_OER_P10);
    805ca:	691a      	ldr	r2, [r3, #16]
    805cc:	f442 62c0 	orr.w	r2, r2, #1536	; 0x600
    805d0:	f042 0207 	orr.w	r2, r2, #7
    805d4:	611a      	str	r2, [r3, #16]
+	
+	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN to enable motor
    805d6:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805d8:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    805dc:	631a      	str	r2, [r3, #48]	; 0x30
+	PIOD->PIO_SODR |= PIO_SODR_P10; //set direction. USE CODR for the other direction
    805de:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805e0:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    805e4:	631a      	str	r2, [r3, #48]	; 0x30
+	PIOD->PIO_CODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    805e6:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    805e8:	f042 0201 	orr.w	r2, r2, #1
    805ec:	635a      	str	r2, [r3, #52]	; 0x34
+	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
    805ee:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805f0:	f042 0202 	orr.w	r2, r2, #2
    805f4:	631a      	str	r2, [r3, #48]	; 0x30
+	
+}
    805f6:	bc10      	pop	{r4}
    805f8:	4770      	bx	lr
    805fa:	bf00      	nop
@@ -581,16 +677,25 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80608:	400e0600 	.word	0x400e0600
 
 0008060c <motor_dac_init>:
+	return result;
+}
+
+void motor_dac_init(void){
+	
+	REG_PMC_PCER1 |= PMC_PCER1_PID38; //enable clock
    8060c:	4a08      	ldr	r2, [pc, #32]	; (80630 <motor_dac_init+0x24>)
    8060e:	6813      	ldr	r3, [r2, #0]
    80610:	f043 0340 	orr.w	r3, r3, #64	; 0x40
    80614:	6013      	str	r3, [r2, #0]
+	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //free-running mode
    80616:	4b07      	ldr	r3, [pc, #28]	; (80634 <motor_dac_init+0x28>)
    80618:	681a      	ldr	r2, [r3, #0]
    8061a:	601a      	str	r2, [r3, #0]
+	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //channel 1
    8061c:	681a      	ldr	r2, [r3, #0]
    8061e:	f442 3280 	orr.w	r2, r2, #65536	; 0x10000
    80622:	601a      	str	r2, [r3, #0]
+	REG_DACC_CHER |= DACC_CHER_CH1;
    80624:	4a04      	ldr	r2, [pc, #16]	; (80638 <motor_dac_init+0x2c>)
    80626:	6813      	ldr	r3, [r2, #0]
    80628:	f043 0302 	orr.w	r3, r3, #2
@@ -601,13 +706,24 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80638:	400c8010 	.word	0x400c8010
 
 0008063c <motor_solenoid>:
+	}
+	REG_DACC_CDR=temp;
+}
+
+void motor_solenoid(CAN_MESSAGE *msg){
+	if(msg->data[2]){
    8063c:	7943      	ldrb	r3, [r0, #5]
    8063e:	b92b      	cbnz	r3, 8064c <motor_solenoid+0x10>
+	PIOB->PIO_CODR |= PIO_CODR_P27;//pin 13 on shield. active low
+	}
+	else{
+	PIOB->PIO_SODR |= PIO_SODR_P27;		
    80640:	4a05      	ldr	r2, [pc, #20]	; (80658 <motor_solenoid+0x1c>)
    80642:	6b13      	ldr	r3, [r2, #48]	; 0x30
    80644:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
    80648:	6313      	str	r3, [r2, #48]	; 0x30
    8064a:	4770      	bx	lr
+	PIOB->PIO_CODR |= PIO_CODR_P27;//pin 13 on shield. active low
    8064c:	4a02      	ldr	r2, [pc, #8]	; (80658 <motor_solenoid+0x1c>)
    8064e:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80650:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
@@ -616,13 +732,20 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80658:	400e1000 	.word	0x400e1000
 
 0008065c <motor_encoder_tglreset>:
+	}
+}
+
+void motor_encoder_tglreset(void){
+	PIOD->PIO_CODR |= PIO_CODR_P1;	
    8065c:	4a07      	ldr	r2, [pc, #28]	; (8067c <motor_encoder_tglreset+0x20>)
    8065e:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80660:	f043 0302 	orr.w	r3, r3, #2
    80664:	6353      	str	r3, [r2, #52]	; 0x34
    80666:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
+	for(int i=0; i<2000; i++);		
    8066a:	3b01      	subs	r3, #1
    8066c:	d1fd      	bne.n	8066a <motor_encoder_tglreset+0xe>
+	PIOD->PIO_SODR |= PIO_SODR_P1;
    8066e:	4a03      	ldr	r2, [pc, #12]	; (8067c <motor_encoder_tglreset+0x20>)
    80670:	6b13      	ldr	r3, [r2, #48]	; 0x30
    80672:	f043 0302 	orr.w	r3, r3, #2
@@ -632,38 +755,51 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    8067c:	400e1400 	.word	0x400e1400
 
 00080680 <motor_read_encoder>:
+int16_t motor_read_encoder(int doReset){
    80680:	b538      	push	{r3, r4, r5, lr}
+	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
    80682:	4b14      	ldr	r3, [pc, #80]	; (806d4 <motor_read_encoder+0x54>)
    80684:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    80686:	f042 0201 	orr.w	r2, r2, #1
    8068a:	635a      	str	r2, [r3, #52]	; 0x34
+	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
    8068c:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    8068e:	f042 0204 	orr.w	r2, r2, #4
    80692:	635a      	str	r2, [r3, #52]	; 0x34
    80694:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
+	for(int i =0; i<2000; i++);		//waiting..
    80698:	3b01      	subs	r3, #1
    8069a:	d1fd      	bne.n	80698 <motor_read_encoder+0x18>
+	int8_t MSB = PIOC->PIO_PDSR;
    8069c:	4b0e      	ldr	r3, [pc, #56]	; (806d8 <motor_read_encoder+0x58>)
    8069e:	6bdd      	ldr	r5, [r3, #60]	; 0x3c
    806a0:	b26d      	sxtb	r5, r5
+	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
    806a2:	4a0c      	ldr	r2, [pc, #48]	; (806d4 <motor_read_encoder+0x54>)
    806a4:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806a6:	f043 0304 	orr.w	r3, r3, #4
    806aa:	6313      	str	r3, [r2, #48]	; 0x30
    806ac:	f44f 63fa 	mov.w	r3, #2000	; 0x7d0
+	for(int i =0; i<2000; i++);		//waiting..
    806b0:	3b01      	subs	r3, #1
    806b2:	d1fd      	bne.n	806b0 <motor_read_encoder+0x30>
+	int8_t LSB = PIOC->PIO_PDSR;
    806b4:	4b08      	ldr	r3, [pc, #32]	; (806d8 <motor_read_encoder+0x58>)
    806b6:	6bdc      	ldr	r4, [r3, #60]	; 0x3c
    806b8:	b264      	sxtb	r4, r4
+	if(doReset){
    806ba:	b940      	cbnz	r0, 806ce <motor_read_encoder+0x4e>
+	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    806bc:	4a05      	ldr	r2, [pc, #20]	; (806d4 <motor_read_encoder+0x54>)
    806be:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806c0:	f043 0301 	orr.w	r3, r3, #1
    806c4:	6313      	str	r3, [r2, #48]	; 0x30
+	int16_t result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //merge MSB and LSB
    806c6:	b2e0      	uxtb	r0, r4
+}
    806c8:	ea40 2005 	orr.w	r0, r0, r5, lsl #8
    806cc:	bd38      	pop	{r3, r4, r5, pc}
+		motor_encoder_tglreset();
    806ce:	4b03      	ldr	r3, [pc, #12]	; (806dc <motor_read_encoder+0x5c>)
    806d0:	4798      	blx	r3
    806d2:	e7f3      	b.n	806bc <motor_read_encoder+0x3c>
@@ -672,18 +808,30 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    806dc:	0008065d 	.word	0x0008065d
 
 000806e0 <motor_run>:
+}
+
+void motor_run(int dirLeft, int speed){
+	if(dirLeft){
    806e0:	b170      	cbz	r0, 80700 <motor_run+0x20>
+		PIOD->PIO_SODR |= PIO_SODR_P10; //DIR left
    806e2:	4a0a      	ldr	r2, [pc, #40]	; (8070c <motor_run+0x2c>)
    806e4:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806e6:	f443 6380 	orr.w	r3, r3, #1024	; 0x400
    806ea:	6313      	str	r3, [r2, #48]	; 0x30
    806ec:	ea21 71e1 	bic.w	r1, r1, r1, asr #31
+		speed = threshold;
+	}
+	else if( speed < 0){
+		speed = 0;
+	}
+	REG_DACC_CDR=speed;
    806f0:	f5b1 7f7a 	cmp.w	r1, #1000	; 0x3e8
    806f4:	bfa8      	it	ge
    806f6:	f44f 717a 	movge.w	r1, #1000	; 0x3e8
    806fa:	4b05      	ldr	r3, [pc, #20]	; (80710 <motor_run+0x30>)
    806fc:	6019      	str	r1, [r3, #0]
    806fe:	4770      	bx	lr
+		PIOD->PIO_CODR |= PIO_CODR_P10; //DIR right
    80700:	4a02      	ldr	r2, [pc, #8]	; (8070c <motor_run+0x2c>)
    80702:	6b53      	ldr	r3, [r2, #52]	; 0x34
    80704:	f443 6380 	orr.w	r3, r3, #1024	; 0x400
@@ -693,7 +841,14 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80710:	400c8020 	.word	0x400c8020
 
 00080714 <motor_stop>:
+	motor_encoder_tglreset();
+	
+	printf("Calibration done, Position %d \n\r", motor_read_encoder(0));
+}
+
+void motor_stop(void){
    80714:	b508      	push	{r3, lr}
+	motor_run(0,0);
    80716:	2100      	movs	r1, #0
    80718:	4608      	mov	r0, r1
    8071a:	4b01      	ldr	r3, [pc, #4]	; (80720 <motor_stop+0xc>)
@@ -701,62 +856,84 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    8071e:	bd08      	pop	{r3, pc}
    80720:	000806e1 	.word	0x000806e1
 
-00080724 <motor_calibrate2>:
+00080724 <motor_calibrate>:
+void motor_calibrate(void){
    80724:	e92d 43f8 	stmdb	sp!, {r3, r4, r5, r6, r7, r8, r9, lr}
+	int pos = motor_read_encoder(0);
    80728:	2000      	movs	r0, #0
-   8072a:	4b14      	ldr	r3, [pc, #80]	; (8077c <motor_calibrate2+0x58>)
+   8072a:	4b14      	ldr	r3, [pc, #80]	; (8077c <motor_calibrate+0x58>)
    8072c:	4798      	blx	r3
    8072e:	4680      	mov	r8, r0
+			motor_run(0, 800);
    80730:	2500      	movs	r5, #0
-   80732:	4f13      	ldr	r7, [pc, #76]	; (80780 <motor_calibrate2+0x5c>)
-   80734:	f8df 9044 	ldr.w	r9, [pc, #68]	; 8077c <motor_calibrate2+0x58>
-   80738:	4c12      	ldr	r4, [pc, #72]	; (80784 <motor_calibrate2+0x60>)
+   80732:	4f13      	ldr	r7, [pc, #76]	; (80780 <motor_calibrate+0x5c>)
+		pos = motor_read_encoder(0);
+   80734:	f8df 9044 	ldr.w	r9, [pc, #68]	; 8077c <motor_calibrate+0x58>
+void motor_calibrate(void){
+   80738:	4c12      	ldr	r4, [pc, #72]	; (80784 <motor_calibrate+0x60>)
+			motor_run(0, 800);
    8073a:	f44f 7648 	mov.w	r6, #800	; 0x320
    8073e:	4631      	mov	r1, r6
    80740:	4628      	mov	r0, r5
    80742:	47b8      	blx	r7
+		for(int i = 0; i < 100000; i++){
    80744:	3c01      	subs	r4, #1
-   80746:	d1fa      	bne.n	8073e <motor_calibrate2+0x1a>
+   80746:	d1fa      	bne.n	8073e <motor_calibrate+0x1a>
+		pos = motor_read_encoder(0);
    80748:	4628      	mov	r0, r5
    8074a:	47c8      	blx	r9
    8074c:	4604      	mov	r4, r0
+		printf("prevPos: %d, pos: %d \n\r", prevPos, pos);
    8074e:	4602      	mov	r2, r0
    80750:	4641      	mov	r1, r8
-   80752:	480d      	ldr	r0, [pc, #52]	; (80788 <motor_calibrate2+0x64>)
-   80754:	4b0d      	ldr	r3, [pc, #52]	; (8078c <motor_calibrate2+0x68>)
+   80752:	480d      	ldr	r0, [pc, #52]	; (80788 <motor_calibrate+0x64>)
+   80754:	4b0d      	ldr	r3, [pc, #52]	; (8078c <motor_calibrate+0x68>)
    80756:	4798      	blx	r3
+	while(prevPos != pos){
    80758:	4544      	cmp	r4, r8
-   8075a:	d001      	beq.n	80760 <motor_calibrate2+0x3c>
+   8075a:	d001      	beq.n	80760 <motor_calibrate+0x3c>
+		pos = motor_read_encoder(0);
    8075c:	46a0      	mov	r8, r4
-   8075e:	e7eb      	b.n	80738 <motor_calibrate2+0x14>
-   80760:	4b0b      	ldr	r3, [pc, #44]	; (80790 <motor_calibrate2+0x6c>)
+   8075e:	e7eb      	b.n	80738 <motor_calibrate+0x14>
+	motor_stop();
+   80760:	4b0b      	ldr	r3, [pc, #44]	; (80790 <motor_calibrate+0x6c>)
    80762:	4798      	blx	r3
-   80764:	4b0b      	ldr	r3, [pc, #44]	; (80794 <motor_calibrate2+0x70>)
+	motor_encoder_tglreset();
+   80764:	4b0b      	ldr	r3, [pc, #44]	; (80794 <motor_calibrate+0x70>)
    80766:	4798      	blx	r3
+	printf("Calibration done, Position %d \n\r", motor_read_encoder(0));
    80768:	2000      	movs	r0, #0
-   8076a:	4b04      	ldr	r3, [pc, #16]	; (8077c <motor_calibrate2+0x58>)
+   8076a:	4b04      	ldr	r3, [pc, #16]	; (8077c <motor_calibrate+0x58>)
    8076c:	4798      	blx	r3
    8076e:	4601      	mov	r1, r0
-   80770:	4809      	ldr	r0, [pc, #36]	; (80798 <motor_calibrate2+0x74>)
-   80772:	4b06      	ldr	r3, [pc, #24]	; (8078c <motor_calibrate2+0x68>)
+   80770:	4809      	ldr	r0, [pc, #36]	; (80798 <motor_calibrate+0x74>)
+   80772:	4b06      	ldr	r3, [pc, #24]	; (8078c <motor_calibrate+0x68>)
    80774:	4798      	blx	r3
    80776:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
    8077a:	bf00      	nop
    8077c:	00080681 	.word	0x00080681
    80780:	000806e1 	.word	0x000806e1
    80784:	000186a0 	.word	0x000186a0
-   80788:	00081928 	.word	0x00081928
+   80788:	000818fc 	.word	0x000818fc
    8078c:	00080dc1 	.word	0x00080dc1
    80790:	00080715 	.word	0x00080715
    80794:	0008065d 	.word	0x0008065d
-   80798:	00081940 	.word	0x00081940
+   80798:	00081914 	.word	0x00081914
 
 0008079c <PID_rtt_init>:
+double dt = 0.010;
+double kp = 1;
+double ki = 0.5;
+double kd = 0.01;
+
+void PID_rtt_init(void){
    8079c:	b510      	push	{r4, lr}
     NVIC->ISER[(((uint32_t)(int32_t)IRQn) >> 5UL)] = (uint32_t)(1UL << (((uint32_t)(int32_t)IRQn) & 0x1FUL));
    8079e:	2208      	movs	r2, #8
    807a0:	4b0c      	ldr	r3, [pc, #48]	; (807d4 <PID_rtt_init+0x38>)
    807a2:	601a      	str	r2, [r3, #0]
+	NVIC_EnableIRQ(RTT_IRQn); // Enable RTT interrupts in NVIC
+	uint8_t mseconds = 1000*dt;
    807a4:	2200      	movs	r2, #0
    807a6:	4b0c      	ldr	r3, [pc, #48]	; (807d8 <PID_rtt_init+0x3c>)
    807a8:	490c      	ldr	r1, [pc, #48]	; (807dc <PID_rtt_init+0x40>)
@@ -765,14 +942,18 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    807b0:	47a0      	blx	r4
    807b2:	4b0c      	ldr	r3, [pc, #48]	; (807e4 <PID_rtt_init+0x48>)
    807b4:	4798      	blx	r3
+	uint32_t prescaler = mseconds * 33; //not fully accurate, but good enough.
    807b6:	b2c0      	uxtb	r0, r0
    807b8:	eb00 1040 	add.w	r0, r0, r0, lsl #5
+	REG_RTT_MR = 0;
    807bc:	4b0a      	ldr	r3, [pc, #40]	; (807e8 <PID_rtt_init+0x4c>)
    807be:	2200      	movs	r2, #0
    807c0:	601a      	str	r2, [r3, #0]
+	REG_RTT_MR |= (prescaler << RTT_MR_RTPRES_Pos);
    807c2:	681a      	ldr	r2, [r3, #0]
    807c4:	4310      	orrs	r0, r2
    807c6:	6018      	str	r0, [r3, #0]
+	REG_RTT_MR |= RTT_MR_RTTINCIEN;
    807c8:	681a      	ldr	r2, [r3, #0]
    807ca:	f442 3200 	orr.w	r2, r2, #131072	; 0x20000
    807ce:	601a      	str	r2, [r3, #0]
@@ -786,22 +967,35 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    807e8:	400e1a30 	.word	0x400e1a30
 
 000807ec <RTT_Handler>:
+};
+
+
+
+void RTT_Handler(void){
    807ec:	e92d 4ff0 	stmdb	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, lr}
    807f0:	b085      	sub	sp, #20
+	//this interupt handler can be used to control the regulator. rembemer to call pid_rtt_init();
+	int pos = motor_read_encoder(0);
    807f2:	2000      	movs	r0, #0
    807f4:	4b2f      	ldr	r3, [pc, #188]	; (808b4 <RTT_Handler+0xc8>)
    807f6:	4798      	blx	r3
+	int ref = refPos; //RefPos might change at an interrupt.
    807f8:	4b2f      	ldr	r3, [pc, #188]	; (808b8 <RTT_Handler+0xcc>)
+	int error = ref - pos;
    807fa:	681c      	ldr	r4, [r3, #0]
    807fc:	1a24      	subs	r4, r4, r0
+	sumError += error;
    807fe:	4f2f      	ldr	r7, [pc, #188]	; (808bc <RTT_Handler+0xd0>)
    80800:	683b      	ldr	r3, [r7, #0]
    80802:	eb04 0b03 	add.w	fp, r4, r3
    80806:	f8c7 b000 	str.w	fp, [r7]
+
+	int derivative = kd/dt*(error-prevError);
    8080a:	f8df a0c4 	ldr.w	sl, [pc, #196]	; 808d0 <RTT_Handler+0xe4>
    8080e:	e9da 2300 	ldrd	r2, r3, [sl]
    80812:	4610      	mov	r0, r2
    80814:	4619      	mov	r1, r3
+	int integral = dt*ki*sumError;
    80816:	4e2a      	ldr	r6, [pc, #168]	; (808c0 <RTT_Handler+0xd4>)
    80818:	e9da 2302 	ldrd	r2, r3, [sl, #8]
    8081c:	e9cd 0100 	strd	r0, r1, [sp]
@@ -818,6 +1012,8 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80834:	47b0      	blx	r6
    80836:	f8df b09c 	ldr.w	fp, [pc, #156]	; 808d4 <RTT_Handler+0xe8>
    8083a:	47d8      	blx	fp
+	
+	int power = kp*error + integral + derivative;
    8083c:	47a8      	blx	r5
    8083e:	e9cd 0102 	strd	r0, r1, [sp, #8]
    80842:	4620      	mov	r0, r4
@@ -830,6 +1026,7 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    80854:	e9dd 0102 	ldrd	r0, r1, [sp, #8]
    80858:	47c8      	blx	r9
    8085a:	e9cd 0102 	strd	r0, r1, [sp, #8]
+	int derivative = kd/dt*(error-prevError);
    8085e:	e9dd 2300 	ldrd	r2, r3, [sp]
    80862:	e9da 0106 	ldrd	r0, r1, [sl, #24]
    80866:	f8df 8074 	ldr.w	r8, [pc, #116]	; 808dc <RTT_Handler+0xf0>
@@ -843,27 +1040,46 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    8087a:	e9dd 0100 	ldrd	r0, r1, [sp]
    8087e:	47b0      	blx	r6
    80880:	47d8      	blx	fp
+	int power = kp*error + integral + derivative;
    80882:	47a8      	blx	r5
    80884:	4602      	mov	r2, r0
    80886:	460b      	mov	r3, r1
    80888:	e9dd 0102 	ldrd	r0, r1, [sp, #8]
    8088c:	47c8      	blx	r9
    8088e:	47d8      	blx	fp
+	
+	bool dir = 0;
+	if(power < 0){
    80890:	1e01      	subs	r1, r0, #0
    80892:	db0c      	blt.n	808ae <RTT_Handler+0xc2>
+		dir = 0;
+		power = -power;
+	}
+	else if(power > 0){
    80894:	2900      	cmp	r1, #0
    80896:	bfd4      	ite	le
    80898:	2000      	movle	r0, #0
    8089a:	2001      	movgt	r0, #1
+		dir = 1;
+	}
+	motor_run(dir,power);
    8089c:	4b0a      	ldr	r3, [pc, #40]	; (808c8 <RTT_Handler+0xdc>)
    8089e:	4798      	blx	r3
+	
+	prevError = error;
    808a0:	4b06      	ldr	r3, [pc, #24]	; (808bc <RTT_Handler+0xd0>)
    808a2:	605c      	str	r4, [r3, #4]
+
+	//reading status register will clear interrupt flags
+	uint32_t status = REG_RTT_SR;
    808a4:	4b09      	ldr	r3, [pc, #36]	; (808cc <RTT_Handler+0xe0>)
    808a6:	681b      	ldr	r3, [r3, #0]
+}
    808a8:	b005      	add	sp, #20
    808aa:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
+		power = -power;
    808ae:	4249      	negs	r1, r1
+		dir = 0;
    808b0:	2000      	movs	r0, #0
    808b2:	e7f3      	b.n	8089c <RTT_Handler+0xb0>
    808b4:	00080681 	.word	0x00080681
@@ -879,6 +1095,11 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
    808dc:	00081501 	.word	0x00081501
 
 000808e0 <PID_update_refPos>:
+
+
+void PID_update_refPos(CAN_MESSAGE *msg){
+	int8_t posData = msg->data[0]; //[-100,100]
+	refPos = -(posData - 100)*190/2; //Converting [-100,100] to [19000,0]
    808e0:	f990 3003 	ldrsb.w	r3, [r0, #3]
    808e4:	f1c3 0264 	rsb	r2, r3, #100	; 0x64
    808e8:	23be      	movs	r3, #190	; 0xbe
@@ -1054,58 +1275,95 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    80a30:	400c0050 	.word	0x400c0050
    80a34:	20000028 	.word	0x20000028
    80a38:	20000480 	.word	0x20000480
-   80a3c:	00081978 	.word	0x00081978
+   80a3c:	0008194c 	.word	0x0008194c
    80a40:	00080dc1 	.word	0x00080dc1
    80a44:	00080261 	.word	0x00080261
 
 00080a48 <main>:
+#include "timer.h"
+
+#define CAN_BR 0x00290561
+
+int main(void)
+{
    80a48:	b508      	push	{r3, lr}
+		//LED TEST
+		PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
    80a4a:	4b1c      	ldr	r3, [pc, #112]	; (80abc <main+0x74>)
    80a4c:	681a      	ldr	r2, [r3, #0]
    80a4e:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a52:	601a      	str	r2, [r3, #0]
+		PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
    80a54:	691a      	ldr	r2, [r3, #16]
    80a56:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a5a:	611a      	str	r2, [r3, #16]
+		PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register
    80a5c:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    80a5e:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a62:	631a      	str	r2, [r3, #48]	; 0x30
+								
+		PIOA->PIO_PER |= PIO_PER_P20;  //pio enable register
    80a64:	681a      	ldr	r2, [r3, #0]
    80a66:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a6a:	601a      	str	r2, [r3, #0]
+		PIOA->PIO_OER |= PIO_OER_P20;  //pio enable output register
    80a6c:	691a      	ldr	r2, [r3, #16]
    80a6e:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a72:	611a      	str	r2, [r3, #16]
+		PIOA->PIO_SODR |= PIO_SODR_P20;  //set output data register
    80a74:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    80a76:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a7a:	631a      	str	r2, [r3, #48]	; 0x30
+		
+	
+		SystemInit(); //init SAM system
    80a7c:	4b10      	ldr	r3, [pc, #64]	; (80ac0 <main+0x78>)
    80a7e:	4798      	blx	r3
+		WDT->WDT_MR |= WDT_MR_WDDIS; // disable the watchdog timer
    80a80:	4a10      	ldr	r2, [pc, #64]	; (80ac4 <main+0x7c>)
    80a82:	6853      	ldr	r3, [r2, #4]
    80a84:	f443 4300 	orr.w	r3, r3, #32768	; 0x8000
    80a88:	6053      	str	r3, [r2, #4]
+		configure_uart();
    80a8a:	4b0f      	ldr	r3, [pc, #60]	; (80ac8 <main+0x80>)
    80a8c:	4798      	blx	r3
+		can_init_def_tx_rx_mb(CAN_BR);
    80a8e:	480f      	ldr	r0, [pc, #60]	; (80acc <main+0x84>)
    80a90:	4b0f      	ldr	r3, [pc, #60]	; (80ad0 <main+0x88>)
    80a92:	4798      	blx	r3
+		pwm_init();
    80a94:	4b0f      	ldr	r3, [pc, #60]	; (80ad4 <main+0x8c>)
    80a96:	4798      	blx	r3
+		adc_init();
    80a98:	4b0f      	ldr	r3, [pc, #60]	; (80ad8 <main+0x90>)
    80a9a:	4798      	blx	r3
+		motor_init();
    80a9c:	4b0f      	ldr	r3, [pc, #60]	; (80adc <main+0x94>)
    80a9e:	4798      	blx	r3
+		motor_dac_init();
    80aa0:	4b0f      	ldr	r3, [pc, #60]	; (80ae0 <main+0x98>)
    80aa2:	4798      	blx	r3
+		
+		
+		
+		motor_stop();
    80aa4:	4b0f      	ldr	r3, [pc, #60]	; (80ae4 <main+0x9c>)
    80aa6:	4798      	blx	r3
+		motor_encoder_tglreset();
    80aa8:	4b0f      	ldr	r3, [pc, #60]	; (80ae8 <main+0xa0>)
    80aaa:	4798      	blx	r3
+		motor_calibrate();
    80aac:	4b0f      	ldr	r3, [pc, #60]	; (80aec <main+0xa4>)
    80aae:	4798      	blx	r3
+		PID_rtt_init();
    80ab0:	4b0f      	ldr	r3, [pc, #60]	; (80af0 <main+0xa8>)
    80ab2:	4798      	blx	r3
+		
+		
+	
+    while (1){
+		//adc_read_putty();
+		adc_ballpoint();
    80ab4:	4c0f      	ldr	r4, [pc, #60]	; (80af4 <main+0xac>)
    80ab6:	47a0      	blx	r4
    80ab8:	e7fd      	b.n	80ab6 <main+0x6e>
@@ -1430,7 +1688,7 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    80daa:	b007      	add	sp, #28
    80dac:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
    80db0:	00080eb1 	.word	0x00080eb1
-   80db4:	0008198c 	.word	0x0008198c
+   80db4:	00081960 	.word	0x00081960
    80db8:	00080af9 	.word	0x00080af9
    80dbc:	00080ba5 	.word	0x00080ba5
 
@@ -1509,10 +1767,10 @@ void SysTick_Handler(void){
    80e2e:	e7ec      	b.n	80e0a <SysTick_Handler+0x26>
    80e30:	20000484 	.word	0x20000484
    80e34:	10624dd3 	.word	0x10624dd3
-   80e38:	00081994 	.word	0x00081994
+   80e38:	00081968 	.word	0x00081968
    80e3c:	00080dc1 	.word	0x00080dc1
-   80e40:	000819a0 	.word	0x000819a0
-   80e44:	000819b0 	.word	0x000819b0
+   80e40:	00081974 	.word	0x00081974
+   80e44:	00081984 	.word	0x00081984
 
 00080e48 <configure_uart>:
 	uint32_t ul_sr;
@@ -1704,7 +1962,7 @@ void UART_Handler(void)
    80f2a:	bf00      	nop
    80f2c:	400e0800 	.word	0x400e0800
    80f30:	20000498 	.word	0x20000498
-   80f34:	000819e8 	.word	0x000819e8
+   80f34:	000819bc 	.word	0x000819bc
    80f38:	00080dc1 	.word	0x00080dc1
 
 00080f3c <__aeabi_drsub>:
@@ -2397,7 +2655,7 @@ void UART_Handler(void)
    8177a:	d1f9      	bne.n	81770 <__libc_init_array+0x10>
    8177c:	4e0a      	ldr	r6, [pc, #40]	; (817a8 <__libc_init_array+0x48>)
    8177e:	4d0b      	ldr	r5, [pc, #44]	; (817ac <__libc_init_array+0x4c>)
-   81780:	f000 f944 	bl	81a0c <_init>
+   81780:	f000 f92e 	bl	819e0 <_init>
    81784:	1b76      	subs	r6, r6, r5
    81786:	10b6      	asrs	r6, r6, #2
    81788:	bf18      	it	ne
@@ -2411,10 +2669,10 @@ void UART_Handler(void)
    8179a:	bd70      	pop	{r4, r5, r6, pc}
    8179c:	bd70      	pop	{r4, r5, r6, pc}
    8179e:	bf00      	nop
-   817a0:	00081a18 	.word	0x00081a18
-   817a4:	00081a18 	.word	0x00081a18
-   817a8:	00081a20 	.word	0x00081a20
-   817ac:	00081a18 	.word	0x00081a18
+   817a0:	000819ec 	.word	0x000819ec
+   817a4:	000819ec 	.word	0x000819ec
+   817a8:	000819f4 	.word	0x000819f4
+   817ac:	000819ec 	.word	0x000819ec
 
 000817b0 <register_fini>:
    817b0:	4b02      	ldr	r3, [pc, #8]	; (817bc <register_fini+0xc>)
@@ -2448,10 +2706,10 @@ void UART_Handler(void)
    817ee:	2c00      	cmp	r4, #0
    817f0:	d1f9      	bne.n	817e6 <__libc_fini_array+0x16>
    817f2:	e8bd 4038 	ldmia.w	sp!, {r3, r4, r5, lr}
-   817f6:	f000 b913 	b.w	81a20 <_fini>
+   817f6:	f000 b8fd 	b.w	819f4 <_fini>
    817fa:	bf00      	nop
-   817fc:	00081a30 	.word	0x00081a30
-   81800:	00081a2c 	.word	0x00081a2c
+   817fc:	00081a04 	.word	0x00081a04
+   81800:	00081a00 	.word	0x00081a00
 
 00081804 <__retarget_lock_acquire_recursive>:
    81804:	4770      	bx	lr
@@ -2528,7 +2786,7 @@ void UART_Handler(void)
    818be:	e8bd 83f8 	ldmia.w	sp!, {r3, r4, r5, r6, r7, r8, r9, pc}
    818c2:	bf00      	nop
    818c4:	20000458 	.word	0x20000458
-   818c8:	00081a08 	.word	0x00081a08
+   818c8:	000819dc 	.word	0x000819dc
    818cc:	00000000 	.word	0x00000000
    818d0:	304e4143 	.word	0x304e4143
    818d4:	73656d20 	.word	0x73656d20
@@ -2541,98 +2799,87 @@ void UART_Handler(void)
    818f0:	69616d20 	.word	0x69616d20
    818f4:	786f626c 	.word	0x786f626c
    818f8:	00000d0a 	.word	0x00000d0a
-   818fc:	696c6143 	.word	0x696c6143
-   81900:	74617262 	.word	0x74617262
-   81904:	206e6f69 	.word	0x206e6f69
-   81908:	696e6966 	.word	0x696e6966
-   8190c:	64656873 	.word	0x64656873
-   81910:	6f70202c 	.word	0x6f70202c
-   81914:	69746973 	.word	0x69746973
-   81918:	76206e6f 	.word	0x76206e6f
-   8191c:	65756c61 	.word	0x65756c61
-   81920:	6425203a 	.word	0x6425203a
-   81924:	00000000 	.word	0x00000000
-   81928:	76657270 	.word	0x76657270
-   8192c:	3a736f50 	.word	0x3a736f50
-   81930:	2c642520 	.word	0x2c642520
-   81934:	736f7020 	.word	0x736f7020
-   81938:	6425203a 	.word	0x6425203a
-   8193c:	000d0a20 	.word	0x000d0a20
-   81940:	696c6143 	.word	0x696c6143
-   81944:	74617262 	.word	0x74617262
-   81948:	206e6f69 	.word	0x206e6f69
-   8194c:	656e6f64 	.word	0x656e6f64
-   81950:	6f50202c 	.word	0x6f50202c
-   81954:	69746973 	.word	0x69746973
-   81958:	25206e6f 	.word	0x25206e6f
-   8195c:	0d0a2064 	.word	0x0d0a2064
-   81960:	00000000 	.word	0x00000000
-   81964:	20636461 	.word	0x20636461
-   81968:	756c6176 	.word	0x756c6176
-   8196c:	25203a65 	.word	0x25203a65
-   81970:	0d0a2064 	.word	0x0d0a2064
-   81974:	00000000 	.word	0x00000000
-   81978:	6c616f47 	.word	0x6c616f47
-   8197c:	756f4320 	.word	0x756f4320
-   81980:	203a746e 	.word	0x203a746e
-   81984:	0a206425 	.word	0x0a206425
-   81988:	0000000d 	.word	0x0000000d
-   8198c:	6c756e28 	.word	0x6c756e28
-   81990:	0000296c 	.word	0x0000296c
-   81994:	6e756f63 	.word	0x6e756f63
-   81998:	3a726574 	.word	0x3a726574
-   8199c:	00642520 	.word	0x00642520
-   819a0:	79737562 	.word	0x79737562
-   819a4:	74696177 	.word	0x74696177
-   819a8:	6425203a 	.word	0x6425203a
-   819ac:	00000000 	.word	0x00000000
-   819b0:	6f636553 	.word	0x6f636553
-   819b4:	3a73646e 	.word	0x3a73646e
-   819b8:	20642520 	.word	0x20642520
-   819bc:	00000d0a 	.word	0x00000d0a
-   819c0:	656d6954 	.word	0x656d6954
-   819c4:	74732072 	.word	0x74732072
-   819c8:	65747261 	.word	0x65747261
-   819cc:	2e2e2e64 	.word	0x2e2e2e64
-   819d0:	000d0a20 	.word	0x000d0a20
-   819d4:	542e2e2e 	.word	0x542e2e2e
-   819d8:	72656d69 	.word	0x72656d69
-   819dc:	6f747320 	.word	0x6f747320
-   819e0:	64657070 	.word	0x64657070
-   819e4:	00000d0a 	.word	0x00000d0a
-   819e8:	3a525245 	.word	0x3a525245
-   819ec:	52415520 	.word	0x52415520
-   819f0:	58522054 	.word	0x58522054
-   819f4:	66756220 	.word	0x66756220
-   819f8:	20726566 	.word	0x20726566
-   819fc:	66207369 	.word	0x66207369
-   81a00:	0a6c6c75 	.word	0x0a6c6c75
-   81a04:	0000000d 	.word	0x0000000d
+   818fc:	76657270 	.word	0x76657270
+   81900:	3a736f50 	.word	0x3a736f50
+   81904:	2c642520 	.word	0x2c642520
+   81908:	736f7020 	.word	0x736f7020
+   8190c:	6425203a 	.word	0x6425203a
+   81910:	000d0a20 	.word	0x000d0a20
+   81914:	696c6143 	.word	0x696c6143
+   81918:	74617262 	.word	0x74617262
+   8191c:	206e6f69 	.word	0x206e6f69
+   81920:	656e6f64 	.word	0x656e6f64
+   81924:	6f50202c 	.word	0x6f50202c
+   81928:	69746973 	.word	0x69746973
+   8192c:	25206e6f 	.word	0x25206e6f
+   81930:	0d0a2064 	.word	0x0d0a2064
+   81934:	00000000 	.word	0x00000000
+   81938:	20636461 	.word	0x20636461
+   8193c:	756c6176 	.word	0x756c6176
+   81940:	25203a65 	.word	0x25203a65
+   81944:	0d0a2064 	.word	0x0d0a2064
+   81948:	00000000 	.word	0x00000000
+   8194c:	6c616f47 	.word	0x6c616f47
+   81950:	756f4320 	.word	0x756f4320
+   81954:	203a746e 	.word	0x203a746e
+   81958:	0a206425 	.word	0x0a206425
+   8195c:	0000000d 	.word	0x0000000d
+   81960:	6c756e28 	.word	0x6c756e28
+   81964:	0000296c 	.word	0x0000296c
+   81968:	6e756f63 	.word	0x6e756f63
+   8196c:	3a726574 	.word	0x3a726574
+   81970:	00642520 	.word	0x00642520
+   81974:	79737562 	.word	0x79737562
+   81978:	74696177 	.word	0x74696177
+   8197c:	6425203a 	.word	0x6425203a
+   81980:	00000000 	.word	0x00000000
+   81984:	6f636553 	.word	0x6f636553
+   81988:	3a73646e 	.word	0x3a73646e
+   8198c:	20642520 	.word	0x20642520
+   81990:	00000d0a 	.word	0x00000d0a
+   81994:	656d6954 	.word	0x656d6954
+   81998:	74732072 	.word	0x74732072
+   8199c:	65747261 	.word	0x65747261
+   819a0:	2e2e2e64 	.word	0x2e2e2e64
+   819a4:	000d0a20 	.word	0x000d0a20
+   819a8:	542e2e2e 	.word	0x542e2e2e
+   819ac:	72656d69 	.word	0x72656d69
+   819b0:	6f747320 	.word	0x6f747320
+   819b4:	64657070 	.word	0x64657070
+   819b8:	00000d0a 	.word	0x00000d0a
+   819bc:	3a525245 	.word	0x3a525245
+   819c0:	52415520 	.word	0x52415520
+   819c4:	58522054 	.word	0x58522054
+   819c8:	66756220 	.word	0x66756220
+   819cc:	20726566 	.word	0x20726566
+   819d0:	66207369 	.word	0x66207369
+   819d4:	0a6c6c75 	.word	0x0a6c6c75
+   819d8:	0000000d 	.word	0x0000000d
 
-00081a08 <_global_impure_ptr>:
-   81a08:	20000030                                0.. 
+000819dc <_global_impure_ptr>:
+   819dc:	20000030                                0.. 
 
-00081a0c <_init>:
-   81a0c:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
-   81a0e:	bf00      	nop
-   81a10:	bcf8      	pop	{r3, r4, r5, r6, r7}
-   81a12:	bc08      	pop	{r3}
-   81a14:	469e      	mov	lr, r3
-   81a16:	4770      	bx	lr
+000819e0 <_init>:
+   819e0:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+   819e2:	bf00      	nop
+   819e4:	bcf8      	pop	{r3, r4, r5, r6, r7}
+   819e6:	bc08      	pop	{r3}
+   819e8:	469e      	mov	lr, r3
+   819ea:	4770      	bx	lr
 
-00081a18 <__init_array_start>:
-   81a18:	000817b1 	.word	0x000817b1
+000819ec <__init_array_start>:
+   819ec:	000817b1 	.word	0x000817b1
 
-00081a1c <__frame_dummy_init_array_entry>:
-   81a1c:	00080119                                ....
+000819f0 <__frame_dummy_init_array_entry>:
+   819f0:	00080119                                ....
 
-00081a20 <_fini>:
-   81a20:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
-   81a22:	bf00      	nop
-   81a24:	bcf8      	pop	{r3, r4, r5, r6, r7}
-   81a26:	bc08      	pop	{r3}
-   81a28:	469e      	mov	lr, r3
-   81a2a:	4770      	bx	lr
+000819f4 <_fini>:
+   819f4:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+   819f6:	bf00      	nop
+   819f8:	bcf8      	pop	{r3, r4, r5, r6, r7}
+   819fa:	bc08      	pop	{r3}
+   819fc:	469e      	mov	lr, r3
+   819fe:	4770      	bx	lr
 
-00081a2c <__fini_array_start>:
-   81a2c:	000800f5 	.word	0x000800f5
+00081a00 <__fini_array_start>:
+   81a00:	000800f5 	.word	0x000800f5

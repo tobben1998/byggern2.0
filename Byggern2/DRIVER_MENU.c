@@ -107,7 +107,6 @@ void f_1player(){
 		if(!(ctrl ==1 || ctrl ==0)){
 			ctrl=0;
 		}
-		printf("\n controller: %d", ctrl);
 		timer2_set_ctrl(ctrl);
 		timer_init();
 		timer2_init();

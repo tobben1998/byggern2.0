@@ -11,24 +11,6 @@
 
 
 
-
-//pin til DACC = PB16. på shield A_out
-
-//	DO0-D07 = PC1-PC8
-//	!OE	=	PD0
-//	!RST=	PD1
-//	SEL	=	PD2
-//	EN	=	PD9
-//	DIR	=	PD10
-
-/*	
-eksempel på sette led pinne
-	
-PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
-PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
-PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register */
-
-
 void motor_init(void){
 	//enable PIO registers
 	PIOB->PIO_PER |= PIO_PER_P27; //pwm13
@@ -63,10 +45,6 @@ void motor_init(void){
 	PIOD->PIO_CODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
 	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
 	
-	
-	//mangler noe her?
-	//punkt 3.2 in user guide for dc motor interface. 
-	//provide an analog value between  0 and 5 volt on pin DA! of MJEX to control output voltage to the motor		
 }
 
 int16_t motor_read_encoder(int doReset){
@@ -77,51 +55,45 @@ int16_t motor_read_encoder(int doReset){
 	
 	for(int i =0; i<2000; i++);		//waiting..
 	int8_t MSB = PIOC->PIO_PDSR;
-	//printf("MSB: %x \t", (0xff & MSB));		//Read D0 to D7 to get the MSB
 	
 	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
 	for(int i =0; i<2000; i++);		//waiting..
 	int8_t LSB = PIOC->PIO_PDSR;
-	//printf("LSB: %d \t", (0xff & LSB));
 	
 	if(doReset){
 		motor_encoder_tglreset();
 	}
 
 	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
-	int16_t result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //Spleise MSB og LSB til ett tall. 
+	int16_t result = (short)(((MSB) & 0xFF) << 8 | (LSB) & 0xFF); //merge MSB and LSB
 	return result;
 }
 
 void motor_dac_init(void){
-	//REG_PWM_CMR6 |= (PWM_CMR_CALG); eksemple pwm
-	//enable clock. pheriperhal
-	//acess DACC_MR DACC_CHER and DACC_CDR
-	
 	
 	REG_PMC_PCER1 |= PMC_PCER1_PID38; //enable clock
-	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //freerunning mode
-	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //velg kanal 1
+	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //free-running mode
+	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //channel 1
 	REG_DACC_CHER |= DACC_CHER_CH1;
 }
 
 void motor_dac_send(CAN_MESSAGE *msg){
-	uint16_t tall=msg->data[0];
-	uint16_t scaler=12; //DAC er 12 bit. Dersom scaler = 40, kommer max opp til 4000, som er under 2^12=4096. Satt til 12 for å roe ned pådrag. 
-	if(tall>=0 && tall<=100){
-		tall=tall*scaler;
-		PIOD->PIO_CODR |= PIO_CODR_P10; //set direction right?
+	uint16_t temp=msg->data[0];
+	uint16_t scaler=12; // to scale the power. 
+	if(temp>=0 && temp<=100){
+		temp=temp*scaler;
+		PIOD->PIO_CODR |= PIO_CODR_P10; //set direction right
 	}
-	else if (tall>=156 && tall<=255 ){
-		tall=(255-tall)*scaler;
-		PIOD->PIO_SODR |= PIO_SODR_P10; //set direction left?
+	else if (temp>=156 && temp<=255 ){
+		temp=(255-temp)*scaler;
+		PIOD->PIO_SODR |= PIO_SODR_P10; //set direction left
 	}
-	REG_DACC_CDR=tall;
+	REG_DACC_CDR=temp;
 }
 
 void motor_solenoid(CAN_MESSAGE *msg){
 	if(msg->data[2]){
-	PIOB->PIO_CODR |= PIO_CODR_P27; //Pinne 13 på shield? Lurer på om må bytte sånn at knappetrykket gir 0 V (aktivt lav)
+	PIOB->PIO_CODR |= PIO_CODR_P27;//pin 13 on shield. active low
 	}
 	else{
 	PIOB->PIO_SODR |= PIO_SODR_P27;		
@@ -129,17 +101,9 @@ void motor_solenoid(CAN_MESSAGE *msg){
 }
 
 void motor_encoder_tglreset(void){
-	PIOD->PIO_CODR |= PIO_CODR_P1;	//Toggle !RST to reset encoder
-	for(int i=0; i<2000; i++);		//Necessary for the motorbox to change value of 16-bit register
+	PIOD->PIO_CODR |= PIO_CODR_P1;	
+	for(int i=0; i<2000; i++);		
 	PIOD->PIO_SODR |= PIO_SODR_P1;
-}
-
-void motor_calibrate(void){ //Veldig hardkodet mtp. tid den kjører mot høyre.
-	for(int i =0; i < 5000000; i++){
-		motor_run(0,1000);	
-	}
-	motor_encoder_tglreset();
-	printf("Calibration finished, position value: %d", motor_read_encoder(0));
 }
 
 void motor_run(int dirLeft, int speed){
@@ -159,7 +123,7 @@ void motor_run(int dirLeft, int speed){
 	REG_DACC_CDR=speed;
 }
 
-void motor_calibrate2(void){
+void motor_calibrate(void){
 	int pos = motor_read_encoder(0);
 	int prevPos = pos +200;
 	while(prevPos != pos){
