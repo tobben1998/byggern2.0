@@ -121,8 +121,9 @@ void f_1player(){
 		msg.length=3;
 		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
-		uint8_t ctrl = xmem_read(0x800); //Leser variabelen fra SRAM. Viktig at adressen stemmer med der man skrev til.
+		//uint8_t ctrl = xmem_read(0x800); //Leser variabelen fra SRAM. Viktig at adressen stemmer med der man skrev til.
 		//start timer
+		uint8_t ctrl=0;
 		timer_init();
 				
 	switch(ctrl){
