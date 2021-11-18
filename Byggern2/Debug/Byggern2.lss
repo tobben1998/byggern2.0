@@ -13,21 +13,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00002e78  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000380  00000000  00000000  00002eb4  2**0
+  5 .debug_aranges 00000378  00000000  00000000  00002eb4  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00004c65  00000000  00000000  00003234  2**0
+  6 .debug_info   00004c04  00000000  00000000  0000322c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001960  00000000  00000000  00007e99  2**0
+  7 .debug_abbrev 0000192e  00000000  00000000  00007e30  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00001f75  00000000  00000000  000097f9  2**0
+  8 .debug_line   00001f19  00000000  00000000  0000975e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000091c  00000000  00000000  0000b770  2**2
+  9 .debug_frame  000008c4  00000000  00000000  0000b678  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    0000101b  00000000  00000000  0000c08c  2**0
+ 10 .debug_str    00000f6a  00000000  00000000  0000bf3c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000240b  00000000  00000000  0000d0a7  2**0
+ 11 .debug_loc    000022e5  00000000  00000000  0000cea6  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000310  00000000  00000000  0000f4b2  2**0
+ 12 .debug_ranges 00000308  00000000  00000000  0000f18b  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -793,12 +793,11 @@ Disassembly of section .text:
 
 
 void clock_init(void){
-	//Set pin pd4 as output
+
 	DDRD |= (1 << DDD4);
      c80:	8c 9a       	sbi	0x11, 4	; 17
 	
-	// 1.3 MHz?
-	cli(); //clears the global interrupt flag in SREG to prevent any form of interrupt occuring.
+	cli();
      c82:	f8 94       	cli
 	TCCR3A |= (1 << COM3A0);
      c84:	eb e8       	ldi	r30, 0x8B	; 139
@@ -821,7 +820,7 @@ void clock_init(void){
      ca0:	90 e0       	ldi	r25, 0x00	; 0
      ca2:	90 93 87 00 	sts	0x0087, r25	; 0x800087 <__TEXT_REGION_LENGTH__+0x7e0087>
      ca6:	80 93 86 00 	sts	0x0086, r24	; 0x800086 <__TEXT_REGION_LENGTH__+0x7e0086>
-	sei(); // Enables interrupts by setting the global interrupt mask.
+	sei();
      caa:	78 94       	sei
      cac:	08 95       	ret
 
@@ -829,16 +828,11 @@ void clock_init(void){
 };
 
 void adc_init (void){
-	//Configuration data to be written to ADC
-
-	clock_init();
+	clock_init();	
      cae:	0e 94 40 06 	call	0xc80	; 0xc80 <clock_init>
      cb2:	08 95       	ret
 
 00000cb4 <adc_read>:
-		
-
-	
 }
 
 int adc_read(int channel){
@@ -886,11 +880,11 @@ int adc_read(int channel){
      ce4:	08 95       	ret
 
 00000ce6 <can_init>:
-		printf("Message data: %x", p1->id);
-		
-		mcp_bit_modify(MCP_CANINTF, 0x02, 0);
+	msg.length=length;
+	for(uint8_t m=0; m<length;m++){
+		msg.data[m] = mcp_read(RXBnDM+m*16*buffer_number); //see register 4-9
 	}
-	
+	return &msg;
 }
      ce6:	0e 94 77 10 	call	0x20ee	; 0x20ee <mcp_init>
      cea:	61 e0       	ldi	r22, 0x01	; 1
@@ -977,10 +971,7 @@ int adc_read(int channel){
 
 00000d9c <__vector_1>:
 
-
-
-
-ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2 
+ISR(INT0_vect){
      d9c:	1f 92       	push	r1
      d9e:	0f 92       	push	r0
      da0:	0f b6       	in	r0, 0x3f	; 63
@@ -990,11 +981,6 @@ ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2
 	CAN_flag = 1;
      da8:	81 e0       	ldi	r24, 0x01	; 1
      daa:	80 93 b6 01 	sts	0x01B6, r24	; 0x8001b6 <__data_end>
-	uint8_t test1 = test2 & mask1;
-	test2 = test2 & mask2;
-	printf("OPMODE: %d \t ICOD: %d \n\r", test1, test2);
-	*/
-	
 }
      dae:	8f 91       	pop	r24
      db0:	0f 90       	pop	r0
@@ -1262,7 +1248,7 @@ joystick_position joystick_getPosition(void){
 00000f68 <joystick_getDirection>:
 
 joystick_direction joystick_getDirection(void){
-	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
+	
 	joystick_position position;
 
 	position = joystick_getPosition();
@@ -1353,6 +1339,7 @@ void joystick_sendPositionButtonCan(joystick_position pos){
      fb6:	de bf       	out	0x3e, r29	; 62
      fb8:	0f be       	out	0x3f, r0	; 63
      fba:	cd bf       	out	0x3d, r28	; 61
+	//pos
 	can_message msg;
 	msg.id=1;
      fbc:	21 e0       	ldi	r18, 0x01	; 1
@@ -1362,26 +1349,22 @@ void joystick_sendPositionButtonCan(joystick_position pos){
 	msg.length=3;
      fc4:	93 e0       	ldi	r25, 0x03	; 3
      fc6:	9b 83       	std	Y+3, r25	; 0x03
-	//joy_pos
 	msg.data[0] = (char)pos.x_pos;
      fc8:	6c 83       	std	Y+4, r22	; 0x04
 	msg.data[1] = (char)pos.y_pos;
      fca:	8d 83       	std	Y+5, r24	; 0x05
 	
 	//button
-	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
+	msg.data[2]=(char)(PINB & (1<<0));
      fcc:	86 b3       	in	r24, 0x16	; 22
      fce:	81 70       	andi	r24, 0x01	; 1
      fd0:	8e 83       	std	Y+6, r24	; 0x06
-	//printf("Button value: %d \n\r", msg.data[2]);
 	
 	
 	can_send_message(&msg);
      fd2:	ce 01       	movw	r24, r28
      fd4:	01 96       	adiw	r24, 0x01	; 1
      fd6:	0e 94 95 06 	call	0xd2a	; 0xd2a <can_send_message>
-	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
-
      fda:	2b 96       	adiw	r28, 0x0b	; 11
      fdc:	0f b6       	in	r0, 0x3f	; 63
      fde:	f8 94       	cli
@@ -3666,7 +3649,7 @@ void slider_sendPositionButtonCan(slider_position pos){
     1eae:	8d 83       	std	Y+5, r24	; 0x05
 	
 	//button
-	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
+	msg.data[2]=(char)(PINB & (1<<0));
     1eb0:	86 b3       	in	r24, 0x16	; 22
     1eb2:	81 70       	andi	r24, 0x01	; 1
     1eb4:	8e 83       	std	Y+6, r24	; 0x06
@@ -3687,65 +3670,133 @@ void slider_sendPositionButtonCan(slider_position pos){
     1ece:	08 95       	ret
 
 00001ed0 <spi_init>:
+#include <stdint.h>
+
+
+void spi_init(void){
+	/* Set MOSI, SCK , Slave select output, all others become input*/
+	DDRB = (1<<DDB5)|(1<<DDB7)|(1<<DDB4);
     1ed0:	80 eb       	ldi	r24, 0xB0	; 176
     1ed2:	87 bb       	out	0x17, r24	; 23
+	
+	/* Enable SPI, Master, set clock rate fck/16 */
+	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
     1ed4:	81 e5       	ldi	r24, 0x51	; 81
     1ed6:	8d b9       	out	0x0d, r24	; 13
+	
+	//Set slave select
+	PORTB |= 1<<PB4;
     1ed8:	c4 9a       	sbi	0x18, 4	; 24
+	
+	//button pull up
+	PORTB |= 1<<PB2;
     1eda:	c2 9a       	sbi	0x18, 2	; 24
     1edc:	08 95       	ret
 
 00001ede <spi_send>:
+	
+}
+
+void spi_send(uint8_t cData){
+	/* Start transmission */
+	SPDR = cData;
     1ede:	8f b9       	out	0x0f, r24	; 15
+	
+	/* Wait for transmission complete */
+	while(!(SPSR & (1<<SPIF)));
     1ee0:	77 9b       	sbis	0x0e, 7	; 14
     1ee2:	fe cf       	rjmp	.-4      	; 0x1ee0 <spi_send+0x2>
+}
     1ee4:	08 95       	ret
 
 00001ee6 <spi_read>:
+uint8_t spi_read(){
+	
+	char dummyByte = 0x45; //0b01000101
+	
+	/* Start transmission of dummy byte such that Output from slave arrives at SPDR*/
+	SPDR = dummyByte;
     1ee6:	85 e4       	ldi	r24, 0x45	; 69
     1ee8:	8f b9       	out	0x0f, r24	; 15
+	
+	/* Wait for transmission complete */
+	while(!(SPSR & (1<<SPIF)));
     1eea:	77 9b       	sbis	0x0e, 7	; 14
     1eec:	fe cf       	rjmp	.-4      	; 0x1eea <spi_read+0x4>
+	
+	/*Return data register*/
+	return SPDR;
     1eee:	8f b1       	in	r24, 0x0f	; 15
     1ef0:	08 95       	ret
 
 00001ef2 <timer_init>:
+static int seconds = 0;
+static int mseconds = 0;
+
+void timer_init(void){
+	
+	cli();
     1ef2:	f8 94       	cli
+	counter = 0;
     1ef4:	10 92 c0 01 	sts	0x01C0, r1	; 0x8001c0 <counter+0x1>
     1ef8:	10 92 bf 01 	sts	0x01BF, r1	; 0x8001bf <counter>
+	seconds = 0;
     1efc:	10 92 be 01 	sts	0x01BE, r1	; 0x8001be <seconds+0x1>
     1f00:	10 92 bd 01 	sts	0x01BD, r1	; 0x8001bd <seconds>
+	mseconds = 0;
     1f04:	10 92 bc 01 	sts	0x01BC, r1	; 0x8001bc <mseconds+0x1>
     1f08:	10 92 bb 01 	sts	0x01BB, r1	; 0x8001bb <mseconds>
+	TCCR0 |= (1<<CS02);
     1f0c:	83 b7       	in	r24, 0x33	; 51
     1f0e:	84 60       	ori	r24, 0x04	; 4
     1f10:	83 bf       	out	0x33, r24	; 51
+	
+	
+	TCCR0 |= (1<<WGM01); //Set mode to 'Clear Timer on Compare'
     1f12:	83 b7       	in	r24, 0x33	; 51
     1f14:	88 60       	ori	r24, 0x08	; 8
     1f16:	83 bf       	out	0x33, r24	; 51
+	TCCR0 &= ~(1<<WGM00);
     1f18:	83 b7       	in	r24, 0x33	; 51
     1f1a:	8f 7b       	andi	r24, 0xBF	; 191
     1f1c:	83 bf       	out	0x33, r24	; 51
+	
+	int8_t counterVal = 192; //set the number that counter stops and creates interrupt at.
+	OCR0 |= counterVal;
     1f1e:	81 b7       	in	r24, 0x31	; 49
     1f20:	80 6c       	ori	r24, 0xC0	; 192
     1f22:	81 bf       	out	0x31, r24	; 49
+
+	TIMSK |= (1<< OCIE0); //Enable interrupt by Output Compare
     1f24:	89 b7       	in	r24, 0x39	; 57
     1f26:	81 60       	ori	r24, 0x01	; 1
     1f28:	89 bf       	out	0x39, r24	; 57
+	sei(); //Enable global interrupts
     1f2a:	78 94       	sei
     1f2c:	08 95       	ret
 
 00001f2e <timer_get_seconds>:
+}
+
+int timer_get_seconds(void){
+	return seconds;
+}
     1f2e:	80 91 bd 01 	lds	r24, 0x01BD	; 0x8001bd <seconds>
     1f32:	90 91 be 01 	lds	r25, 0x01BE	; 0x8001be <seconds+0x1>
     1f36:	08 95       	ret
 
 00001f38 <timer_get_mseconds>:
+
+int timer_get_mseconds(void){
+	return mseconds;
+}
     1f38:	80 91 bb 01 	lds	r24, 0x01BB	; 0x8001bb <mseconds>
     1f3c:	90 91 bc 01 	lds	r25, 0x01BC	; 0x8001bc <mseconds+0x1>
     1f40:	08 95       	ret
 
 00001f42 <__vector_16>:
+
+ISR(TIMER0_COMP_vect){
     1f42:	1f 92       	push	r1
     1f44:	0f 92       	push	r0
     1f46:	0f b6       	in	r0, 0x3f	; 63
@@ -3763,36 +3814,46 @@ void slider_sendPositionButtonCan(slider_position pos){
     1f5e:	bf 93       	push	r27
     1f60:	ef 93       	push	r30
     1f62:	ff 93       	push	r31
+	
+	counter++;
     1f64:	20 91 bf 01 	lds	r18, 0x01BF	; 0x8001bf <counter>
     1f68:	30 91 c0 01 	lds	r19, 0x01C0	; 0x8001c0 <counter+0x1>
     1f6c:	2f 5f       	subi	r18, 0xFF	; 255
     1f6e:	3f 4f       	sbci	r19, 0xFF	; 255
     1f70:	30 93 c0 01 	sts	0x01C0, r19	; 0x8001c0 <counter+0x1>
     1f74:	20 93 bf 01 	sts	0x01BF, r18	; 0x8001bf <counter>
+	if(counter%10 == 0){
     1f78:	c9 01       	movw	r24, r18
     1f7a:	6a e0       	ldi	r22, 0x0A	; 10
     1f7c:	70 e0       	ldi	r23, 0x00	; 0
     1f7e:	0e 94 f0 10 	call	0x21e0	; 0x21e0 <__divmodhi4>
     1f82:	89 2b       	or	r24, r25
     1f84:	a9 f5       	brne	.+106    	; 0x1ff0 <__vector_16+0xae>
+		mseconds++;
     1f86:	80 91 bb 01 	lds	r24, 0x01BB	; 0x8001bb <mseconds>
     1f8a:	90 91 bc 01 	lds	r25, 0x01BC	; 0x8001bc <mseconds+0x1>
     1f8e:	01 96       	adiw	r24, 0x01	; 1
     1f90:	90 93 bc 01 	sts	0x01BC, r25	; 0x8001bc <mseconds+0x1>
     1f94:	80 93 bb 01 	sts	0x01BB, r24	; 0x8001bb <mseconds>
+		
+		if(counter%100 == 0){
     1f98:	c9 01       	movw	r24, r18
     1f9a:	64 e6       	ldi	r22, 0x64	; 100
     1f9c:	70 e0       	ldi	r23, 0x00	; 0
     1f9e:	0e 94 f0 10 	call	0x21e0	; 0x21e0 <__divmodhi4>
     1fa2:	89 2b       	or	r24, r25
     1fa4:	69 f4       	brne	.+26     	; 0x1fc0 <__vector_16+0x7e>
+			seconds++;
     1fa6:	80 91 bd 01 	lds	r24, 0x01BD	; 0x8001bd <seconds>
     1faa:	90 91 be 01 	lds	r25, 0x01BE	; 0x8001be <seconds+0x1>
     1fae:	01 96       	adiw	r24, 0x01	; 1
     1fb0:	90 93 be 01 	sts	0x01BE, r25	; 0x8001be <seconds+0x1>
     1fb4:	80 93 bd 01 	sts	0x01BD, r24	; 0x8001bd <seconds>
+			mseconds = 0;
     1fb8:	10 92 bc 01 	sts	0x01BC, r1	; 0x8001bc <mseconds+0x1>
     1fbc:	10 92 bb 01 	sts	0x01BB, r1	; 0x8001bb <mseconds>
+		}
+		printf("Time: %d,%d \n\r", seconds, mseconds);
     1fc0:	80 91 bc 01 	lds	r24, 0x01BC	; 0x8001bc <mseconds+0x1>
     1fc4:	8f 93       	push	r24
     1fc6:	80 91 bb 01 	lds	r24, 0x01BB	; 0x8001bb <mseconds>
@@ -3812,6 +3873,7 @@ void slider_sendPositionButtonCan(slider_position pos){
     1fea:	0f 90       	pop	r0
     1fec:	0f 90       	pop	r0
     1fee:	0f 90       	pop	r0
+	}
     1ff0:	ff 91       	pop	r31
     1ff2:	ef 91       	pop	r30
     1ff4:	bf 91       	pop	r27
@@ -3831,9 +3893,9 @@ void slider_sendPositionButtonCan(slider_position pos){
     2010:	18 95       	reti
 
 00002012 <USART_Init>:
+	USART_Transmit(data);
 	return 0;
 }
-
 
 void USART_Init( unsigned int ubrr){
 	UBRR0H = (unsigned char)(ubrr>>8);
@@ -3860,7 +3922,6 @@ void USART_Init( unsigned int ubrr){
 0000202c <USART_Transmit>:
 }
 
-//Transmit function
 void USART_Transmit( unsigned char data){
 	
 	while ( !( UCSR0A & (1<<UDRE0)));
@@ -3871,9 +3932,9 @@ void USART_Transmit( unsigned char data){
     2032:	08 95       	ret
 
 00002034 <USART_PUTCHAR>:
+#include <avr/io.h>
 
-
-//Side 176, atmega datablad
+#include "DRIVER_USART.h"
 
 int USART_PUTCHAR(char data ,FILE* unused){
 	USART_Transmit(data);
@@ -3885,27 +3946,52 @@ int USART_PUTCHAR(char data ,FILE* unused){
     203c:	08 95       	ret
 
 0000203e <xmem_init>:
+#include <avr/io.h>
+#include "DRIVER_XMEM.h"
+
+
+void xmem_init(void){
+	MCUCR |= (1 << SRE); //enable XMEM
     203e:	85 b7       	in	r24, 0x35	; 53
     2040:	80 68       	ori	r24, 0x80	; 128
     2042:	85 bf       	out	0x35, r24	; 53
+	SFIOR |= (1 << XMM2); //Mask unused bits/pins, which is PC4-PC7
     2044:	80 b7       	in	r24, 0x30	; 48
     2046:	80 62       	ori	r24, 0x20	; 32
     2048:	80 bf       	out	0x30, r24	; 48
     204a:	08 95       	ret
 
 0000204c <xmem_write>:
+}
+//Somehow works badly when calling this function from main? Works perfectly by just copy-pasting code to main.
+void xmem_write(uint8_t data, uint16_t addr){
+	volatile char *ext_mem = (char *) 0x1000;
+	ext_mem[addr] = data;
     204c:	fb 01       	movw	r30, r22
     204e:	f0 5f       	subi	r31, 0xF0	; 240
     2050:	80 83       	st	Z, r24
     2052:	08 95       	ret
 
 00002054 <xmem_read>:
+}
+
+uint8_t xmem_read(uint16_t addr){
+	volatile char *ext_mem = (char *) 0x1000;
+	uint8_t ret_val = ext_mem[addr];
     2054:	90 5f       	subi	r25, 0xF0	; 240
     2056:	fc 01       	movw	r30, r24
     2058:	80 81       	ld	r24, Z
+	return ret_val;
+}
     205a:	08 95       	ret
 
 0000205c <mcp_read>:
+	uint8_t status = spi_read();
+	
+	PORTB |= (1<<PB4);
+	
+	return status;
+}
     205c:	cf 93       	push	r28
     205e:	c8 2f       	mov	r28, r24
     2060:	c4 98       	cbi	0x18, 4	; 24
@@ -3942,31 +4028,54 @@ int USART_PUTCHAR(char data ,FILE* unused){
     20a4:	08 95       	ret
 
 000020a6 <mcp_bit_modify>:
+
+
+void mcp_bit_modify(uint8_t addr, uint8_t mask, uint8_t data){
     20a6:	1f 93       	push	r17
     20a8:	cf 93       	push	r28
     20aa:	df 93       	push	r29
     20ac:	18 2f       	mov	r17, r24
     20ae:	d6 2f       	mov	r29, r22
     20b0:	c4 2f       	mov	r28, r20
+	
+	PORTB &= ~(1<<PB4);
     20b2:	c4 98       	cbi	0x18, 4	; 24
+	
+	spi_send(MCP_BITMOD);
     20b4:	85 e0       	ldi	r24, 0x05	; 5
     20b6:	0e 94 6f 0f 	call	0x1ede	; 0x1ede <spi_send>
+	spi_send(addr);			
     20ba:	81 2f       	mov	r24, r17
     20bc:	0e 94 6f 0f 	call	0x1ede	; 0x1ede <spi_send>
+	spi_send(mask);			
     20c0:	8d 2f       	mov	r24, r29
     20c2:	0e 94 6f 0f 	call	0x1ede	; 0x1ede <spi_send>
+	spi_send(data);
     20c6:	8c 2f       	mov	r24, r28
     20c8:	0e 94 6f 0f 	call	0x1ede	; 0x1ede <spi_send>
+	
+	PORTB |= (1<<PB4);
     20cc:	c4 9a       	sbi	0x18, 4	; 24
+	
+}
     20ce:	df 91       	pop	r29
     20d0:	cf 91       	pop	r28
     20d2:	1f 91       	pop	r17
     20d4:	08 95       	ret
 
 000020d6 <mcp_reset>:
+
+
+void mcp_reset(void){
+	
+	PORTB &= ~(1<<PB4);
     20d6:	c4 98       	cbi	0x18, 4	; 24
+	
+	spi_send(MCP_RESET); 
     20d8:	80 ec       	ldi	r24, 0xC0	; 192
     20da:	0e 94 6f 0f 	call	0x1ede	; 0x1ede <spi_send>
+	
+	PORTB |= (1<<PB4);
     20de:	c4 9a       	sbi	0x18, 4	; 24
     20e0:	8f e3       	ldi	r24, 0x3F	; 63
     20e2:	9c e9       	ldi	r25, 0x9C	; 156
@@ -3977,7 +4086,14 @@ int USART_PUTCHAR(char data ,FILE* unused){
     20ec:	08 95       	ret
 
 000020ee <mcp_init>:
+}
+
+void mcp_init(){
+	
+	uint8_t value;
+	spi_init();
     20ee:	0e 94 68 0f 	call	0x1ed0	; 0x1ed0 <spi_init>
+	mcp_reset();
     20f2:	0e 94 6b 10 	call	0x20d6	; 0x20d6 <mcp_reset>
     20f6:	8f e3       	ldi	r24, 0x3F	; 63
     20f8:	9f e1       	ldi	r25, 0x1F	; 31
@@ -3985,12 +4101,18 @@ int USART_PUTCHAR(char data ,FILE* unused){
     20fc:	f1 f7       	brne	.-4      	; 0x20fa <mcp_init+0xc>
     20fe:	00 c0       	rjmp	.+0      	; 0x2100 <mcp_init+0x12>
     2100:	00 00       	nop
+	_delay_ms(2); 
+	
+	value = mcp_read(MCP_CANSTAT);
     2102:	8e e0       	ldi	r24, 0x0E	; 14
     2104:	0e 94 2e 10 	call	0x205c	; 0x205c <mcp_read>
+	
+ 	if ((value & MODE_MASK) != MODE_CONFIG){
     2108:	98 2f       	mov	r25, r24
     210a:	90 7e       	andi	r25, 0xE0	; 224
     210c:	90 38       	cpi	r25, 0x80	; 128
     210e:	61 f0       	breq	.+24     	; 0x2128 <mcp_init+0x3a>
+ 		printf("Not in config mode after reset! value: %x \n\r", value);
     2110:	1f 92       	push	r1
     2112:	8f 93       	push	r24
     2114:	88 e8       	ldi	r24, 0x88	; 136
@@ -4040,14 +4162,22 @@ int main(void){
 	
 	while(1){
 		_delay_us(1);
-		//can_interrupt_handler();
 		navigate();
     2152:	0e 94 df 09 	call	0x13be	; 0x13be <navigate>
     2156:	f9 cf       	rjmp	.-14     	; 0x214a <main+0x20>
 
 00002158 <util_sort>:
+	t=*p;
+	*p=*q;
+	*q=t;
+}
+
+void util_sort(int a[],int n) {
     2158:	cf 93       	push	r28
     215a:	df 93       	push	r29
+	int i,j,temp;
+
+	for(i = 0;i < n-1;i++) {
     215c:	eb 01       	movw	r28, r22
     215e:	21 97       	sbiw	r28, 0x01	; 1
     2160:	1c 16       	cp	r1, r28
@@ -4060,7 +4190,9 @@ int main(void){
     216e:	68 0f       	add	r22, r24
     2170:	79 1f       	adc	r23, r25
     2172:	17 c0       	rjmp	.+46     	; 0x21a2 <util_sort+0x4a>
+		for(j = 0;j < n-i-1;j++) {
     2174:	fc 01       	movw	r30, r24
+			if(a[j] > a[j+1])
     2176:	21 91       	ld	r18, Z+
     2178:	31 91       	ld	r19, Z+
     217a:	40 81       	ld	r20, Z
@@ -4068,41 +4200,70 @@ int main(void){
     217e:	42 17       	cp	r20, r18
     2180:	53 07       	cpc	r21, r19
     2182:	34 f4       	brge	.+12     	; 0x2190 <util_sort+0x38>
+#include "util.h"
+
+void util_swap(int *p,int *q) {
+	int t;
+	t=*p;
+	*p=*q;
     2184:	df 01       	movw	r26, r30
     2186:	12 97       	sbiw	r26, 0x02	; 2
     2188:	4d 93       	st	X+, r20
     218a:	5c 93       	st	X, r21
+	*q=t;
     218c:	31 83       	std	Z+1, r19	; 0x01
     218e:	20 83       	st	Z, r18
+
+void util_sort(int a[],int n) {
+	int i,j,temp;
+
+	for(i = 0;i < n-1;i++) {
+		for(j = 0;j < n-i-1;j++) {
     2190:	e6 17       	cp	r30, r22
     2192:	f7 07       	cpc	r31, r23
     2194:	81 f7       	brne	.-32     	; 0x2176 <util_sort+0x1e>
     2196:	21 97       	sbiw	r28, 0x01	; 1
     2198:	62 50       	subi	r22, 0x02	; 2
     219a:	71 09       	sbc	r23, r1
+}
+
+void util_sort(int a[],int n) {
+	int i,j,temp;
+
+	for(i = 0;i < n-1;i++) {
     219c:	68 17       	cp	r22, r24
     219e:	79 07       	cpc	r23, r25
     21a0:	21 f0       	breq	.+8      	; 0x21aa <util_sort+0x52>
+		for(j = 0;j < n-i-1;j++) {
     21a2:	1c 16       	cp	r1, r28
     21a4:	1d 06       	cpc	r1, r29
     21a6:	34 f3       	brlt	.-52     	; 0x2174 <util_sort+0x1c>
     21a8:	f6 cf       	rjmp	.-20     	; 0x2196 <util_sort+0x3e>
+			if(a[j] > a[j+1])
+			util_swap(&a[j],&a[j+1]);
+		}
+	}
+}
     21aa:	df 91       	pop	r29
     21ac:	cf 91       	pop	r28
     21ae:	08 95       	ret
 
 000021b0 <util_median>:
+int util_median(int a[], int n){
     21b0:	0f 93       	push	r16
     21b2:	1f 93       	push	r17
     21b4:	cf 93       	push	r28
     21b6:	df 93       	push	r29
     21b8:	8c 01       	movw	r16, r24
     21ba:	eb 01       	movw	r28, r22
+	util_sort(a,n);
     21bc:	0e 94 ac 10 	call	0x2158	; 0x2158 <util_sort>
+	n=((n+1)/2)-1;
     21c0:	21 96       	adiw	r28, 0x01	; 1
     21c2:	ce 01       	movw	r24, r28
     21c4:	0a f4       	brpl	.+2      	; 0x21c8 <util_median+0x18>
     21c6:	01 96       	adiw	r24, 0x01	; 1
+	return a[n];
     21c8:	fc 01       	movw	r30, r24
     21ca:	ee 7f       	andi	r30, 0xFE	; 254
     21cc:	32 97       	sbiw	r30, 0x02	; 2

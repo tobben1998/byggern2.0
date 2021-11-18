@@ -1,6 +1,3 @@
-//Joystick Header file
-
-
 #ifndef DRIVER_JOYSTICK_H_
 #define DRIVER_JOYSTICK_H_
 

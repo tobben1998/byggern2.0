@@ -51,7 +51,7 @@ void slider_sendPositionButtonCan(slider_position pos){
 	msg.data[1] = (char)pos.r_pos;
 	
 	//button
-	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
+	msg.data[2]=(char)(PINB & (1<<0));
 
 	can_send_message(&msg);
 

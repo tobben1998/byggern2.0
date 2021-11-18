@@ -56,7 +56,7 @@ joystick_position joystick_getPosition(void){
 
 
 joystick_direction joystick_getDirection(void){
-	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
+	
 	joystick_position position;
 
 	position = joystick_getPosition();
@@ -82,19 +82,16 @@ joystick_direction joystick_getDirection(void){
 }
 
 void joystick_sendPositionButtonCan(joystick_position pos){
+	//pos
 	can_message msg;
 	msg.id=1;
 	msg.length=3;
-	//joy_pos
 	msg.data[0] = (char)pos.x_pos;
 	msg.data[1] = (char)pos.y_pos;
 	
 	//button
-	msg.data[2]=(char)(PINB & (1<<0));//leser fra logisk verdi fra PB1
-	//printf("Button value: %d \n\r", msg.data[2]);
+	msg.data[2]=(char)(PINB & (1<<0));
 	
 	
 	can_send_message(&msg);
-	//enums LEFT = 0, RIGHT = 1, DOWN = 2, UP = 3, NEUTRAL = 4
-
 }

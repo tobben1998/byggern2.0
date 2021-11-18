@@ -7,7 +7,7 @@ static int seconds = 0;
 static int mseconds = 0;
 
 void timer_init(void){
-	//TCCR0 |= (1<< CS00); //Clock with no prescaling 4.9 MHz? Change to get higher period. 
+	
 	cli();
 	counter = 0;
 	seconds = 0;
@@ -21,7 +21,7 @@ void timer_init(void){
 	int8_t counterVal = 192; //set the number that counter stops and creates interrupt at.
 	OCR0 |= counterVal;
 
-	TIMSK |= (1<< OCIE0); //Enable interrupt by Ouput Compare
+	TIMSK |= (1<< OCIE0); //Enable interrupt by Output Compare
 	sei(); //Enable global interrupts
 }
 
@@ -35,7 +35,6 @@ int timer_get_mseconds(void){
 
 ISR(TIMER0_COMP_vect){
 	
-	
 	counter++;
 	if(counter%10 == 0){
 		mseconds++;
@@ -46,6 +45,4 @@ ISR(TIMER0_COMP_vect){
 		}
 		printf("Time: %d,%d \n\r", seconds, mseconds);
 	}
-	
-	//LEgg til start og stopp "Knapp"
 }

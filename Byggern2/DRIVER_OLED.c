@@ -140,9 +140,6 @@ void oled_write_char(char c, int fs){
 			break;
 	}
 	
-	
-	//PROGMEM font4[95][4];
-	
 }
 
 

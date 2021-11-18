@@ -5,7 +5,7 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
                               C:/Program Files (x86)/Atmel/Studio/7.0/Packs/Atmel/ATmega_DFP/1.3.300/gcc/dev/atmega162/avr5/crtatmega162.o (exit)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_copy_data.o)
-                              DRIVER_CAN.o (__do_copy_data)
+                              DRIVER_MENU.o (__do_copy_data)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_clear_bss.o)
                               DRIVER_CAN.o (__do_clear_bss)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_udivmodhi4.o)
@@ -27,7 +27,7 @@ c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/..
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(iob.o)
                               c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fdevopen.o) (__iob)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(printf.o)
-                              DRIVER_CAN.o (printf)
+                              DRIVER_MENU.o (printf)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(puts.o)
                               DRIVER_XMEM.o (puts)
 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(vfprintf_std.o)
@@ -84,11 +84,7 @@ Discarded input sections
  .bss           0x00000000        0x0 DRIVER_CAN.o
  .text.can_recive_msg
                 0x00000000       0xa8 DRIVER_CAN.o
- .rodata.str1.1
-                0x00000000       0x4b DRIVER_CAN.o
- .text.can_interrupt_handler
-                0x00000000       0xac DRIVER_CAN.o
- .bss.msg.2141  0x00000000        0xb DRIVER_CAN.o
+ .bss.msg.2139  0x00000000        0xb DRIVER_CAN.o
  .text          0x00000000        0x0 DRIVER_JOYSTICK.o
  .data          0x00000000        0x0 DRIVER_JOYSTICK.o
  .bss           0x00000000        0x0 DRIVER_JOYSTICK.o
@@ -1323,149 +1319,149 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x380
+.debug_aranges  0x00000000      0x378
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x30 DRIVER_ADC.o
  .debug_aranges
-                0x00000030       0x48 DRIVER_CAN.o
+                0x00000030       0x40 DRIVER_CAN.o
  .debug_aranges
-                0x00000078       0x38 DRIVER_JOYSTICK.o
+                0x00000070       0x38 DRIVER_JOYSTICK.o
  .debug_aranges
-                0x000000b0       0x68 DRIVER_MENU.o
+                0x000000a8       0x68 DRIVER_MENU.o
  .debug_aranges
-                0x00000118       0xc8 DRIVER_OLED.o
+                0x00000110       0xc8 DRIVER_OLED.o
  .debug_aranges
-                0x000001e0       0x28 DRIVER_SLIDER.o
+                0x000001d8       0x28 DRIVER_SLIDER.o
  .debug_aranges
-                0x00000208       0x30 DRIVER_SPI.o
+                0x00000200       0x30 DRIVER_SPI.o
  .debug_aranges
-                0x00000238       0x38 DRIVER_TIMER.o
+                0x00000230       0x38 DRIVER_TIMER.o
  .debug_aranges
-                0x00000270       0x38 DRIVER_USART.o
+                0x00000268       0x38 DRIVER_USART.o
  .debug_aranges
-                0x000002a8       0x38 DRIVER_XMEM.o
+                0x000002a0       0x38 DRIVER_XMEM.o
  .debug_aranges
-                0x000002e0       0x50 DRIVER_MCP2515.o
+                0x000002d8       0x50 DRIVER_MCP2515.o
  .debug_aranges
-                0x00000330       0x20 main.o
+                0x00000328       0x20 main.o
  .debug_aranges
-                0x00000350       0x30 util.o
+                0x00000348       0x30 util.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000     0x4c65
+.debug_info     0x00000000     0x4c04
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0x5d0 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/Atmel/ATmega_DFP/1.3.300/gcc/dev/atmega162/avr5/crtatmega162.o
  .debug_info    0x000005d0      0x23b DRIVER_ADC.o
- .debug_info    0x0000080b      0x454 DRIVER_CAN.o
- .debug_info    0x00000c5f      0x37f DRIVER_JOYSTICK.o
- .debug_info    0x00000fde      0xc1f DRIVER_MENU.o
- .debug_info    0x00001bfd     0x2018 DRIVER_OLED.o
- .debug_info    0x00003c15      0x1f5 DRIVER_SLIDER.o
- .debug_info    0x00003e0a       0xd8 DRIVER_SPI.o
- .debug_info    0x00003ee2      0x16c DRIVER_TIMER.o
- .debug_info    0x0000404e      0x231 DRIVER_USART.o
- .debug_info    0x0000427f      0x22e DRIVER_XMEM.o
- .debug_info    0x000044ad      0x3d9 DRIVER_MCP2515.o
- .debug_info    0x00004886      0x224 main.o
- .debug_info    0x00004aaa      0x1bb util.o
+ .debug_info    0x0000080b      0x3f3 DRIVER_CAN.o
+ .debug_info    0x00000bfe      0x37f DRIVER_JOYSTICK.o
+ .debug_info    0x00000f7d      0xc1f DRIVER_MENU.o
+ .debug_info    0x00001b9c     0x2018 DRIVER_OLED.o
+ .debug_info    0x00003bb4      0x1f5 DRIVER_SLIDER.o
+ .debug_info    0x00003da9       0xd8 DRIVER_SPI.o
+ .debug_info    0x00003e81      0x16c DRIVER_TIMER.o
+ .debug_info    0x00003fed      0x231 DRIVER_USART.o
+ .debug_info    0x0000421e      0x22e DRIVER_XMEM.o
+ .debug_info    0x0000444c      0x3d9 DRIVER_MCP2515.o
+ .debug_info    0x00004825      0x224 main.o
+ .debug_info    0x00004a49      0x1bb util.o
 
-.debug_abbrev   0x00000000     0x1960
+.debug_abbrev   0x00000000     0x192e
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x580 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/Atmel/ATmega_DFP/1.3.300/gcc/dev/atmega162/avr5/crtatmega162.o
  .debug_abbrev  0x00000580      0x175 DRIVER_ADC.o
- .debug_abbrev  0x000006f5      0x1f8 DRIVER_CAN.o
- .debug_abbrev  0x000008ed      0x1b0 DRIVER_JOYSTICK.o
- .debug_abbrev  0x00000a9d      0x283 DRIVER_MENU.o
- .debug_abbrev  0x00000d20      0x2e0 DRIVER_OLED.o
- .debug_abbrev  0x00001000      0x12d DRIVER_SLIDER.o
- .debug_abbrev  0x0000112d       0xa1 DRIVER_SPI.o
- .debug_abbrev  0x000011ce       0xfc DRIVER_TIMER.o
- .debug_abbrev  0x000012ca      0x14a DRIVER_USART.o
- .debug_abbrev  0x00001414      0x14a DRIVER_XMEM.o
- .debug_abbrev  0x0000155e      0x1a3 DRIVER_MCP2515.o
- .debug_abbrev  0x00001701      0x12a main.o
- .debug_abbrev  0x0000182b      0x135 util.o
+ .debug_abbrev  0x000006f5      0x1c6 DRIVER_CAN.o
+ .debug_abbrev  0x000008bb      0x1b0 DRIVER_JOYSTICK.o
+ .debug_abbrev  0x00000a6b      0x283 DRIVER_MENU.o
+ .debug_abbrev  0x00000cee      0x2e0 DRIVER_OLED.o
+ .debug_abbrev  0x00000fce      0x12d DRIVER_SLIDER.o
+ .debug_abbrev  0x000010fb       0xa1 DRIVER_SPI.o
+ .debug_abbrev  0x0000119c       0xfc DRIVER_TIMER.o
+ .debug_abbrev  0x00001298      0x14a DRIVER_USART.o
+ .debug_abbrev  0x000013e2      0x14a DRIVER_XMEM.o
+ .debug_abbrev  0x0000152c      0x1a3 DRIVER_MCP2515.o
+ .debug_abbrev  0x000016cf      0x12a main.o
+ .debug_abbrev  0x000017f9      0x135 util.o
 
-.debug_line     0x00000000     0x1f75
+.debug_line     0x00000000     0x1f19
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x13f C:/Program Files (x86)/Atmel/Studio/7.0/Packs/Atmel/ATmega_DFP/1.3.300/gcc/dev/atmega162/avr5/crtatmega162.o
  .debug_line    0x0000013f      0x198 DRIVER_ADC.o
- .debug_line    0x000002d7      0x25c DRIVER_CAN.o
- .debug_line    0x00000533      0x212 DRIVER_JOYSTICK.o
- .debug_line    0x00000745      0x4db DRIVER_MENU.o
- .debug_line    0x00000c20      0x7db DRIVER_OLED.o
- .debug_line    0x000013fb      0x165 DRIVER_SLIDER.o
- .debug_line    0x00001560      0x109 DRIVER_SPI.o
- .debug_line    0x00001669      0x157 DRIVER_TIMER.o
- .debug_line    0x000017c0      0x12a DRIVER_USART.o
- .debug_line    0x000018ea      0x19a DRIVER_XMEM.o
- .debug_line    0x00001a84      0x26f DRIVER_MCP2515.o
- .debug_line    0x00001cf3      0x1bf main.o
- .debug_line    0x00001eb2       0xc3 util.o
+ .debug_line    0x000002d7      0x202 DRIVER_CAN.o
+ .debug_line    0x000004d9      0x212 DRIVER_JOYSTICK.o
+ .debug_line    0x000006eb      0x4db DRIVER_MENU.o
+ .debug_line    0x00000bc6      0x7db DRIVER_OLED.o
+ .debug_line    0x000013a1      0x165 DRIVER_SLIDER.o
+ .debug_line    0x00001506      0x109 DRIVER_SPI.o
+ .debug_line    0x0000160f      0x157 DRIVER_TIMER.o
+ .debug_line    0x00001766      0x128 DRIVER_USART.o
+ .debug_line    0x0000188e      0x19a DRIVER_XMEM.o
+ .debug_line    0x00001a28      0x26f DRIVER_MCP2515.o
+ .debug_line    0x00001c97      0x1bf main.o
+ .debug_line    0x00001e56       0xc3 util.o
 
-.debug_frame    0x00000000      0x91c
+.debug_frame    0x00000000      0x8c4
  *(.debug_frame)
  .debug_frame   0x00000000       0x4c DRIVER_ADC.o
- .debug_frame   0x0000004c      0x10c DRIVER_CAN.o
- .debug_frame   0x00000158       0xa4 DRIVER_JOYSTICK.o
- .debug_frame   0x000001fc      0x124 DRIVER_MENU.o
- .debug_frame   0x00000320      0x258 DRIVER_OLED.o
- .debug_frame   0x00000578       0x54 DRIVER_SLIDER.o
- .debug_frame   0x000005cc       0x44 DRIVER_SPI.o
- .debug_frame   0x00000610       0xb0 DRIVER_TIMER.o
- .debug_frame   0x000006c0       0x54 DRIVER_USART.o
- .debug_frame   0x00000714       0xc8 DRIVER_XMEM.o
- .debug_frame   0x000007dc       0xb8 DRIVER_MCP2515.o
- .debug_frame   0x00000894       0x24 main.o
- .debug_frame   0x000008b8       0x64 util.o
+ .debug_frame   0x0000004c       0xb4 DRIVER_CAN.o
+ .debug_frame   0x00000100       0xa4 DRIVER_JOYSTICK.o
+ .debug_frame   0x000001a4      0x124 DRIVER_MENU.o
+ .debug_frame   0x000002c8      0x258 DRIVER_OLED.o
+ .debug_frame   0x00000520       0x54 DRIVER_SLIDER.o
+ .debug_frame   0x00000574       0x44 DRIVER_SPI.o
+ .debug_frame   0x000005b8       0xb0 DRIVER_TIMER.o
+ .debug_frame   0x00000668       0x54 DRIVER_USART.o
+ .debug_frame   0x000006bc       0xc8 DRIVER_XMEM.o
+ .debug_frame   0x00000784       0xb8 DRIVER_MCP2515.o
+ .debug_frame   0x0000083c       0x24 main.o
+ .debug_frame   0x00000860       0x64 util.o
 
-.debug_str      0x00000000     0x101b
+.debug_str      0x00000000      0xf6a
  *(.debug_str)
  .debug_str     0x00000000      0x1f6 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/Atmel/ATmega_DFP/1.3.300/gcc/dev/atmega162/avr5/crtatmega162.o
  .debug_str     0x000001f6      0x1ea DRIVER_ADC.o
                                 0x22a (size before relaxing)
- .debug_str     0x000003e0       0xf0 DRIVER_CAN.o
-                                0x268 (size before relaxing)
- .debug_str     0x000004d0       0xe5 DRIVER_JOYSTICK.o
+ .debug_str     0x000003e0       0xda DRIVER_CAN.o
+                                0x24d (size before relaxing)
+ .debug_str     0x000004ba       0xe5 DRIVER_JOYSTICK.o
                                 0x29e (size before relaxing)
- .debug_str     0x000005b5      0x246 DRIVER_MENU.o
+ .debug_str     0x0000059f      0x246 DRIVER_MENU.o
                                 0x4cc (size before relaxing)
- .debug_str     0x000007fb      0x562 DRIVER_OLED.o
+ .debug_str     0x000007e5      0x562 DRIVER_OLED.o
                                 0x801 (size before relaxing)
- .debug_str     0x00000d5d       0x3a DRIVER_SLIDER.o
+ .debug_str     0x00000d47       0x3a DRIVER_SLIDER.o
                                 0x223 (size before relaxing)
- .debug_str     0x00000d97       0x83 DRIVER_SPI.o
+ .debug_str     0x00000d81       0x3d DRIVER_SPI.o
                                 0x1a2 (size before relaxing)
- .debug_str     0x00000e1a       0x33 DRIVER_TIMER.o
+ .debug_str     0x00000dbe       0x33 DRIVER_TIMER.o
                                 0x1e7 (size before relaxing)
- .debug_str     0x00000e4d       0x7d DRIVER_USART.o
+ .debug_str     0x00000df1       0x7d DRIVER_USART.o
                                 0x1ec (size before relaxing)
- .debug_str     0x00000eca       0x85 DRIVER_XMEM.o
+ .debug_str     0x00000e6e       0x85 DRIVER_XMEM.o
                                 0x21e (size before relaxing)
- .debug_str     0x00000f4f       0x41 DRIVER_MCP2515.o
+ .debug_str     0x00000ef3       0x41 DRIVER_MCP2515.o
                                 0x26c (size before relaxing)
- .debug_str     0x00000f90       0x11 main.o
+ .debug_str     0x00000f34       0x11 main.o
                                 0x23d (size before relaxing)
- .debug_str     0x00000fa1       0x7a util.o
-                                0x19d (size before relaxing)
+ .debug_str     0x00000f45       0x25 util.o
+                                0x18e (size before relaxing)
 
-.debug_loc      0x00000000     0x240b
+.debug_loc      0x00000000     0x22e5
  *(.debug_loc)
  .debug_loc     0x00000000       0xe5 DRIVER_ADC.o
- .debug_loc     0x000000e5      0x374 DRIVER_CAN.o
- .debug_loc     0x00000459      0x278 DRIVER_JOYSTICK.o
- .debug_loc     0x000006d1      0x494 DRIVER_MENU.o
- .debug_loc     0x00000b65      0xea2 DRIVER_OLED.o
- .debug_loc     0x00001a07      0x1a2 DRIVER_SLIDER.o
- .debug_loc     0x00001ba9      0x126 DRIVER_TIMER.o
- .debug_loc     0x00001ccf       0x6d DRIVER_USART.o
- .debug_loc     0x00001d3c      0x1f6 DRIVER_XMEM.o
- .debug_loc     0x00001f32      0x2c6 DRIVER_MCP2515.o
- .debug_loc     0x000021f8       0x44 main.o
- .debug_loc     0x0000223c      0x1cf util.o
+ .debug_loc     0x000000e5      0x24e DRIVER_CAN.o
+ .debug_loc     0x00000333      0x278 DRIVER_JOYSTICK.o
+ .debug_loc     0x000005ab      0x494 DRIVER_MENU.o
+ .debug_loc     0x00000a3f      0xea2 DRIVER_OLED.o
+ .debug_loc     0x000018e1      0x1a2 DRIVER_SLIDER.o
+ .debug_loc     0x00001a83      0x126 DRIVER_TIMER.o
+ .debug_loc     0x00001ba9       0x6d DRIVER_USART.o
+ .debug_loc     0x00001c16      0x1f6 DRIVER_XMEM.o
+ .debug_loc     0x00001e0c      0x2c6 DRIVER_MCP2515.o
+ .debug_loc     0x000020d2       0x44 main.o
+ .debug_loc     0x00002116      0x1cf util.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -1485,21 +1481,21 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x310
+.debug_ranges   0x00000000      0x308
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x20 DRIVER_ADC.o
- .debug_ranges  0x00000020       0x38 DRIVER_CAN.o
- .debug_ranges  0x00000058       0x28 DRIVER_JOYSTICK.o
- .debug_ranges  0x00000080       0x58 DRIVER_MENU.o
- .debug_ranges  0x000000d8       0xe8 DRIVER_OLED.o
- .debug_ranges  0x000001c0       0x18 DRIVER_SLIDER.o
- .debug_ranges  0x000001d8       0x20 DRIVER_SPI.o
- .debug_ranges  0x000001f8       0x28 DRIVER_TIMER.o
- .debug_ranges  0x00000220       0x28 DRIVER_USART.o
- .debug_ranges  0x00000248       0x58 DRIVER_XMEM.o
- .debug_ranges  0x000002a0       0x40 DRIVER_MCP2515.o
- .debug_ranges  0x000002e0       0x10 main.o
- .debug_ranges  0x000002f0       0x20 util.o
+ .debug_ranges  0x00000020       0x30 DRIVER_CAN.o
+ .debug_ranges  0x00000050       0x28 DRIVER_JOYSTICK.o
+ .debug_ranges  0x00000078       0x58 DRIVER_MENU.o
+ .debug_ranges  0x000000d0       0xe8 DRIVER_OLED.o
+ .debug_ranges  0x000001b8       0x18 DRIVER_SLIDER.o
+ .debug_ranges  0x000001d0       0x20 DRIVER_SPI.o
+ .debug_ranges  0x000001f0       0x28 DRIVER_TIMER.o
+ .debug_ranges  0x00000218       0x28 DRIVER_USART.o
+ .debug_ranges  0x00000240       0x58 DRIVER_XMEM.o
+ .debug_ranges  0x00000298       0x40 DRIVER_MCP2515.o
+ .debug_ranges  0x000002d8       0x10 main.o
+ .debug_ranges  0x000002e8       0x20 util.o
 
 .debug_macro
  *(.debug_macro)
