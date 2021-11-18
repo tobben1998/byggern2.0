@@ -36,6 +36,8 @@ void oled_print(char*, int fs);
 void oled_center_print(char* word, int fs);
 void oled_write_data(char data);
 void oled_write_char(char c, int fs);
+void oled_print_screen_progmem(int offset);
+void oled_print_page_progmem(int screenoffset, int pageOffset);
 char* oled_arrow(char* name);
 
 

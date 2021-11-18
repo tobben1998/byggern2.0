@@ -171,7 +171,9 @@ void motor_calibrate2(void){
 		printf("prevPos: %d, pos: %d \n\r", prevPos, pos);
 	}
 	motor_stop();
+	
 	motor_encoder_tglreset();
+	
 	printf("Calibration done, Position %d \n\r", motor_read_encoder(0));
 }
 

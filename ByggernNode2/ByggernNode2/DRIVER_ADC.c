@@ -43,7 +43,7 @@ void adc_read_putty(void){
 
 void adc_ballpoint(int *goal){
 	int adcval = REG_ADC_CDR;
-	if(adcval < 1000  && activateGoal==1){ // eller annen tersekl verdi
+	if(adcval < 250  && activateGoal==1){ // eller annen tersekl verdi
 		goalCount++;
 		activateGoal=0;
 		printf("Goal Count: %d \n\r", goalCount);

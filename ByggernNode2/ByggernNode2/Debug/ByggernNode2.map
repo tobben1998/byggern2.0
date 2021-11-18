@@ -2892,7 +2892,7 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
  .debug_macro   0x00012eb2      0x49f timer.o
  .debug_macro   0x00013351      0x4a2 uart.o
 
-.debug_line     0x00000000     0x5e8e
+.debug_line     0x00000000     0x5e8f
  .debug_line    0x00000000      0x7b5 can_controller.o
  .debug_line    0x000007b5      0x892 can_interrupt.o
  .debug_line    0x00001047      0x6fe Device_Startup/startup_sam3xa.o
@@ -2900,11 +2900,11 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
  .debug_line    0x00001eb9      0x961 DRIVER_MOTOR.o
  .debug_line    0x0000281a      0x88c DRIVER_PID.o
  .debug_line    0x000030a6      0x84d DRIVER_PWM.o
- .debug_line    0x000038f3      0x884 DRIVER_ADC.o
- .debug_line    0x00004177      0x8b4 main.o
- .debug_line    0x00004a2b      0x3bd printf-stdarg.o
- .debug_line    0x00004de8      0x846 timer.o
- .debug_line    0x0000562e      0x860 uart.o
+ .debug_line    0x000038f3      0x885 DRIVER_ADC.o
+ .debug_line    0x00004178      0x8b4 main.o
+ .debug_line    0x00004a2c      0x3bd printf-stdarg.o
+ .debug_line    0x00004de9      0x846 timer.o
+ .debug_line    0x0000562f      0x860 uart.o
 
 .debug_str      0x00000000    0x54e7f
  .debug_str     0x00000000    0x4f687 can_controller.o
@@ -2915,14 +2915,14 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
                               0x4f640 (size before relaxing)
  .debug_str     0x00053d64      0x195 Device_Startup/system_sam3xa.o
                               0x4f3d3 (size before relaxing)
- .debug_str     0x00053ef9       0xdd DRIVER_MOTOR.o
+ .debug_str     0x00053ef9      0x134 DRIVER_MOTOR.o
                               0x536b6 (size before relaxing)
- .debug_str     0x00053fd6      0x93e DRIVER_PID.o
+ .debug_str     0x0005402d      0x93e DRIVER_PID.o
                               0x53f64 (size before relaxing)
- .debug_str     0x00054914       0x7c DRIVER_PWM.o
+ .debug_str     0x0005496b       0x25 DRIVER_PWM.o
                               0x534fd (size before relaxing)
  .debug_str     0x00054990       0x6a DRIVER_ADC.o
-                              0x5332f (size before relaxing)
+                              0x53320 (size before relaxing)
  .debug_str     0x000549fa      0x165 main.o
                               0x5369f (size before relaxing)
  .debug_str     0x00054b5f      0x17a printf-stdarg.o

@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <string.h>
 #include <util/delay.h>
+#include "progmem.h"
 #include "DRIVER_ADC.h"
 #include "DRIVER_OLED.h"
 #include "fonts.h"
@@ -252,4 +253,20 @@ void oled_init (void){
 		  oled_goto_pos(0,0);
 
 	
+}
+
+void oled_print_screen_progmem(int screenoffset){
+	char buffer[16];
+	for(unsigned char i=0; i<8; i++){
+		oled_goto_page(i);
+		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i]+screenoffset));
+		oled_center_print(buffer,8);
+	}
+}
+
+void oled_print_page_progmem(int screenoffset, int pageOffset){
+	char buffer[16];
+	oled_goto_page(pageOffset);
+	strcpy_P(buffer,(PGM_P)pgm_read_word(&table[screenoffset+pageOffset]));
+	oled_center_print(buffer,8);
 }

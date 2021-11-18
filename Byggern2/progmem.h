@@ -105,19 +105,6 @@ const char gameover_8[] PROGMEM="";
 
 
 
-#define s_page 8 //used to move to by one page. each page is size 8
-
-#define s_main 0
-#define s_mainP 8
-#define s_p1 16
-#define s_p2 24
-#define s_controller 32
-#define s_controllerP 40
-#define s_joystick 48
-#define s_slider 56
-#define s_calibrate 64
-#define s_animation 72
-#define s_gameover 80
 
 
 

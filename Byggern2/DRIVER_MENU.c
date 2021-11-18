@@ -5,7 +5,7 @@
 #include "DRIVER_JOYSTICK.h"
 #include "DRIVER_OLED.h"
 #include "DRIVER_CAN.h"
-#include "progmem.h"
+//#include "progmem.h"
 #include "DRIVER_TIMER.h"
 #include <avr/pgmspace.h>
 #include <util/delay.h>
@@ -14,6 +14,22 @@
 #include <stdint.h>
 
 //OLED string ascces defines
+#define s_screen 8 //used to move to by one screen. each screen is size 8
+
+#define s_main 0
+#define s_mainP 8
+#define s_p1 16
+#define s_p2 24
+#define s_controller 32
+#define s_controllerP 40
+#define s_joystick 48
+#define s_slider 56
+#define s_calibrate 64
+#define s_animation 72
+#define s_gameover 80
+
+
+
 
 
 static controller ctrl;
@@ -66,15 +82,9 @@ void menu_init(){
 	
 
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<7; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i]));
-		oled_center_print(buffer,8);
-	}
-	oled_goto_page(header_pages);
-	strcpy_P(buffer,(PGM_P)pgm_read_word(&table[s_mainP+2]));
-	oled_center_print(buffer,8);
+	
+	oled_print_screen_progmem(s_main);
+	oled_print_page_progmem(s_mainP, header_pages);
 	
 	curr_menu = main_menu;
 	
@@ -104,12 +114,7 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
 void f_1player(){
 
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p1]));
-		oled_center_print(buffer,8);	
-	}
+	oled_print_screen_progmem(s_p1);
 	joystick_sendPositionButtonCan(joystick_getPosition());//For å sende motoren til midten før vi starter.
 	while(!(PINB & (1<<0))){ //
 		printf("--");
@@ -156,11 +161,7 @@ void f_1player(){
 	
 		oled_reset();
 		//char buffer[16];
-		for(unsigned char i=0; i<8; i++){
-			oled_goto_page(i);
-			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_gameover]));
-			oled_center_print(buffer,8);
-		}
+		oled_print_screen_progmem(s_gameover);
 		oled_goto_page(4);
 		oled_goto_col(63-(5*(8/2)));
 		oled_write_char(digit3char,8);
@@ -181,36 +182,20 @@ void f_1player(){
 
 void f_2player(){
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p2]));
-		oled_center_print(buffer,8);
-	}
+	oled_print_screen_progmem(s_p2);
 }
 
 void f_controller(){
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_controller]));
-		oled_center_print(buffer,8);
-	}
-		oled_goto_page(header_pages);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[s_controllerP+header_pages]));
-		oled_center_print(buffer,8);
+	oled_print_screen_progmem(s_controller);
+	oled_print_page_progmem(s_controllerP,header_pages);
 
 }
 
 void f_joystick(){
 	oled_reset();
 	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_joystick]));
-		oled_center_print(buffer,8);
-	}
+	oled_print_screen_progmem(s_joystick);
 	controller ctrl = JOYSTICK;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	printf("%d",ctrl);
@@ -224,12 +209,7 @@ void f_joystick(){
 }
 void f_slider(){
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_slider]));
-		oled_center_print(buffer,8);
-	}
+	oled_print_screen_progmem(s_slider);
 	controller ctrl = SLIDER;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	printf("%d",ctrl);
@@ -243,12 +223,7 @@ void f_slider(){
 
 void f_calibrate(){
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_calibrate]));
-		oled_center_print(buffer,8);
-	}
+	oled_print_screen_progmem(s_calibrate);
 	
 	//funskjon her ||||||||||||||||||||||||||||
 	//send over canbuss til node 2 at det skal bli kalibrert nå
@@ -263,12 +238,7 @@ void f_calibrate(){
 
 void f_animation(){
 	oled_reset();
-	char buffer[16];
-	for(unsigned char i=0; i<8; i++){
-		oled_goto_page(i);
-		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_animation]));
-		oled_center_print(buffer,8);
-	}
+	oled_print_screen_progmem(s_animation);
 	
 	//funksjon her fjern delay
 	oled_animation(4);
@@ -313,16 +283,13 @@ if(joystick_getDirection()!=NEUTRAL){
 			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
 			//oled_center_print(curr_menu->children[pos_child]->name,fontsize);
-			char buffer[16];
-			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+(curr_menu->oledOffset)+header_pages]));
-			oled_center_print(buffer,8);
 			
+			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
 			
 			oled_goto_page(pos_child+header_pages-1);
 			oled_clear_page(pos_child+header_pages-1);
 			//oled_center_print(curr_menu->children[pos_child-1]->nameArrow,fontsize);
-			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child-1+(curr_menu->oledOffset)+s_page+header_pages])); //s_page to get to arrow page
-			oled_center_print(buffer,8);
+			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child-1);
 			
 			
 			pos_child -= 1;
@@ -334,15 +301,13 @@ if(joystick_getDirection()!=NEUTRAL){
 			oled_goto_page(pos_child+header_pages);
 			oled_clear_page(pos_child+header_pages);
 			//oled_center_print(curr_menu->children[pos_child]->name,fontsize);
-			char buffer[16];
-			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+(curr_menu->oledOffset)+header_pages]));
-			oled_center_print(buffer,8);
+			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
 			
 			oled_goto_page(pos_child+header_pages+1);
 			oled_clear_page(pos_child+header_pages+1);
 			//oled_center_print(curr_menu->children[pos_child+1]->nameArrow,fontsize);
-			strcpy_P(buffer,(PGM_P)pgm_read_word(&table[pos_child+1+(curr_menu->oledOffset)+s_page+header_pages])); //s_page to get to arrow page
-			oled_center_print(buffer,8);
+			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child+1);
+			
 			pos_child += 1;
 		}
 		break;
