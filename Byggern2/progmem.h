@@ -22,11 +22,11 @@ const char mainP_7[] PROGMEM=">ANIMATION<";
 const char mainP_8[] PROGMEM="";
 
 const char p1_1[] PROGMEM="";
-const char p1_2[] PROGMEM="";
-const char p1_3[] PROGMEM="PLACE BALL";
-const char p1_4[] PROGMEM="ON SOLONOID";
+const char p1_2[] PROGMEM="PLACE BALL";
+const char p1_3[] PROGMEM="ON SOLENOID";
+const char p1_4[] PROGMEM="";
 const char p1_5[] PROGMEM="PRESS RIGHT";
-const char p1_6[] PROGMEM="BUTTON START";
+const char p1_6[] PROGMEM="BUTTON TO START";
 const char p1_7[] PROGMEM="";
 const char p1_8[] PROGMEM="";
 

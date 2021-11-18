@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <avr/interrupt.h>
 
 //OLED string access
 #define s_screen 8 //used to move to by one screen in progmem
@@ -93,27 +94,31 @@ void f_1player(){
 		for(unsigned char i=0; i<5; i++){
 			can_clearIfInterrupted();
 		}
-		//second one because of race condition
+		//several times because of race condition
 		
 		can_message msg;
 		msg.id=1;
 		msg.length=3;
 		msg.data[2]=(char)1;
-		can_send_message(&msg); //solonoide hit
+		can_send_message(&msg); //solenoide hit
 		
-		//uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
-		uint8_t ctrl=0;
+		uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
+		
+		if(!(ctrl ==1 || ctrl ==0)){
+			ctrl=0;
+		}
+		printf("\n controller: %d", ctrl);
 		timer2_set_ctrl(ctrl);
 		timer_init();
 		timer2_init();
 		timer2_stop();
+		
 				
 	switch(ctrl){
 		case JOYSTICK:
 			timer2_start();
 			while (!can_clearIfInterrupted()){
 				printf("--");
-				//joystick_sendPositionButtonCan(joystick_getPosition());
 			}
 			timer2_stop();
 
@@ -122,7 +127,6 @@ void f_1player(){
 			timer2_start();
 			while (!can_clearIfInterrupted()){	
 				printf("--");
-				//slider_sendPositionButtonCan(slider_getPosition());
 			}
 			timer2_stop();
 		break;
@@ -155,8 +159,10 @@ void f_controller(){
 void f_joystick(){
 	oled_reset();
 	oled_print_screen_progmem(s_joystick);
+	cli();
 	controller ctrl = JOYSTICK;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
+	sei();
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -168,8 +174,10 @@ void f_joystick(){
 void f_slider(){
 	oled_reset();
 	oled_print_screen_progmem(s_slider);
+	cli();
 	controller ctrl = SLIDER;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
+	sei();
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -182,9 +190,10 @@ void f_calibrate(){
 	oled_reset();
 	oled_print_screen_progmem(s_calibrate);
 	
-	//funskjon her ///////////////// for calibrate
+	_delay_ms(700);
+	joystick_calibrate();
 	
-	_delay_ms(1000);
+	_delay_ms(300);
 		
 	curr_menu=main_menu;
 	pos_child=0;

@@ -85,7 +85,10 @@ ISR(TIMER2_COMP_vect){
 		slider_sendPositionButtonCan(slider_getPosition());
 		
 	}
-	else{
+	else if(!control){
 		joystick_sendPositionButtonCan(joystick_getPosition());
+	}
+	else {
+		printf("XMEM error");
 	}
 }

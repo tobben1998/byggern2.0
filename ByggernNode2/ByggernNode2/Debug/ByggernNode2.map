@@ -2711,18 +2711,18 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
  .debug_abbrev  0x000014ab      0x2b6 timer.o
  .debug_abbrev  0x00001761      0x2c0 uart.o
 
-.debug_loc      0x00000000     0x167f
+.debug_loc      0x00000000     0x167a
  .debug_loc     0x00000000      0x2d8 can_controller.o
  .debug_loc     0x000002d8       0x78 can_interrupt.o
  .debug_loc     0x00000350       0x6b Device_Startup/startup_sam3xa.o
  .debug_loc     0x000003bb      0x365 DRIVER_MOTOR.o
  .debug_loc     0x00000720      0x1b4 DRIVER_PID.o
- .debug_loc     0x000008d4       0x9a DRIVER_PWM.o
- .debug_loc     0x0000096e       0x64 DRIVER_ADC.o
- .debug_loc     0x000009d2       0x20 main.o
- .debug_loc     0x000009f2      0xb0a printf-stdarg.o
- .debug_loc     0x000014fc       0xb5 timer.o
- .debug_loc     0x000015b1       0xce uart.o
+ .debug_loc     0x000008d4       0x95 DRIVER_PWM.o
+ .debug_loc     0x00000969       0x64 DRIVER_ADC.o
+ .debug_loc     0x000009cd       0x20 main.o
+ .debug_loc     0x000009ed      0xb0a printf-stdarg.o
+ .debug_loc     0x000014f7       0xb5 timer.o
+ .debug_loc     0x000015ac       0xce uart.o
 
 .debug_aranges  0x00000000      0x280
  .debug_aranges
@@ -2919,15 +2919,15 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
                               0x536b6 (size before relaxing)
  .debug_str     0x00053fd6      0x93e DRIVER_PID.o
                               0x53f55 (size before relaxing)
- .debug_str     0x00054914       0x25 DRIVER_PWM.o
+ .debug_str     0x00054914       0x7c DRIVER_PWM.o
                               0x534fd (size before relaxing)
- .debug_str     0x00054939       0x65 DRIVER_ADC.o
+ .debug_str     0x00054990       0x65 DRIVER_ADC.o
                               0x5331b (size before relaxing)
- .debug_str     0x0005499e      0x159 main.o
+ .debug_str     0x000549f5      0x159 main.o
                               0x53681 (size before relaxing)
- .debug_str     0x00054af7      0x17a printf-stdarg.o
+ .debug_str     0x00054b4e      0x17a printf-stdarg.o
                                0x3652 (size before relaxing)
- .debug_str     0x00054c71       0xfa timer.o
+ .debug_str     0x00054cc8       0xa3 timer.o
                               0x53603 (size before relaxing)
  .debug_str     0x00054d6b      0x103 uart.o
                               0x53933 (size before relaxing)

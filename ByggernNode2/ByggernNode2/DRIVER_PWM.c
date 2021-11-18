@@ -43,7 +43,7 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
 	 int16_t dutyCycle = tall*5+1500;
 	 
 	  //////////////////////////////////////////////////////////////////////////////////
-	 //dutyCycle=-dutyCycle+3000; //invert pwm if needed. comment/uncomment to invert//
+	 dutyCycle=-dutyCycle+3000; //invert pwm if needed. comment/uncomment to invert//
 	//////////////////////////////////////////////////////////////////////////////////
 	
 	 if(dutyCycle>2000){
