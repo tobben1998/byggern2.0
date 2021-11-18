@@ -83,7 +83,6 @@ void timer2_set_ctrl(uint8_t ctrl){
 ISR(TIMER2_COMP_vect){
 	if(control){
 		slider_sendPositionButtonCan(slider_getPosition());
-		
 	}
 	else if(!control){
 		joystick_sendPositionButtonCan(joystick_getPosition());

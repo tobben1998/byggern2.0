@@ -14,7 +14,7 @@
 
 slider_position slider_getPosition(void){
 	slider_position position;
-	uint8_t midpoint=127;
+	uint8_t midpoint = 127;
 	uint8_t l = adc_read(2);
 	uint8_t r = adc_read(3);
 
@@ -44,15 +44,14 @@ slider_position slider_getPosition(void){
 
 void slider_sendPositionButtonCan(slider_position pos){
 	can_message msg;
-	msg.id=1;
-	msg.length=3;
+	msg.id = 1;
+	msg.length = 3;
 	//slider_pos
 	msg.data[0] = (char)pos.l_pos;
 	msg.data[1] = (char)pos.r_pos;
 	
 	//button
-	msg.data[2]=(char)(PINB & (1<<0));
+	msg.data[2] = (char)(PINB & (1<<0));
 
 	can_send_message(&msg);
-
 }

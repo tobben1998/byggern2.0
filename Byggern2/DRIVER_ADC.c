@@ -14,13 +14,13 @@
 
 void clock_init(void){
 
-	DDRD |= (1 << DDD4);
+	DDRD	|= (1 << DDD4);
 	
 	cli();
-	TCCR3A |= (1 << COM3A0);
-	TCCR3B |= (1 << CS30);
-	TCCR3B |= (1 << WGM32);
-	OCR3A = 1;
+	TCCR3A	|= (1 << COM3A0);
+	TCCR3B	|= (1 << CS30);
+	TCCR3B	|= (1 << WGM32);
+	OCR3A	 = 1;
 	sei();
 };
 
@@ -29,19 +29,16 @@ void adc_init (void){
 }
 
 int adc_read(int channel){
-	//Successive read pulses sense through RAM, beginning with channel 0:
+	//Successive read pulses senses through RAM, beginning with channel 0:
 	
-	uint8_t confData = 0b10000000 | channel;
+	uint8_t  confData	= 0b10000000 | channel;
 	uint16_t adcMemArea = 0x400;
 
 	xmem_init();
 	xmem_write(confData, adcMemArea);
 	_delay_us(CONVERSION_DELAY);
 	uint8_t result = xmem_read(adcMemArea);
-
 	_delay_us(CONVERSION_DELAY);
 
 	return result;
 }
-
-pos_t pos_read(void);

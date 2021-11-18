@@ -28,9 +28,9 @@ void adc_read_putty(void){
 
 void adc_ballpoint(void){
 	int adcval = REG_ADC_CDR;
-	if(adcval < 250  && activateGoal==1){ // adc value threshold depends on IR condition
+	if(adcval < 250  && activateGoal == 1){ // adc value threshold depends on IR condition
 		goalCount++;
-		activateGoal=0;
+		activateGoal = 0;
 		printf("Goal Count: %d \n\r", goalCount);
 		
 		CAN_MESSAGE msg;
@@ -41,6 +41,6 @@ void adc_ballpoint(void){
 		
 	}
 	if (adcval> 4000 && activateGoal==0){
-		activateGoal=1;
+		activateGoal = 1;
 	}
 }

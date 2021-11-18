@@ -10,11 +10,9 @@ static uint32_t CompareValms;
 
 void SysTick_init(uint32_t ticks){ //Formula for calculating number of ticks: ticks = (desired period)/(clock period) -1
 	
-	SysTick->CTRL = 0;									//Disable systick
-	
+	SysTick->CTRL  = 0;									//Disable systick
 	SysTick->CTRL |= (1 << SysTick_CTRL_CLKSOURCE_Pos); //Clocksource: 1 = MCK, 0 = MCK/8
 	SysTick->CTRL |= (1 << SysTick_CTRL_TICKINT_Pos);	//Enable Systick interrupts. 1 = Enable, 0 = Disable
-	
 	
 	SysTick->LOAD = ticks - 1;							//Reload Register
 	
@@ -36,7 +34,6 @@ void SysTick_Handler(void){
 		busywait_alarm = 1;
 	}
 	
-	
 	if(SysTick_counter%1000 == 0){
 		SysTick_seconds++;
 		printf("counter: %d", SysTick_counter);
@@ -47,7 +44,6 @@ void SysTick_Handler(void){
 
 void timer_busywaitms(uint32_t mseconds){
 	SysTick_init(84032); //1ms
-	
 	CompareValms = mseconds;
 	printf("Timer started... \n\r");
 	while(!busywait_alarm){};

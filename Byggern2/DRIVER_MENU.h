@@ -17,7 +17,6 @@ typedef struct menu_struct{
 	int oledOffset;
 	char* name;
 	char* nameArrow;
-	
 } menu_item;
 
 void menu_init();

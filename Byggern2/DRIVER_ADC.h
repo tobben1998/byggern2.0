@@ -9,6 +9,5 @@ typedef struct {
 void clock_init(void);
 void adc_init (void);
 int adc_read(int channel);
-pos_t pos_read(void);
 
 #endif

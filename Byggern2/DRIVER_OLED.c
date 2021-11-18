@@ -9,12 +9,9 @@
 #include "DRIVER_OLED.h"
 #include "fonts.h"
 
-
-
 volatile char *ext_oled_command = (char *) 0x1000;
 volatile char *ext_oled_data = (char *) 0x1200;
 int fontsize = 8;
-
 
 //oled write command
 void oled_wrc(uint8_t data){
@@ -28,7 +25,6 @@ void oled_wrd(uint8_t data){
 void oled_mode(adressing_mode mode){
 	oled_wrc(0x20);
 	oled_wrc(mode);
-	
 }
 
 void oled_reset(){
@@ -61,8 +57,8 @@ void oled_goto_col(uint8_t col){
 		printf("denne posisjonen eksisterer ikke");
 	}
 	else{
-		int ms=col/16;
-		int ls=col%16;
+		int ms = col/16;
+		int ls = col%16;
 		oled_wrc(0x10+ms);
 		oled_wrc(0x00+ls);
 		oled_position.coloumn = col;
@@ -139,7 +135,6 @@ void oled_write_char(char c, int fs){
 			}
 			break;
 	}
-	
 }
 
 
@@ -249,8 +244,6 @@ void oled_init (void){
 	      oled_wrc(0xaf);        // display on
 		  oled_clear_screen();
 		  oled_goto_pos(0,0);
-
-	
 }
 
 void oled_print_screen_progmem(int screenoffset){
@@ -276,7 +269,7 @@ void oled_print_time_used(void){
 	int digit2char;
 	int digit1char;
 	int mdigitchar;
-	seconds = timer_get_seconds();
+	seconds	 = timer_get_seconds();
 	mseconds = timer_get_mseconds();
 	uint8_t digit3 =seconds/100;
 	uint8_t digit2 =seconds/10;
@@ -286,7 +279,6 @@ void oled_print_time_used(void){
 	digit2char = digit2+'0';
 	digit1char = digit1+'0';
 	mdigitchar = mdigit+'0';
-	
 	oled_goto_page(4);
 	oled_goto_col(63-(5*(8/2)));
 	oled_write_char(digit3char,8);

@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 000003a0  00000000  00000000  00003010  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00004e59  00000000  00000000  000033b0  2**0
+  6 .debug_info   00004e53  00000000  00000000  000033b0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00001979  00000000  00000000  00008209  2**0
+  7 .debug_abbrev 00001979  00000000  00000000  00008203  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00002084  00000000  00000000  00009b82  2**0
+  8 .debug_line   00002082  00000000  00000000  00009b7c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  0000095c  00000000  00000000  0000bc08  2**2
+  9 .debug_frame  0000095c  00000000  00000000  0000bc00  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000ff4  00000000  00000000  0000c564  2**0
+ 10 .debug_str    00000ff4  00000000  00000000  0000c55c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    000024ca  00000000  00000000  0000d558  2**0
+ 11 .debug_loc    000024ca  00000000  00000000  0000d550  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000330  00000000  00000000  0000fa22  2**0
+ 12 .debug_ranges 00000330  00000000  00000000  0000fa1a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -789,36 +789,63 @@ Disassembly of section .text:
      c80:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 00000c84 <clock_init>:
+#define CONVERSION_DELAY 50
+
+
+void clock_init(void){
+
+	DDRD	|= (1 << DDD4);
      c84:	8c 9a       	sbi	0x11, 4	; 17
+	
+	cli();
      c86:	f8 94       	cli
+	TCCR3A	|= (1 << COM3A0);
      c88:	eb e8       	ldi	r30, 0x8B	; 139
      c8a:	f0 e0       	ldi	r31, 0x00	; 0
      c8c:	80 81       	ld	r24, Z
      c8e:	80 64       	ori	r24, 0x40	; 64
      c90:	80 83       	st	Z, r24
+	TCCR3B	|= (1 << CS30);
      c92:	ea e8       	ldi	r30, 0x8A	; 138
      c94:	f0 e0       	ldi	r31, 0x00	; 0
      c96:	80 81       	ld	r24, Z
      c98:	81 60       	ori	r24, 0x01	; 1
      c9a:	80 83       	st	Z, r24
+	TCCR3B	|= (1 << WGM32);
      c9c:	80 81       	ld	r24, Z
      c9e:	88 60       	ori	r24, 0x08	; 8
      ca0:	80 83       	st	Z, r24
+	OCR3A	 = 1;
      ca2:	81 e0       	ldi	r24, 0x01	; 1
      ca4:	90 e0       	ldi	r25, 0x00	; 0
      ca6:	90 93 87 00 	sts	0x0087, r25	; 0x800087 <__TEXT_REGION_LENGTH__+0x7e0087>
      caa:	80 93 86 00 	sts	0x0086, r24	; 0x800086 <__TEXT_REGION_LENGTH__+0x7e0086>
+	sei();
      cae:	78 94       	sei
      cb0:	08 95       	ret
 
 00000cb2 <adc_init>:
+};
+
+void adc_init (void){
+	clock_init();	
      cb2:	0e 94 42 06 	call	0xc84	; 0xc84 <clock_init>
      cb6:	08 95       	ret
 
 00000cb8 <adc_read>:
+}
+
+int adc_read(int channel){
      cb8:	cf 93       	push	r28
      cba:	c8 2f       	mov	r28, r24
+	//Successive read pulses senses through RAM, beginning with channel 0:
+	
+	uint8_t  confData	= 0b10000000 | channel;
+	uint16_t adcMemArea = 0x400;
+
+	xmem_init();
      cbc:	0e 94 ce 10 	call	0x219c	; 0x219c <xmem_init>
+	xmem_write(confData, adcMemArea);
      cc0:	60 e0       	ldi	r22, 0x00	; 0
      cc2:	74 e0       	ldi	r23, 0x04	; 4
      cc4:	8c 2f       	mov	r24, r28
@@ -834,6 +861,8 @@ Disassembly of section .text:
      cce:	8a 95       	dec	r24
      cd0:	f1 f7       	brne	.-4      	; 0xcce <adc_read+0x16>
      cd2:	00 c0       	rjmp	.+0      	; 0xcd4 <adc_read+0x1c>
+	_delay_us(CONVERSION_DELAY);
+	uint8_t result = xmem_read(adcMemArea);
      cd4:	80 e0       	ldi	r24, 0x00	; 0
      cd6:	94 e0       	ldi	r25, 0x04	; 4
      cd8:	0e 94 d9 10 	call	0x21b2	; 0x21b2 <xmem_read>
@@ -841,11 +870,20 @@ Disassembly of section .text:
      cde:	9a 95       	dec	r25
      ce0:	f1 f7       	brne	.-4      	; 0xcde <adc_read+0x26>
      ce2:	00 c0       	rjmp	.+0      	; 0xce4 <adc_read+0x2c>
+	_delay_us(CONVERSION_DELAY);
+
+	return result;
      ce4:	90 e0       	ldi	r25, 0x00	; 0
      ce6:	cf 91       	pop	r28
      ce8:	08 95       	ret
 
 00000cea <can_init>:
+	msg.length = length;
+	for(uint8_t m = 0; m<length; m++){
+		msg.data[m] = mcp_read(RXBnDM+m*16*buffer_number); //see register 4-9
+	}
+	return &msg;
+}
      cea:	0e 94 26 11 	call	0x224c	; 0x224c <mcp_init>
      cee:	61 e0       	ldi	r22, 0x01	; 1
      cf0:	88 e2       	ldi	r24, 0x28	; 40
@@ -930,14 +968,18 @@ Disassembly of section .text:
      d9e:	08 95       	ret
 
 00000da0 <__vector_1>:
+
+ISR(INT0_vect){
      da0:	1f 92       	push	r1
      da2:	0f 92       	push	r0
      da4:	0f b6       	in	r0, 0x3f	; 63
      da6:	0f 92       	push	r0
      da8:	11 24       	eor	r1, r1
      daa:	8f 93       	push	r24
+	CAN_flag = 1;
      dac:	81 e0       	ldi	r24, 0x01	; 1
      dae:	80 93 b6 01 	sts	0x01B6, r24	; 0x8001b6 <__data_end>
+}
      db2:	8f 91       	pop	r24
      db4:	0f 90       	pop	r0
      db6:	0f be       	out	0x3f, r0	; 63
@@ -946,22 +988,39 @@ Disassembly of section .text:
      dbc:	18 95       	reti
 
 00000dbe <can_clearIfInterrupted>:
+
+int can_clearIfInterrupted(void){
+	if (CAN_flag == 1){
      dbe:	80 91 b6 01 	lds	r24, 0x01B6	; 0x8001b6 <__data_end>
      dc2:	81 30       	cpi	r24, 0x01	; 1
      dc4:	51 f4       	brne	.+20     	; 0xdda <can_clearIfInterrupted+0x1c>
+		CAN_flag = 0;
      dc6:	10 92 b6 01 	sts	0x01B6, r1	; 0x8001b6 <__data_end>
+		mcp_bit_modify(MCP_CANINTF, 0x01, 0);
      dca:	40 e0       	ldi	r20, 0x00	; 0
      dcc:	61 e0       	ldi	r22, 0x01	; 1
      dce:	8c e2       	ldi	r24, 0x2C	; 44
      dd0:	0e 94 02 11 	call	0x2204	; 0x2204 <mcp_bit_modify>
+		return 1;
      dd4:	81 e0       	ldi	r24, 0x01	; 1
      dd6:	90 e0       	ldi	r25, 0x00	; 0
      dd8:	08 95       	ret
+	}
+	else{
+		return 0;
      dda:	80 e0       	ldi	r24, 0x00	; 0
      ddc:	90 e0       	ldi	r25, 0x00	; 0
+	}
+}
      dde:	08 95       	ret
 
 00000de0 <joystick_calibrate>:
+
+
+volatile uint8_t x_offset;
+volatile uint8_t y_offset;
+
+void joystick_calibrate(){
      de0:	cf 92       	push	r12
      de2:	df 92       	push	r13
      de4:	ef 92       	push	r14
@@ -990,6 +1049,9 @@ Disassembly of section .text:
      e12:	c9 1a       	sub	r12, r25
      e14:	9e ef       	ldi	r25, 0xFE	; 254
      e16:	d9 0a       	sbc	r13, r25
+	int n=100,arrx[n],arry[n];
+	for(int i = 0;i < n;i++) {
+		arrx[i]=adc_read(1);
      e18:	81 e0       	ldi	r24, 0x01	; 1
      e1a:	90 e0       	ldi	r25, 0x00	; 0
      e1c:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
@@ -997,6 +1059,7 @@ Disassembly of section .text:
      e22:	81 93       	st	Z+, r24
      e24:	91 93       	st	Z+, r25
      e26:	8f 01       	movw	r16, r30
+		arry[i]=adc_read(0);
      e28:	80 e0       	ldi	r24, 0x00	; 0
      e2a:	90 e0       	ldi	r25, 0x00	; 0
      e2c:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
@@ -1004,9 +1067,20 @@ Disassembly of section .text:
      e32:	81 93       	st	Z+, r24
      e34:	91 93       	st	Z+, r25
      e36:	7f 01       	movw	r14, r30
+volatile uint8_t x_offset;
+volatile uint8_t y_offset;
+
+void joystick_calibrate(){
+	int n=100,arrx[n],arry[n];
+	for(int i = 0;i < n;i++) {
      e38:	0c 15       	cp	r16, r12
      e3a:	1d 05       	cpc	r17, r13
      e3c:	69 f7       	brne	.-38     	; 0xe18 <joystick_calibrate+0x38>
+		arrx[i]=adc_read(1);
+		arry[i]=adc_read(0);
+	}
+	
+	x_offset = util_median(arrx,n);
      e3e:	64 e6       	ldi	r22, 0x64	; 100
      e40:	70 e0       	ldi	r23, 0x00	; 0
      e42:	ce 01       	movw	r24, r28
@@ -1014,12 +1088,14 @@ Disassembly of section .text:
      e46:	9f 4f       	sbci	r25, 0xFF	; 255
      e48:	0e 94 87 11 	call	0x230e	; 0x230e <util_median>
      e4c:	80 93 c3 01 	sts	0x01C3, r24	; 0x8001c3 <x_offset>
+	y_offset = util_median(arry,n);
      e50:	64 e6       	ldi	r22, 0x64	; 100
      e52:	70 e0       	ldi	r23, 0x00	; 0
      e54:	ce 01       	movw	r24, r28
      e56:	01 96       	adiw	r24, 0x01	; 1
      e58:	0e 94 87 11 	call	0x230e	; 0x230e <util_median>
      e5c:	80 93 c2 01 	sts	0x01C2, r24	; 0x8001c2 <y_offset>
+}
      e60:	c0 57       	subi	r28, 0x70	; 112
      e62:	de 4f       	sbci	r29, 0xFE	; 254
      e64:	0f b6       	in	r0, 0x3f	; 63
@@ -1038,21 +1114,29 @@ Disassembly of section .text:
      e7e:	08 95       	ret
 
 00000e80 <joystick_getPosition>:
+
+joystick_position joystick_getPosition(void){
      e80:	1f 93       	push	r17
      e82:	cf 93       	push	r28
      e84:	df 93       	push	r29
+	joystick_position position;
+	uint8_t x = adc_read(1);
      e86:	81 e0       	ldi	r24, 0x01	; 1
      e88:	90 e0       	ldi	r25, 0x00	; 0
      e8a:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
      e8e:	ec 01       	movw	r28, r24
+	uint8_t y = adc_read(0);
      e90:	80 e0       	ldi	r24, 0x00	; 0
      e92:	90 e0       	ldi	r25, 0x00	; 0
      e94:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
      e98:	9c 01       	movw	r18, r24
      e9a:	48 2f       	mov	r20, r24
+
+	if(x > x_offset){
      e9c:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <x_offset>
      ea0:	8c 17       	cp	r24, r28
      ea2:	a8 f4       	brcc	.+42     	; 0xece <joystick_getPosition+0x4e>
+			position.x_pos = (int8_t)100*(x-x_offset)/(0xFF - x_offset);
      ea4:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <x_offset>
      ea8:	50 91 c3 01 	lds	r21, 0x01C3	; 0x8001c3 <x_offset>
      eac:	dd 27       	eor	r29, r29
@@ -1071,9 +1155,12 @@ Disassembly of section .text:
      ec6:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
      eca:	fb 01       	movw	r30, r22
      ecc:	18 c0       	rjmp	.+48     	; 0xefe <joystick_getPosition+0x7e>
+	}
+	else if (x < x_offset){
      ece:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <x_offset>
      ed2:	c8 17       	cp	r28, r24
      ed4:	90 f4       	brcc	.+36     	; 0xefa <joystick_getPosition+0x7a>
+		position.x_pos = 100*(x-x_offset)/(x_offset - 0);
      ed6:	80 91 c3 01 	lds	r24, 0x01C3	; 0x8001c3 <x_offset>
      eda:	60 91 c3 01 	lds	r22, 0x01C3	; 0x8001c3 <x_offset>
      ede:	dd 27       	eor	r29, r29
@@ -1089,11 +1176,18 @@ Disassembly of section .text:
      ef2:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
      ef6:	fb 01       	movw	r30, r22
      ef8:	02 c0       	rjmp	.+4      	; 0xefe <joystick_getPosition+0x7e>
+	}
+	else {
+		position.x_pos = 0;
      efa:	e0 e0       	ldi	r30, 0x00	; 0
      efc:	f0 e0       	ldi	r31, 0x00	; 0
+	}
+
+	if(y > y_offset){
      efe:	80 91 c2 01 	lds	r24, 0x01C2	; 0x8001c2 <y_offset>
      f02:	84 17       	cp	r24, r20
      f04:	a8 f4       	brcc	.+42     	; 0xf30 <joystick_getPosition+0xb0>
+		position.y_pos = 100*(y-y_offset)/(0xFF - y_offset);
      f06:	80 91 c2 01 	lds	r24, 0x01C2	; 0x8001c2 <y_offset>
      f0a:	40 91 c2 01 	lds	r20, 0x01C2	; 0x8001c2 <y_offset>
      f0e:	33 27       	eor	r19, r19
@@ -1112,9 +1206,12 @@ Disassembly of section .text:
      f28:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
      f2c:	9b 01       	movw	r18, r22
      f2e:	18 c0       	rjmp	.+48     	; 0xf60 <joystick_getPosition+0xe0>
+	}
+	else if (y < y_offset){
      f30:	80 91 c2 01 	lds	r24, 0x01C2	; 0x8001c2 <y_offset>
      f34:	48 17       	cp	r20, r24
      f36:	90 f4       	brcc	.+36     	; 0xf5c <joystick_getPosition+0xdc>
+		position.y_pos = 100*(y-y_offset)/(y_offset - 0);
      f38:	80 91 c2 01 	lds	r24, 0x01C2	; 0x8001c2 <y_offset>
      f3c:	60 91 c2 01 	lds	r22, 0x01C2	; 0x8001c2 <y_offset>
      f40:	33 27       	eor	r19, r19
@@ -1130,49 +1227,106 @@ Disassembly of section .text:
      f54:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
      f58:	9b 01       	movw	r18, r22
      f5a:	02 c0       	rjmp	.+4      	; 0xf60 <joystick_getPosition+0xe0>
+	}
+	else {
+		position.y_pos = 0;
      f5c:	20 e0       	ldi	r18, 0x00	; 0
      f5e:	30 e0       	ldi	r19, 0x00	; 0
+	}
+	
+	return position;
      f60:	bf 01       	movw	r22, r30
      f62:	c9 01       	movw	r24, r18
+}
      f64:	df 91       	pop	r29
      f66:	cf 91       	pop	r28
      f68:	1f 91       	pop	r17
      f6a:	08 95       	ret
 
 00000f6c <joystick_getDirection>:
+
+joystick_direction joystick_getDirection(void){
+	
+	joystick_position position;
+
+	position = joystick_getPosition();
      f6c:	0e 94 40 07 	call	0xe80	; 0xe80 <joystick_getPosition>
+	
+	if(position.x_pos < -50){
      f70:	6e 3c       	cpi	r22, 0xCE	; 206
      f72:	ef ef       	ldi	r30, 0xFF	; 255
      f74:	7e 07       	cpc	r23, r30
      f76:	84 f0       	brlt	.+32     	; 0xf98 <joystick_getDirection+0x2c>
+		return LEFT;
+	}
+	else if(position.x_pos > 50){
      f78:	63 33       	cpi	r22, 0x33	; 51
      f7a:	71 05       	cpc	r23, r1
      f7c:	7c f4       	brge	.+30     	; 0xf9c <joystick_getDirection+0x30>
+		return RIGHT;	
+	}
+
+	if(position.y_pos < -50){
      f7e:	8e 3c       	cpi	r24, 0xCE	; 206
      f80:	2f ef       	ldi	r18, 0xFF	; 255
      f82:	92 07       	cpc	r25, r18
      f84:	6c f0       	brlt	.+26     	; 0xfa0 <joystick_getDirection+0x34>
+		return DOWN;
+	}
+	else if(position.y_pos > 50){
      f86:	c3 97       	sbiw	r24, 0x33	; 51
      f88:	6c f4       	brge	.+26     	; 0xfa4 <joystick_getDirection+0x38>
+		return UP;
+	}
+	
+	if(position.x_pos <= 50 && position.x_pos >= -50 && position.y_pos <= 50 && position.y_pos >= -50){
      f8a:	6e 5c       	subi	r22, 0xCE	; 206
      f8c:	7f 4f       	sbci	r23, 0xFF	; 255
      f8e:	65 36       	cpi	r22, 0x65	; 101
      f90:	71 05       	cpc	r23, r1
      f92:	50 f0       	brcs	.+20     	; 0xfa8 <joystick_getDirection+0x3c>
+		return NEUTRAL;
+	}
+	return 0;
      f94:	80 e0       	ldi	r24, 0x00	; 0
      f96:	08 95       	ret
+	joystick_position position;
+
+	position = joystick_getPosition();
+	
+	if(position.x_pos < -50){
+		return LEFT;
      f98:	80 e0       	ldi	r24, 0x00	; 0
      f9a:	08 95       	ret
+	}
+	else if(position.x_pos > 50){
+		return RIGHT;	
      f9c:	81 e0       	ldi	r24, 0x01	; 1
      f9e:	08 95       	ret
+	}
+
+	if(position.y_pos < -50){
+		return DOWN;
      fa0:	82 e0       	ldi	r24, 0x02	; 2
      fa2:	08 95       	ret
+	}
+	else if(position.y_pos > 50){
+		return UP;
      fa4:	83 e0       	ldi	r24, 0x03	; 3
      fa6:	08 95       	ret
+	}
+	
+	if(position.x_pos <= 50 && position.x_pos >= -50 && position.y_pos <= 50 && position.y_pos >= -50){
+		return NEUTRAL;
      fa8:	84 e0       	ldi	r24, 0x04	; 4
+	}
+	return 0;
+}
      faa:	08 95       	ret
 
 00000fac <joystick_sendPositionButtonCan>:
+
+void joystick_sendPositionButtonCan(joystick_position pos){
      fac:	cf 93       	push	r28
      fae:	df 93       	push	r29
      fb0:	cd b7       	in	r28, 0x3d	; 61
@@ -1183,17 +1337,29 @@ Disassembly of section .text:
      fba:	de bf       	out	0x3e, r29	; 62
      fbc:	0f be       	out	0x3f, r0	; 63
      fbe:	cd bf       	out	0x3d, r28	; 61
+	//pos
+	can_message msg;
+	msg.id = 1;
      fc0:	21 e0       	ldi	r18, 0x01	; 1
      fc2:	30 e0       	ldi	r19, 0x00	; 0
      fc4:	3a 83       	std	Y+2, r19	; 0x02
      fc6:	29 83       	std	Y+1, r18	; 0x01
+	msg.length	= 3;
      fc8:	93 e0       	ldi	r25, 0x03	; 3
      fca:	9b 83       	std	Y+3, r25	; 0x03
+	msg.data[0] = (char)pos.x_pos;
      fcc:	6c 83       	std	Y+4, r22	; 0x04
+	msg.data[1] = (char)pos.y_pos;
      fce:	8d 83       	std	Y+5, r24	; 0x05
+	
+	//button
+	msg.data[2]=(char)(PINB & (1<<0));
      fd0:	86 b3       	in	r24, 0x16	; 22
      fd2:	81 70       	andi	r24, 0x01	; 1
      fd4:	8e 83       	std	Y+6, r24	; 0x06
+	
+	
+	can_send_message(&msg);
      fd6:	ce 01       	movw	r24, r28
      fd8:	01 96       	adiw	r24, 0x01	; 1
      fda:	0e 94 97 06 	call	0xd2e	; 0xd2e <can_send_message>
@@ -1256,7 +1422,7 @@ void f_2player(){
     1026:	00 00       	nop
 	
 	_delay_ms(1000);
-	curr_menu=main_menu;
+	curr_menu = main_menu;
     1028:	a0 91 c8 01 	lds	r26, 0x01C8	; 0x8001c8 <main_menu>
     102c:	b0 91 c9 01 	lds	r27, 0x01C9	; 0x8001c9 <main_menu+0x1>
     1030:	b0 93 b8 01 	sts	0x01B8, r27	; 0x8001b8 <curr_menu+0x1>
@@ -1425,7 +1591,6 @@ void f_1player(){
     1100:	80 e5       	ldi	r24, 0x50	; 80
     1102:	90 e0       	ldi	r25, 0x00	; 0
     1104:	0e 94 a0 0e 	call	0x1d40	; 0x1d40 <oled_print_screen_progmem>
-		
 		oled_print_time_used();
     1108:	0e 94 09 0f 	call	0x1e12	; 0x1e12 <oled_print_time_used>
     110c:	2f ef       	ldi	r18, 0xFF	; 255
@@ -1475,15 +1640,15 @@ void f_1player(){
 		//several times because of race condition
 		
 		can_message msg;
-		msg.id=1;
+		msg.id = 1;
     115e:	81 e0       	ldi	r24, 0x01	; 1
     1160:	90 e0       	ldi	r25, 0x00	; 0
     1162:	9a 83       	std	Y+2, r25	; 0x02
     1164:	89 83       	std	Y+1, r24	; 0x01
-		msg.length=3;
+		msg.length = 3;
     1166:	83 e0       	ldi	r24, 0x03	; 3
     1168:	8b 83       	std	Y+3, r24	; 0x03
-		msg.data[2]=(char)1;
+		msg.data[2] = (char)1;
     116a:	81 e0       	ldi	r24, 0x01	; 1
     116c:	8e 83       	std	Y+6, r24	; 0x06
 		can_send_message(&msg); //solenoide hit
@@ -1532,8 +1697,8 @@ void f_1player(){
     11ae:	08 95       	ret
 
 000011b0 <f_joystick>:
+	oled_print_screen_progmem(s_controller);
 	oled_print_page_progmem(s_controllerP,header_pages);
-
 }
 
 void f_joystick(){
@@ -1543,6 +1708,7 @@ void f_joystick(){
     11b4:	80 e3       	ldi	r24, 0x30	; 48
     11b6:	90 e0       	ldi	r25, 0x00	; 0
     11b8:	0e 94 a0 0e 	call	0x1d40	; 0x1d40 <oled_print_screen_progmem>
+	
 	cli();
     11bc:	f8 94       	cli
 	controller ctrl = JOYSTICK;
@@ -1563,6 +1729,7 @@ void f_joystick(){
     11d8:	e1 f7       	brne	.-8      	; 0x11d2 <f_joystick+0x22>
     11da:	00 c0       	rjmp	.+0      	; 0x11dc <f_joystick+0x2c>
     11dc:	00 00       	nop
+	
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -1596,6 +1763,7 @@ void f_slider(){
     120e:	88 e3       	ldi	r24, 0x38	; 56
     1210:	90 e0       	ldi	r25, 0x00	; 0
     1212:	0e 94 a0 0e 	call	0x1d40	; 0x1d40 <oled_print_screen_progmem>
+	
 	cli();
     1216:	f8 94       	cli
 	controller ctrl = SLIDER;
@@ -1616,6 +1784,7 @@ void f_slider(){
     1232:	e1 f7       	brne	.-8      	; 0x122c <f_slider+0x22>
     1234:	00 c0       	rjmp	.+0      	; 0x1236 <f_slider+0x2c>
     1236:	00 00       	nop
+	
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -1671,7 +1840,6 @@ void f_calibrate(){
     1292:	e1 f7       	brne	.-8      	; 0x128c <f_calibrate+0x28>
     1294:	00 c0       	rjmp	.+0      	; 0x1296 <f_calibrate+0x32>
     1296:	00 00       	nop
-	
 	_delay_ms(300);
 		
 	curr_menu=main_menu;
@@ -1719,7 +1887,7 @@ void f_animation(){
 	pos_child=0;
     12e8:	10 92 ba 01 	sts	0x01BA, r1	; 0x8001ba <pos_child+0x1>
     12ec:	10 92 b9 01 	sts	0x01B9, r1	; 0x8001b9 <pos_child>
-	(*curr_menu->function)(main_menu->name);
+	(*curr_menu->function)(main_menu->name);	
     12f0:	12 96       	adiw	r26, 0x02	; 2
     12f2:	ed 91       	ld	r30, X+
     12f4:	fc 91       	ld	r31, X
@@ -1830,10 +1998,10 @@ menu_item* Menu_new_submenu(menu_item* self, char* name, void (*function)(char*)
     139c:	08 95       	ret
 
 0000139e <menu_init>:
+static int pos_child=0;
 menu_item* main_menu;
 static menu_item* curr_menu;
 static int header_pages=2;
-
 
 void menu_init(){
     139e:	0f 93       	push	r16
@@ -1957,16 +2125,16 @@ void menu_init(){
     1472:	08 95       	ret
 
 00001474 <navigate>:
-	(*curr_menu->function)(main_menu->name);
-	
-	
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);	
 }
 
 void navigate(){
     1474:	cf 93       	push	r28
     1476:	df 93       	push	r29
 	
-if(joystick_getDirection()!=NEUTRAL){
+	if(joystick_getDirection()!=NEUTRAL){
     1478:	0e 94 b6 07 	call	0xf6c	; 0xf6c <joystick_getDirection>
     147c:	84 30       	cpi	r24, 0x04	; 4
     147e:	09 f4       	brne	.+2      	; 0x1482 <navigate+0xe>
@@ -1980,9 +2148,9 @@ if(joystick_getDirection()!=NEUTRAL){
     148e:	e1 f7       	brne	.-8      	; 0x1488 <navigate+0x14>
     1490:	00 c0       	rjmp	.+0      	; 0x1492 <navigate+0x1e>
     1492:	00 00       	nop
-			_delay_ms(80);
+				_delay_ms(80);
 		
-	switch (joystick_getDirection()){
+		switch (joystick_getDirection()){
     1494:	0e 94 b6 07 	call	0xf6c	; 0xf6c <joystick_getDirection>
     1498:	82 30       	cpi	r24, 0x02	; 2
     149a:	09 f4       	brne	.+2      	; 0x149e <navigate+0x2a>
@@ -1991,24 +2159,24 @@ if(joystick_getDirection()!=NEUTRAL){
     14a0:	09 f0       	breq	.+2      	; 0x14a4 <navigate+0x30>
     14a2:	86 c0       	rjmp	.+268    	; 0x15b0 <navigate+0x13c>
 		
-		case UP:
-		if(pos_child>0){
+			case UP:
+			if(pos_child>0){
     14a4:	80 91 b9 01 	lds	r24, 0x01B9	; 0x8001b9 <pos_child>
     14a8:	90 91 ba 01 	lds	r25, 0x01BA	; 0x8001ba <pos_child+0x1>
     14ac:	18 16       	cp	r1, r24
     14ae:	19 06       	cpc	r1, r25
     14b0:	0c f0       	brlt	.+2      	; 0x14b4 <navigate+0x40>
     14b2:	7e c0       	rjmp	.+252    	; 0x15b0 <navigate+0x13c>
-			oled_goto_page(pos_child+header_pages);
+				oled_goto_page(pos_child+header_pages);
     14b4:	8e 5f       	subi	r24, 0xFE	; 254
     14b6:	0e 94 15 0b 	call	0x162a	; 0x162a <oled_goto_page>
-			oled_clear_page(pos_child+header_pages);
+				oled_clear_page(pos_child+header_pages);
     14ba:	c9 eb       	ldi	r28, 0xB9	; 185
     14bc:	d1 e0       	ldi	r29, 0x01	; 1
     14be:	88 81       	ld	r24, Y
     14c0:	8e 5f       	subi	r24, 0xFE	; 254
     14c2:	0e 94 5c 0b 	call	0x16b8	; 0x16b8 <oled_clear_page>
-			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
+				oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
     14c6:	60 91 b9 01 	lds	r22, 0x01B9	; 0x8001b9 <pos_child>
     14ca:	70 91 ba 01 	lds	r23, 0x01BA	; 0x8001ba <pos_child+0x1>
     14ce:	6e 5f       	subi	r22, 0xFE	; 254
@@ -2019,15 +2187,15 @@ if(joystick_getDirection()!=NEUTRAL){
     14dc:	91 85       	ldd	r25, Z+9	; 0x09
     14de:	0e 94 d6 0e 	call	0x1dac	; 0x1dac <oled_print_page_progmem>
 			
-			oled_goto_page(pos_child+header_pages-1);
+				oled_goto_page(pos_child+header_pages-1);
     14e2:	88 81       	ld	r24, Y
     14e4:	8f 5f       	subi	r24, 0xFF	; 255
     14e6:	0e 94 15 0b 	call	0x162a	; 0x162a <oled_goto_page>
-			oled_clear_page(pos_child+header_pages-1);
+				oled_clear_page(pos_child+header_pages-1);
     14ea:	88 81       	ld	r24, Y
     14ec:	8f 5f       	subi	r24, 0xFF	; 255
     14ee:	0e 94 5c 0b 	call	0x16b8	; 0x16b8 <oled_clear_page>
-			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child-1);
+				oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child-1);
     14f2:	60 91 b9 01 	lds	r22, 0x01B9	; 0x8001b9 <pos_child>
     14f6:	70 91 ba 01 	lds	r23, 0x01BA	; 0x8001ba <pos_child+0x1>
     14fa:	6f 5f       	subi	r22, 0xFF	; 255
@@ -2039,17 +2207,17 @@ if(joystick_getDirection()!=NEUTRAL){
     150a:	08 96       	adiw	r24, 0x08	; 8
     150c:	0e 94 d6 0e 	call	0x1dac	; 0x1dac <oled_print_page_progmem>
 				
-			pos_child -= 1;
+				pos_child -= 1;
     1510:	80 91 b9 01 	lds	r24, 0x01B9	; 0x8001b9 <pos_child>
     1514:	90 91 ba 01 	lds	r25, 0x01BA	; 0x8001ba <pos_child+0x1>
     1518:	01 97       	sbiw	r24, 0x01	; 1
     151a:	90 93 ba 01 	sts	0x01BA, r25	; 0x8001ba <pos_child+0x1>
     151e:	80 93 b9 01 	sts	0x01B9, r24	; 0x8001b9 <pos_child>
     1522:	46 c0       	rjmp	.+140    	; 0x15b0 <navigate+0x13c>
-		}
-		break;
-		case DOWN:
-		if(pos_child < curr_menu->numOfChildren-1){
+			}
+			break;
+			case DOWN:
+			if(pos_child < curr_menu->numOfChildren-1){
     1524:	80 91 b9 01 	lds	r24, 0x01B9	; 0x8001b9 <pos_child>
     1528:	90 91 ba 01 	lds	r25, 0x01BA	; 0x8001ba <pos_child+0x1>
     152c:	e0 91 b7 01 	lds	r30, 0x01B7	; 0x8001b7 <curr_menu>
@@ -2061,16 +2229,16 @@ if(joystick_getDirection()!=NEUTRAL){
     153c:	82 17       	cp	r24, r18
     153e:	93 07       	cpc	r25, r19
     1540:	bc f5       	brge	.+110    	; 0x15b0 <navigate+0x13c>
-			oled_goto_page(pos_child+header_pages);
+				oled_goto_page(pos_child+header_pages);
     1542:	8e 5f       	subi	r24, 0xFE	; 254
     1544:	0e 94 15 0b 	call	0x162a	; 0x162a <oled_goto_page>
-			oled_clear_page(pos_child+header_pages);
+				oled_clear_page(pos_child+header_pages);
     1548:	c9 eb       	ldi	r28, 0xB9	; 185
     154a:	d1 e0       	ldi	r29, 0x01	; 1
     154c:	88 81       	ld	r24, Y
     154e:	8e 5f       	subi	r24, 0xFE	; 254
     1550:	0e 94 5c 0b 	call	0x16b8	; 0x16b8 <oled_clear_page>
-			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
+				oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
     1554:	60 91 b9 01 	lds	r22, 0x01B9	; 0x8001b9 <pos_child>
     1558:	70 91 ba 01 	lds	r23, 0x01BA	; 0x8001ba <pos_child+0x1>
     155c:	6e 5f       	subi	r22, 0xFE	; 254
@@ -2081,15 +2249,15 @@ if(joystick_getDirection()!=NEUTRAL){
     156a:	91 85       	ldd	r25, Z+9	; 0x09
     156c:	0e 94 d6 0e 	call	0x1dac	; 0x1dac <oled_print_page_progmem>
 			
-			oled_goto_page(pos_child+header_pages+1);
+				oled_goto_page(pos_child+header_pages+1);
     1570:	88 81       	ld	r24, Y
     1572:	8d 5f       	subi	r24, 0xFD	; 253
     1574:	0e 94 15 0b 	call	0x162a	; 0x162a <oled_goto_page>
-			oled_clear_page(pos_child+header_pages+1);
+				oled_clear_page(pos_child+header_pages+1);
     1578:	88 81       	ld	r24, Y
     157a:	8d 5f       	subi	r24, 0xFD	; 253
     157c:	0e 94 5c 0b 	call	0x16b8	; 0x16b8 <oled_clear_page>
-			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child+1);
+				oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child+1);
     1580:	60 91 b9 01 	lds	r22, 0x01B9	; 0x8001b9 <pos_child>
     1584:	70 91 ba 01 	lds	r23, 0x01BA	; 0x8001ba <pos_child+0x1>
     1588:	6d 5f       	subi	r22, 0xFD	; 253
@@ -2101,27 +2269,27 @@ if(joystick_getDirection()!=NEUTRAL){
     1598:	08 96       	adiw	r24, 0x08	; 8
     159a:	0e 94 d6 0e 	call	0x1dac	; 0x1dac <oled_print_page_progmem>
 			
-			pos_child += 1;
+				pos_child += 1;
     159e:	80 91 b9 01 	lds	r24, 0x01B9	; 0x8001b9 <pos_child>
     15a2:	90 91 ba 01 	lds	r25, 0x01BA	; 0x8001ba <pos_child+0x1>
     15a6:	01 96       	adiw	r24, 0x01	; 1
     15a8:	90 93 ba 01 	sts	0x01BA, r25	; 0x8001ba <pos_child+0x1>
     15ac:	80 93 b9 01 	sts	0x01B9, r24	; 0x8001b9 <pos_child>
+			}
+			break;
 		}
-		break;
 	}
-}
-	if (!(PINB & (1<<PB2))){
+		if (!(PINB & (1<<PB2))){
     15b0:	b2 99       	sbic	0x16, 2	; 22
     15b2:	2c c0       	rjmp	.+88     	; 0x160c <navigate+0x198>
-		if(curr_menu->children!= NULL){
+			if(curr_menu->children!= NULL){
     15b4:	e0 91 b7 01 	lds	r30, 0x01B7	; 0x8001b7 <curr_menu>
     15b8:	f0 91 b8 01 	lds	r31, 0x01B8	; 0x8001b8 <curr_menu+0x1>
     15bc:	84 81       	ldd	r24, Z+4	; 0x04
     15be:	95 81       	ldd	r25, Z+5	; 0x05
     15c0:	00 97       	sbiw	r24, 0x00	; 0
     15c2:	d9 f0       	breq	.+54     	; 0x15fa <navigate+0x186>
-			curr_menu=curr_menu->children[pos_child];
+				curr_menu=curr_menu->children[pos_child];
     15c4:	e0 91 b9 01 	lds	r30, 0x01B9	; 0x8001b9 <pos_child>
     15c8:	f0 91 ba 01 	lds	r31, 0x01BA	; 0x8001ba <pos_child+0x1>
     15cc:	ee 0f       	add	r30, r30
@@ -2132,10 +2300,10 @@ if(joystick_getDirection()!=NEUTRAL){
     15d6:	b1 81       	ldd	r27, Z+1	; 0x01
     15d8:	b0 93 b8 01 	sts	0x01B8, r27	; 0x8001b8 <curr_menu+0x1>
     15dc:	a0 93 b7 01 	sts	0x01B7, r26	; 0x8001b7 <curr_menu>
-			pos_child=0;
+				pos_child=0;
     15e0:	10 92 ba 01 	sts	0x01BA, r1	; 0x8001ba <pos_child+0x1>
     15e4:	10 92 b9 01 	sts	0x01B9, r1	; 0x8001b9 <pos_child>
-			(*curr_menu->function)(curr_menu->name);
+				(*curr_menu->function)(curr_menu->name);
     15e8:	12 96       	adiw	r26, 0x02	; 2
     15ea:	ed 91       	ld	r30, X+
     15ec:	fc 91       	ld	r31, X
@@ -2154,10 +2322,9 @@ if(joystick_getDirection()!=NEUTRAL){
     1606:	e1 f7       	brne	.-8      	; 0x1600 <navigate+0x18c>
     1608:	00 c0       	rjmp	.+0      	; 0x160a <navigate+0x196>
     160a:	00 00       	nop
+			}
+			_delay_ms(200);
 		}
-		_delay_ms(200);
-	}
-		
 }
     160c:	df 91       	pop	r29
     160e:	cf 91       	pop	r28
@@ -2638,7 +2805,7 @@ void oled_wrd(uint8_t data){
     18c8:	08 95       	ret
 
 000018ca <oled_print>:
-	
+	}
 }
 
 
@@ -3147,8 +3314,8 @@ void oled_animation(int page){
     1c2a:	08 95       	ret
 
 00001c2c <oled_init>:
+volatile char *ext_oled_data = (char *) 0x1200;
 int fontsize = 8;
-
 
 //oled write command
 void oled_wrc(uint8_t data){
@@ -3254,8 +3421,6 @@ void oled_wrc(uint8_t data){
     1d3e:	08 95       	ret
 
 00001d40 <oled_print_screen_progmem>:
-
-	
 }
 
 void oled_print_screen_progmem(int screenoffset){
@@ -3297,7 +3462,7 @@ void oled_print_screen_progmem(int screenoffset){
     1d80:	ce 01       	movw	r24, r28
     1d82:	01 96       	adiw	r24, 0x01	; 1
     1d84:	0e 94 8f 0c 	call	0x191e	; 0x191e <oled_center_print>
-	
+		  oled_goto_pos(0,0);
 }
 
 void oled_print_screen_progmem(int screenoffset){
@@ -3395,17 +3560,17 @@ void oled_print_time_used(void){
 	int digit2char;
 	int digit1char;
 	int mdigitchar;
-	seconds = timer_get_seconds();
+	seconds	 = timer_get_seconds();
     1e18:	0e 94 f2 0f 	call	0x1fe4	; 0x1fe4 <timer_get_seconds>
     1e1c:	ec 01       	movw	r28, r24
 	mseconds = timer_get_mseconds();
     1e1e:	0e 94 f7 0f 	call	0x1fee	; 0x1fee <timer_get_mseconds>
     1e22:	18 2f       	mov	r17, r24
+	uint8_t mdigit = mseconds;
 	digit3char = digit3+'0';
 	digit2char = digit2+'0';
 	digit1char = digit1+'0';
 	mdigitchar = mdigit+'0';
-	
 	oled_goto_page(4);
     1e24:	84 e0       	ldi	r24, 0x04	; 4
     1e26:	0e 94 15 0b 	call	0x162a	; 0x162a <oled_goto_page>
@@ -3457,20 +3622,33 @@ void oled_print_time_used(void){
     1e88:	08 95       	ret
 
 00001e8a <slider_getPosition>:
+#include <avr/io.h>
+#include "util.h"
+#include <util/delay.h>
+
+
+slider_position slider_getPosition(void){
     1e8a:	1f 93       	push	r17
     1e8c:	cf 93       	push	r28
     1e8e:	df 93       	push	r29
+	slider_position position;
+	uint8_t midpoint = 127;
+	uint8_t l = adc_read(2);
     1e90:	82 e0       	ldi	r24, 0x02	; 2
     1e92:	90 e0       	ldi	r25, 0x00	; 0
     1e94:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
     1e98:	ec 01       	movw	r28, r24
+	uint8_t r = adc_read(3);
     1e9a:	83 e0       	ldi	r24, 0x03	; 3
     1e9c:	90 e0       	ldi	r25, 0x00	; 0
     1e9e:	0e 94 5c 06 	call	0xcb8	; 0xcb8 <adc_read>
     1ea2:	9c 01       	movw	r18, r24
     1ea4:	48 2f       	mov	r20, r24
+
+	if(l > midpoint){
     1ea6:	c0 38       	cpi	r28, 0x80	; 128
     1ea8:	78 f0       	brcs	.+30     	; 0x1ec8 <slider_getPosition+0x3e>
+		position.l_pos = (int8_t)100*(l-midpoint)/midpoint;
     1eaa:	dd 27       	eor	r29, r29
     1eac:	cf 57       	subi	r28, 0x7F	; 127
     1eae:	d1 09       	sbc	r29, r1
@@ -3485,8 +3663,11 @@ void oled_print_time_used(void){
     1ec0:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
     1ec4:	fb 01       	movw	r30, r22
     1ec6:	13 c0       	rjmp	.+38     	; 0x1eee <slider_getPosition+0x64>
+	}
+	else if (l < midpoint){
     1ec8:	cf 37       	cpi	r28, 0x7F	; 127
     1eca:	78 f4       	brcc	.+30     	; 0x1eea <slider_getPosition+0x60>
+		position.l_pos = 100*(l-midpoint)/midpoint;
     1ecc:	dd 27       	eor	r29, r29
     1ece:	cf 57       	subi	r28, 0x7F	; 127
     1ed0:	d1 09       	sbc	r29, r1
@@ -3501,10 +3682,17 @@ void oled_print_time_used(void){
     1ee2:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
     1ee6:	fb 01       	movw	r30, r22
     1ee8:	02 c0       	rjmp	.+4      	; 0x1eee <slider_getPosition+0x64>
+	}
+	else {
+		position.l_pos = 0;
     1eea:	e0 e0       	ldi	r30, 0x00	; 0
     1eec:	f0 e0       	ldi	r31, 0x00	; 0
+	}
+
+	if(r > midpoint){
     1eee:	40 38       	cpi	r20, 0x80	; 128
     1ef0:	78 f0       	brcs	.+30     	; 0x1f10 <slider_getPosition+0x86>
+		position.r_pos = 100*(r-midpoint)/midpoint;
     1ef2:	33 27       	eor	r19, r19
     1ef4:	2f 57       	subi	r18, 0x7F	; 127
     1ef6:	31 09       	sbc	r19, r1
@@ -3519,8 +3707,11 @@ void oled_print_time_used(void){
     1f08:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
     1f0c:	9b 01       	movw	r18, r22
     1f0e:	13 c0       	rjmp	.+38     	; 0x1f36 <slider_getPosition+0xac>
+	}
+	else if (r < midpoint){
     1f10:	4f 37       	cpi	r20, 0x7F	; 127
     1f12:	78 f4       	brcc	.+30     	; 0x1f32 <slider_getPosition+0xa8>
+		position.r_pos = 100*(r-midpoint)/midpoint;
     1f14:	33 27       	eor	r19, r19
     1f16:	2f 57       	subi	r18, 0x7F	; 127
     1f18:	31 09       	sbc	r19, r1
@@ -3535,16 +3726,26 @@ void oled_print_time_used(void){
     1f2a:	0e 94 9f 11 	call	0x233e	; 0x233e <__divmodhi4>
     1f2e:	9b 01       	movw	r18, r22
     1f30:	02 c0       	rjmp	.+4      	; 0x1f36 <slider_getPosition+0xac>
+	}
+	else {
+		position.r_pos = 0;
     1f32:	20 e0       	ldi	r18, 0x00	; 0
     1f34:	30 e0       	ldi	r19, 0x00	; 0
+	}
+	
+	return position;
     1f36:	bf 01       	movw	r22, r30
     1f38:	c9 01       	movw	r24, r18
+}
     1f3a:	df 91       	pop	r29
     1f3c:	cf 91       	pop	r28
     1f3e:	1f 91       	pop	r17
     1f40:	08 95       	ret
 
 00001f42 <slider_sendPositionButtonCan>:
+
+
+void slider_sendPositionButtonCan(slider_position pos){
     1f42:	cf 93       	push	r28
     1f44:	df 93       	push	r29
     1f46:	cd b7       	in	r28, 0x3d	; 61
@@ -3555,17 +3756,28 @@ void oled_print_time_used(void){
     1f50:	de bf       	out	0x3e, r29	; 62
     1f52:	0f be       	out	0x3f, r0	; 63
     1f54:	cd bf       	out	0x3d, r28	; 61
+	can_message msg;
+	msg.id = 1;
     1f56:	21 e0       	ldi	r18, 0x01	; 1
     1f58:	30 e0       	ldi	r19, 0x00	; 0
     1f5a:	3a 83       	std	Y+2, r19	; 0x02
     1f5c:	29 83       	std	Y+1, r18	; 0x01
+	msg.length = 3;
     1f5e:	93 e0       	ldi	r25, 0x03	; 3
     1f60:	9b 83       	std	Y+3, r25	; 0x03
+	//slider_pos
+	msg.data[0] = (char)pos.l_pos;
     1f62:	6c 83       	std	Y+4, r22	; 0x04
+	msg.data[1] = (char)pos.r_pos;
     1f64:	8d 83       	std	Y+5, r24	; 0x05
+	
+	//button
+	msg.data[2] = (char)(PINB & (1<<0));
     1f66:	86 b3       	in	r24, 0x16	; 22
     1f68:	81 70       	andi	r24, 0x01	; 1
     1f6a:	8e 83       	std	Y+6, r24	; 0x06
+
+	can_send_message(&msg);
     1f6c:	ce 01       	movw	r24, r28
     1f6e:	01 96       	adiw	r24, 0x01	; 1
     1f70:	0e 94 97 06 	call	0xd2e	; 0xd2e <can_send_message>
@@ -3580,25 +3792,61 @@ void oled_print_time_used(void){
     1f84:	08 95       	ret
 
 00001f86 <spi_init>:
+#include <stdint.h>
+
+
+void spi_init(void){
+	/* Set MOSI, SCK , Slave select output, all others become input*/
+	DDRB = (1<<DDB5)|(1<<DDB7)|(1<<DDB4);
     1f86:	80 eb       	ldi	r24, 0xB0	; 176
     1f88:	87 bb       	out	0x17, r24	; 23
+	
+	/* Enable SPI, Master, set clock rate fck/16 */
+	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
     1f8a:	81 e5       	ldi	r24, 0x51	; 81
     1f8c:	8d b9       	out	0x0d, r24	; 13
+	
+	//Set slave select
+	PORTB |= 1<<PB4;
     1f8e:	c4 9a       	sbi	0x18, 4	; 24
+	
+	//button pull up
+	PORTB |= 1<<PB2;	
     1f90:	c2 9a       	sbi	0x18, 2	; 24
     1f92:	08 95       	ret
 
 00001f94 <spi_send>:
+}
+
+void spi_send(uint8_t cData){
+	/* Start transmission */
+	SPDR = cData;
     1f94:	8f b9       	out	0x0f, r24	; 15
+	
+	/* Wait for transmission complete */
+	while(!(SPSR & (1<<SPIF)));
     1f96:	77 9b       	sbis	0x0e, 7	; 14
     1f98:	fe cf       	rjmp	.-4      	; 0x1f96 <spi_send+0x2>
+}
     1f9a:	08 95       	ret
 
 00001f9c <spi_read>:
+uint8_t spi_read(){
+	
+	char dummyByte = 0x45; //0b01000101
+	
+	/* Start transmission of dummy byte such that Output from slave arrives at SPDR*/
+	SPDR = dummyByte;
     1f9c:	85 e4       	ldi	r24, 0x45	; 69
     1f9e:	8f b9       	out	0x0f, r24	; 15
+	
+	/* Wait for transmission complete */
+	while(!(SPSR & (1<<SPIF)));
     1fa0:	77 9b       	sbis	0x0e, 7	; 14
     1fa2:	fe cf       	rjmp	.-4      	; 0x1fa0 <spi_read+0x4>
+	
+	/*Return data register*/
+	return SPDR;
     1fa4:	8f b1       	in	r24, 0x0f	; 15
     1fa6:	08 95       	ret
 
@@ -3869,7 +4117,6 @@ ISR(TIMER2_COMP_vect){
     213c:	0e 94 45 0f 	call	0x1e8a	; 0x1e8a <slider_getPosition>
     2140:	0e 94 a1 0f 	call	0x1f42	; 0x1f42 <slider_sendPositionButtonCan>
     2144:	04 c0       	rjmp	.+8      	; 0x214e <__vector_10+0x3c>
-		
 	}
 	else if(!control){
 		joystick_sendPositionButtonCan(joystick_getPosition());
@@ -4063,14 +4310,26 @@ uint8_t xmem_read(uint16_t addr){
     2286:	08 95       	ret
 
 00002288 <main>:
+#define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
+
+
+int main(void){
+	
+	USART_Init(MYUBRR);
     2288:	8f e1       	ldi	r24, 0x1F	; 31
     228a:	90 e0       	ldi	r25, 0x00	; 0
     228c:	0e 94 b8 10 	call	0x2170	; 0x2170 <USART_Init>
+	xmem_init();
     2290:	0e 94 ce 10 	call	0x219c	; 0x219c <xmem_init>
+	oled_init();
     2294:	0e 94 16 0e 	call	0x1c2c	; 0x1c2c <oled_init>
+	menu_init();
     2298:	0e 94 cf 09 	call	0x139e	; 0x139e <menu_init>
+	adc_init();
     229c:	0e 94 59 06 	call	0xcb2	; 0xcb2 <adc_init>
+	joystick_calibrate();
     22a0:	0e 94 f0 06 	call	0xde0	; 0xde0 <joystick_calibrate>
+	can_init();
     22a4:	0e 94 75 06 	call	0xcea	; 0xcea <can_init>
 	#else
 		//round up by default
@@ -4082,6 +4341,10 @@ uint8_t xmem_read(uint16_t addr){
     22aa:	8a 95       	dec	r24
     22ac:	f1 f7       	brne	.-4      	; 0x22aa <main+0x22>
     22ae:	00 00       	nop
+	
+	while(1){
+		_delay_us(1);
+		navigate();
     22b0:	0e 94 3a 0a 	call	0x1474	; 0x1474 <navigate>
     22b4:	f9 cf       	rjmp	.-14     	; 0x22a8 <main+0x20>
 

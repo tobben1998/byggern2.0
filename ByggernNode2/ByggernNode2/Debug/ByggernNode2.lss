@@ -563,106 +563,107 @@ __STATIC_INLINE void __NVIC_ClearPendingIRQ(IRQn_Type IRQn)
 
 void motor_init(void){
    80538:	b410      	push	{r4}
+	
 	//enable PIO registers
-	PIOB->PIO_PER |= PIO_PER_P27; //pwm13
+	PIOB->PIO_PER	|= PIO_PER_P27; //pwm13
    8053a:	4930      	ldr	r1, [pc, #192]	; (805fc <motor_init+0xc4>)
    8053c:	680b      	ldr	r3, [r1, #0]
    8053e:	f043 6300 	orr.w	r3, r3, #134217728	; 0x8000000
    80542:	600b      	str	r3, [r1, #0]
 	//MJ1
-	PIOD->PIO_PER |= PIO_PER_P0; //!OE
+	PIOD->PIO_PER	|= PIO_PER_P0; //!OE
    80544:	4b2e      	ldr	r3, [pc, #184]	; (80600 <motor_init+0xc8>)
    80546:	681a      	ldr	r2, [r3, #0]
    80548:	f042 0201 	orr.w	r2, r2, #1
    8054c:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P1; //!RST
+	PIOD->PIO_PER	|= PIO_PER_P1; //!RST
    8054e:	681a      	ldr	r2, [r3, #0]
    80550:	f042 0202 	orr.w	r2, r2, #2
    80554:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P2; //SEL
+	PIOD->PIO_PER	|= PIO_PER_P2; //SEL
    80556:	681a      	ldr	r2, [r3, #0]
    80558:	f042 0204 	orr.w	r2, r2, #4
    8055c:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P9; //EN
+	PIOD->PIO_PER	|= PIO_PER_P9; //EN
    8055e:	681a      	ldr	r2, [r3, #0]
    80560:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    80564:	601a      	str	r2, [r3, #0]
-	PIOD->PIO_PER |= PIO_PER_P10;//DIR
+	PIOD->PIO_PER	|= PIO_PER_P10;//DIR
    80566:	681a      	ldr	r2, [r3, #0]
    80568:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    8056c:	601a      	str	r2, [r3, #0]
 	//MJ2
-	PIOC->PIO_PER |= PIO_PER_P1; //D0
+	PIOC->PIO_PER	|= PIO_PER_P1; //D0
    8056e:	4a25      	ldr	r2, [pc, #148]	; (80604 <motor_init+0xcc>)
    80570:	6810      	ldr	r0, [r2, #0]
    80572:	f040 0002 	orr.w	r0, r0, #2
    80576:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P2; //D1
+	PIOC->PIO_PER	|= PIO_PER_P2; //D1
    80578:	6810      	ldr	r0, [r2, #0]
    8057a:	f040 0004 	orr.w	r0, r0, #4
    8057e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P3; //D2
+	PIOC->PIO_PER	|= PIO_PER_P3; //D2
    80580:	6810      	ldr	r0, [r2, #0]
    80582:	f040 0008 	orr.w	r0, r0, #8
    80586:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P4; //D3
+	PIOC->PIO_PER	|= PIO_PER_P4; //D3
    80588:	6810      	ldr	r0, [r2, #0]
    8058a:	f040 0010 	orr.w	r0, r0, #16
    8058e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P5; //D4
+	PIOC->PIO_PER	|= PIO_PER_P5; //D4
    80590:	6810      	ldr	r0, [r2, #0]
    80592:	f040 0020 	orr.w	r0, r0, #32
    80596:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P6; //D5
+	PIOC->PIO_PER	|= PIO_PER_P6; //D5
    80598:	6810      	ldr	r0, [r2, #0]
    8059a:	f040 0040 	orr.w	r0, r0, #64	; 0x40
    8059e:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P7; //D6
+	PIOC->PIO_PER	|= PIO_PER_P7; //D6
    805a0:	6810      	ldr	r0, [r2, #0]
    805a2:	f040 0080 	orr.w	r0, r0, #128	; 0x80
    805a6:	6010      	str	r0, [r2, #0]
-	PIOC->PIO_PER |= PIO_PER_P8; //D7
+	PIOC->PIO_PER	|= PIO_PER_P8; //D7
    805a8:	6810      	ldr	r0, [r2, #0]
    805aa:	f440 7080 	orr.w	r0, r0, #256	; 0x100
    805ae:	6010      	str	r0, [r2, #0]
 	
 	//Enable clock to PIOC peripheral, in order to be able to read pin input 
-	PMC->PMC_PCER0 |= (1 << 13);
+	PMC->PMC_PCER0	|= (1 << 13);
    805b0:	4c15      	ldr	r4, [pc, #84]	; (80608 <motor_init+0xd0>)
    805b2:	6920      	ldr	r0, [r4, #16]
    805b4:	f440 5000 	orr.w	r0, r0, #8192	; 0x2000
    805b8:	6120      	str	r0, [r4, #16]
 	
 	//enable input of MJ2 pins
-	PIOC->PIO_ODR |= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
+	PIOC->PIO_ODR	|= (PIO_ODR_P1 | PIO_ODR_P2 | PIO_ODR_P3 | PIO_ODR_P4 | PIO_ODR_P5 | PIO_ODR_P6 | PIO_ODR_P7 | PIO_ODR_P8);
    805ba:	6950      	ldr	r0, [r2, #20]
    805bc:	f440 70ff 	orr.w	r0, r0, #510	; 0x1fe
    805c0:	6150      	str	r0, [r2, #20]
 	
 	//enable output of MJ1 pins
-	PIOB->PIO_OER |= PIO_OER_P27;
+	PIOB->PIO_OER	|= PIO_OER_P27;
    805c2:	690a      	ldr	r2, [r1, #16]
    805c4:	f042 6200 	orr.w	r2, r2, #134217728	; 0x8000000
    805c8:	610a      	str	r2, [r1, #16]
-	PIOD->PIO_OER |= (PIO_OER_P0 | PIO_OER_P1 | PIO_OER_P2 | PIO_OER_P9 | PIO_OER_P10);
+	PIOD->PIO_OER	|= (PIO_OER_P0 | PIO_OER_P1 | PIO_OER_P2 | PIO_OER_P9 | PIO_OER_P10);
    805ca:	691a      	ldr	r2, [r3, #16]
    805cc:	f442 62c0 	orr.w	r2, r2, #1536	; 0x600
    805d0:	f042 0207 	orr.w	r2, r2, #7
    805d4:	611a      	str	r2, [r3, #16]
 	
-	PIOD->PIO_SODR |= PIO_SODR_P9; //set EN to enable motor
+	PIOD->PIO_SODR	|= PIO_SODR_P9; //set EN to enable motor
    805d6:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805d8:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    805dc:	631a      	str	r2, [r3, #48]	; 0x30
-	PIOD->PIO_SODR |= PIO_SODR_P10; //set direction. USE CODR for the other direction
+	PIOD->PIO_SODR	|= PIO_SODR_P10; //set direction. USE CODR for the other direction
    805de:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805e0:	f442 6280 	orr.w	r2, r2, #1024	; 0x400
    805e4:	631a      	str	r2, [r3, #48]	; 0x30
-	PIOD->PIO_CODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
+	PIOD->PIO_CODR	|= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    805e6:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    805e8:	f042 0201 	orr.w	r2, r2, #1
    805ec:	635a      	str	r2, [r3, #52]	; 0x34
-	PIOD->PIO_SODR |= PIO_SODR_P1;	//!RST should be high
+	PIOD->PIO_SODR	|= PIO_SODR_P1;	//!RST should be high
    805ee:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    805f0:	f042 0202 	orr.w	r2, r2, #2
    805f4:	631a      	str	r2, [r3, #48]	; 0x30
@@ -682,20 +683,20 @@ void motor_init(void){
 
 void motor_dac_init(void){
 	
-	REG_PMC_PCER1 |= PMC_PCER1_PID38; //enable clock
+	REG_PMC_PCER1	|= PMC_PCER1_PID38; //enable clock
    8060c:	4a08      	ldr	r2, [pc, #32]	; (80630 <motor_dac_init+0x24>)
    8060e:	6813      	ldr	r3, [r2, #0]
    80610:	f043 0340 	orr.w	r3, r3, #64	; 0x40
    80614:	6013      	str	r3, [r2, #0]
-	REG_DACC_MR &= ~DACC_MR_TRGEN_DIS; //free-running mode
+	REG_DACC_MR		&= ~DACC_MR_TRGEN_DIS; //free-running mode
    80616:	4b07      	ldr	r3, [pc, #28]	; (80634 <motor_dac_init+0x28>)
    80618:	681a      	ldr	r2, [r3, #0]
    8061a:	601a      	str	r2, [r3, #0]
-	REG_DACC_MR |= DACC_MR_USER_SEL_CHANNEL1; //channel 1
+	REG_DACC_MR		|= DACC_MR_USER_SEL_CHANNEL1; //channel 1
    8061c:	681a      	ldr	r2, [r3, #0]
    8061e:	f442 3280 	orr.w	r2, r2, #65536	; 0x10000
    80622:	601a      	str	r2, [r3, #0]
-	REG_DACC_CHER |= DACC_CHER_CH1;
+	REG_DACC_CHER	|= DACC_CHER_CH1;
    80624:	4a04      	ldr	r2, [pc, #16]	; (80638 <motor_dac_init+0x2c>)
    80626:	6813      	ldr	r3, [r2, #0]
    80628:	f043 0302 	orr.w	r3, r3, #2
@@ -707,7 +708,7 @@ void motor_dac_init(void){
 
 0008063c <motor_solenoid>:
 	}
-	REG_DACC_CDR=temp;
+	REG_DACC_CDR = temp;
 }
 
 void motor_solenoid(CAN_MESSAGE *msg){
@@ -757,12 +758,12 @@ void motor_encoder_tglreset(void){
 00080680 <motor_read_encoder>:
 int16_t motor_read_encoder(int doReset){
    80680:	b538      	push	{r3, r4, r5, lr}
-	PIOD->PIO_CODR |= PIO_CODR_P0;	//Set !OE low to enable output of encoder
+	PIOD->PIO_CODR	|= PIO_CODR_P0;	//Set !OE low to enable output of encoder
    80682:	4b14      	ldr	r3, [pc, #80]	; (806d4 <motor_read_encoder+0x54>)
    80684:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    80686:	f042 0201 	orr.w	r2, r2, #1
    8068a:	635a      	str	r2, [r3, #52]	; 0x34
-	PIOD->PIO_CODR |= PIO_CODR_P2;	//Set SEL low to get the high byte out
+	PIOD->PIO_CODR	|= PIO_CODR_P2;	//Set SEL low to get the high byte out
    8068c:	6b5a      	ldr	r2, [r3, #52]	; 0x34
    8068e:	f042 0204 	orr.w	r2, r2, #4
    80692:	635a      	str	r2, [r3, #52]	; 0x34
@@ -774,7 +775,7 @@ int16_t motor_read_encoder(int doReset){
    8069c:	4b0e      	ldr	r3, [pc, #56]	; (806d8 <motor_read_encoder+0x58>)
    8069e:	6bdd      	ldr	r5, [r3, #60]	; 0x3c
    806a0:	b26d      	sxtb	r5, r5
-	PIOD->PIO_SODR |= PIO_SODR_P2;	//Set SEL high to get the low byte out
+	PIOD->PIO_SODR	|= PIO_SODR_P2;	//Set SEL high to get the low byte out
    806a2:	4a0c      	ldr	r2, [pc, #48]	; (806d4 <motor_read_encoder+0x54>)
    806a4:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806a6:	f043 0304 	orr.w	r3, r3, #4
@@ -789,7 +790,7 @@ int16_t motor_read_encoder(int doReset){
    806b8:	b264      	sxtb	r4, r4
 	if(doReset){
    806ba:	b940      	cbnz	r0, 806ce <motor_read_encoder+0x4e>
-	PIOD->PIO_SODR |= PIO_SODR_P0;	//Set !OE high to disable output of encoder
+	PIOD->PIO_SODR	|= PIO_SODR_P0;	//Set !OE high to disable output of encoder
    806bc:	4a05      	ldr	r2, [pc, #20]	; (806d4 <motor_read_encoder+0x54>)
    806be:	6b13      	ldr	r3, [r2, #48]	; 0x30
    806c0:	f043 0301 	orr.w	r3, r3, #1
@@ -990,12 +991,12 @@ void RTT_Handler(void){
    80802:	eb04 0b03 	add.w	fp, r4, r3
    80806:	f8c7 b000 	str.w	fp, [r7]
 
-	int derivative = kd/dt*(error-prevError);
+	int derivative	= kd/dt*(error-prevError);
    8080a:	f8df a0c4 	ldr.w	sl, [pc, #196]	; 808d0 <RTT_Handler+0xe4>
    8080e:	e9da 2300 	ldrd	r2, r3, [sl]
    80812:	4610      	mov	r0, r2
    80814:	4619      	mov	r1, r3
-	int integral = dt*ki*sumError;
+	int integral	= dt*ki*sumError;
    80816:	4e2a      	ldr	r6, [pc, #168]	; (808c0 <RTT_Handler+0xd4>)
    80818:	e9da 2302 	ldrd	r2, r3, [sl, #8]
    8081c:	e9cd 0100 	strd	r0, r1, [sp]
@@ -1026,7 +1027,7 @@ void RTT_Handler(void){
    80854:	e9dd 0102 	ldrd	r0, r1, [sp, #8]
    80858:	47c8      	blx	r9
    8085a:	e9cd 0102 	strd	r0, r1, [sp, #8]
-	int derivative = kd/dt*(error-prevError);
+	int derivative	= kd/dt*(error-prevError);
    8085e:	e9dd 2300 	ldrd	r2, r3, [sp]
    80862:	e9da 0106 	ldrd	r0, r1, [sl, #24]
    80866:	f8df 8074 	ldr.w	r8, [pc, #116]	; 808dc <RTT_Handler+0xf0>
@@ -1112,65 +1113,65 @@ void PID_update_refPos(CAN_MESSAGE *msg){
    808f8:	20000494 	.word	0x20000494
 
 000808fc <pwm_init>:
+
 void pwm_init(void){
-	
+
 	//pin 44 on shield
 	//peripheral B channel 6
-
-	REG_PMC_PCER1 |= PMC_PCER1_PID36; 	//enable clock 
+	REG_PMC_PCER1	|= PMC_PCER1_PID36; 	//enable clock 
    808fc:	4a18      	ldr	r2, [pc, #96]	; (80960 <pwm_init+0x64>)
    808fe:	6813      	ldr	r3, [r2, #0]
    80900:	f043 0310 	orr.w	r3, r3, #16
    80904:	6013      	str	r3, [r2, #0]
 	
 
-    PIOC->PIO_ABSR |= PIO_ABSR_P18; //A=0 B=1 //  //B is chosen
+    PIOC->PIO_ABSR	|= PIO_ABSR_P18; //Choose peripheral, A=0 B=1
    80906:	4b17      	ldr	r3, [pc, #92]	; (80964 <pwm_init+0x68>)
    80908:	6f1a      	ldr	r2, [r3, #112]	; 0x70
    8090a:	f442 2280 	orr.w	r2, r2, #262144	; 0x40000
    8090e:	671a      	str	r2, [r3, #112]	; 0x70
-	PIOC->PIO_PDR |= PIO_PDR_P18;  //pio disable register for i/o  set pwm pin to output 
+	PIOC->PIO_PDR	|= PIO_PDR_P18;  //PIO disable register for I/O set PWM pin to output 
    80910:	685a      	ldr	r2, [r3, #4]
    80912:	f442 2280 	orr.w	r2, r2, #262144	; 0x40000
    80916:	605a      	str	r2, [r3, #4]
 
 
-	REG_PWM_CLK |= PWM_CLK_PREB(0) | PWM_CLK_DIVB(42); //clockB = mck/42=2MHz
+	REG_PWM_CLK		|= PWM_CLK_PREB(0) | PWM_CLK_DIVB(42); //clockB = mck/42=2MHz
    80918:	4a13      	ldr	r2, [pc, #76]	; (80968 <pwm_init+0x6c>)
    8091a:	6813      	ldr	r3, [r2, #0]
    8091c:	f443 1328 	orr.w	r3, r3, #2752512	; 0x2a0000
    80920:	6013      	str	r3, [r2, #0]
 
-	REG_PWM_CMR6 |= (PWM_CMR_CALG); //dual slope mode
+	REG_PWM_CMR6	|= (PWM_CMR_CALG); //dual slope mode
    80922:	4b12      	ldr	r3, [pc, #72]	; (8096c <pwm_init+0x70>)
    80924:	681a      	ldr	r2, [r3, #0]
    80926:	f442 7280 	orr.w	r2, r2, #256	; 0x100
    8092a:	601a      	str	r2, [r3, #0]
-	REG_PWM_CMR6 |= (PWM_CMR_CPRE_CLKB); //use clock B
+	REG_PWM_CMR6	|= (PWM_CMR_CPRE_CLKB); //use clock B
    8092c:	681a      	ldr	r2, [r3, #0]
    8092e:	f042 020c 	orr.w	r2, r2, #12
    80932:	601a      	str	r2, [r3, #0]
-	REG_PWM_CMR6 |= (PWM_CMR_CPOL); // change polarity. start high instead of low
+	REG_PWM_CMR6	|= (PWM_CMR_CPOL); // change polarity. start high instead of low
    80934:	681a      	ldr	r2, [r3, #0]
    80936:	f442 7200 	orr.w	r2, r2, #512	; 0x200
    8093a:	601a      	str	r2, [r3, #0]
 
-	REG_PWM_CPRD6 &= 0;
+	REG_PWM_CPRD6	&= 0;
    8093c:	4a0c      	ldr	r2, [pc, #48]	; (80970 <pwm_init+0x74>)
    8093e:	6813      	ldr	r3, [r2, #0]
    80940:	2100      	movs	r1, #0
    80942:	6011      	str	r1, [r2, #0]
-	REG_PWM_CDTY6 &= 0;  
+	REG_PWM_CDTY6	&= 0;  
    80944:	4b0b      	ldr	r3, [pc, #44]	; (80974 <pwm_init+0x78>)
    80946:	6818      	ldr	r0, [r3, #0]
    80948:	6019      	str	r1, [r3, #0]
-	REG_PWM_CPRD6=20000; //period
+	REG_PWM_CPRD6	= 20000; //period
    8094a:	f644 6120 	movw	r1, #20000	; 0x4e20
    8094e:	6011      	str	r1, [r2, #0]
-	REG_PWM_CDTY6=1500; //duty cycle
+	REG_PWM_CDTY6	= 1500; //duty cycle
    80950:	f240 52dc 	movw	r2, #1500	; 0x5dc
    80954:	601a      	str	r2, [r3, #0]
-	REG_PWM_ENA=PWM_ENA_CHID6; 
+	REG_PWM_ENA		= PWM_ENA_CHID6;	
    80956:	2240      	movs	r2, #64	; 0x40
    80958:	f5a3 7330 	sub.w	r3, r3, #704	; 0x2c0
    8095c:	601a      	str	r2, [r3, #0]
@@ -1187,7 +1188,7 @@ void pwm_init(void){
 
 void pwm_update_duty_cycle(CAN_MESSAGE *msg){
 	 
-	 int8_t tall=msg->data[0];
+	 int8_t tall = msg->data[0];
 	 int16_t dutyCycle = tall*5+1500;
    80978:	f990 3003 	ldrsb.w	r3, [r0, #3]
    8097c:	eb03 0383 	add.w	r3, r3, r3, lsl #2
@@ -1196,12 +1197,12 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    80986:	f5b3 7f7a 	cmp.w	r3, #1000	; 0x3e8
    8098a:	bfb8      	it	lt
    8098c:	f44f 737a 	movlt.w	r3, #1000	; 0x3e8
-		 dutyCycle=2000;
+		 dutyCycle = 2000;
 	 }
-	 else if(dutyCycle<1000){
-		 dutyCycle=1000;
+	 else if(dutyCycle < 1000){
+		 dutyCycle = 1000;
 	 }
-	 REG_PWM_CDTYUPD6=dutyCycle;
+	 REG_PWM_CDTYUPD6 = dutyCycle;
    80990:	f5b3 6ffa 	cmp.w	r3, #2000	; 0x7d0
    80994:	bfa8      	it	ge
    80996:	f44f 63fa 	movge.w	r3, #2000	; 0x7d0
@@ -1211,19 +1212,28 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    809a0:	400942c8 	.word	0x400942c8
 
 000809a4 <adc_init>:
+
+
+
+// not ab peripherals, but extra //see 43.5.3
+void adc_init(void){
+	REG_PMC_PCER1	|= PMC_PCER1_PID37; 	//enable clock
    809a4:	4a0b      	ldr	r2, [pc, #44]	; (809d4 <adc_init+0x30>)
    809a6:	6813      	ldr	r3, [r2, #0]
    809a8:	f043 0320 	orr.w	r3, r3, #32
    809ac:	6013      	str	r3, [r2, #0]
+	REG_ADC_CHER	|= ADC_CHDR_CH0; // Channel 0. entails that PA2 is chosen (A7/AD)
    809ae:	f5a2 3201 	sub.w	r2, r2, #132096	; 0x20400
    809b2:	f5a2 723c 	sub.w	r2, r2, #752	; 0x2f0
    809b6:	6813      	ldr	r3, [r2, #0]
    809b8:	f043 0301 	orr.w	r3, r3, #1
    809bc:	6013      	str	r3, [r2, #0]
+	REG_ADC_MR		|= ADC_MR_FREERUN_ON; //chosen free-running mode
    809be:	3a0c      	subs	r2, #12
    809c0:	6813      	ldr	r3, [r2, #0]
    809c2:	f043 0380 	orr.w	r3, r3, #128	; 0x80
    809c6:	6013      	str	r3, [r2, #0]
+	REG_ADC_CR		|= ADC_CR_START; //The software trigger that starts ADC conversion
    809c8:	3a04      	subs	r2, #4
    809ca:	6813      	ldr	r3, [r2, #0]
    809cc:	f043 0302 	orr.w	r3, r3, #2
@@ -1232,40 +1242,63 @@ void pwm_update_duty_cycle(CAN_MESSAGE *msg){
    809d4:	400e0700 	.word	0x400e0700
 
 000809d8 <adc_ballpoint>:
+
+void adc_read_putty(void){
+	printf("adc value: %d \n\r",REG_ADC_CDR);
+}
+
+void adc_ballpoint(void){
    809d8:	b530      	push	{r4, r5, lr}
    809da:	b085      	sub	sp, #20
+	int adcval = REG_ADC_CDR;
    809dc:	4b14      	ldr	r3, [pc, #80]	; (80a30 <adc_ballpoint+0x58>)
    809de:	681c      	ldr	r4, [r3, #0]
+	if(adcval < 250  && activateGoal == 1){ // adc value threshold depends on IR condition
    809e0:	2cf9      	cmp	r4, #249	; 0xf9
    809e2:	dc03      	bgt.n	809ec <adc_ballpoint+0x14>
    809e4:	4b13      	ldr	r3, [pc, #76]	; (80a34 <adc_ballpoint+0x5c>)
    809e6:	681b      	ldr	r3, [r3, #0]
    809e8:	2b01      	cmp	r3, #1
    809ea:	d00a      	beq.n	80a02 <adc_ballpoint+0x2a>
+		msg.data_length = 1;
+		msg.data[0] = 1;
+		can_send(&msg, 0);
+		
+	}
+	if (adcval> 4000 && activateGoal==0){
    809ec:	f5b4 6f7a 	cmp.w	r4, #4000	; 0xfa0
    809f0:	dd05      	ble.n	809fe <adc_ballpoint+0x26>
    809f2:	4b10      	ldr	r3, [pc, #64]	; (80a34 <adc_ballpoint+0x5c>)
    809f4:	681b      	ldr	r3, [r3, #0]
    809f6:	b913      	cbnz	r3, 809fe <adc_ballpoint+0x26>
+		activateGoal = 1;
    809f8:	2201      	movs	r2, #1
    809fa:	4b0e      	ldr	r3, [pc, #56]	; (80a34 <adc_ballpoint+0x5c>)
    809fc:	601a      	str	r2, [r3, #0]
+	}
    809fe:	b005      	add	sp, #20
    80a00:	bd30      	pop	{r4, r5, pc}
+		goalCount++;
    80a02:	4b0d      	ldr	r3, [pc, #52]	; (80a38 <adc_ballpoint+0x60>)
    80a04:	6819      	ldr	r1, [r3, #0]
    80a06:	3101      	adds	r1, #1
    80a08:	6019      	str	r1, [r3, #0]
+		activateGoal = 0;
    80a0a:	2500      	movs	r5, #0
    80a0c:	4b09      	ldr	r3, [pc, #36]	; (80a34 <adc_ballpoint+0x5c>)
    80a0e:	601d      	str	r5, [r3, #0]
+		printf("Goal Count: %d \n\r", goalCount);
    80a10:	480a      	ldr	r0, [pc, #40]	; (80a3c <adc_ballpoint+0x64>)
    80a12:	4b0b      	ldr	r3, [pc, #44]	; (80a40 <adc_ballpoint+0x68>)
    80a14:	4798      	blx	r3
+		msg.id = 0;
    80a16:	f8ad 5004 	strh.w	r5, [sp, #4]
+		msg.data_length = 1;
    80a1a:	2301      	movs	r3, #1
    80a1c:	f88d 3006 	strb.w	r3, [sp, #6]
+		msg.data[0] = 1;
    80a20:	f88d 3007 	strb.w	r3, [sp, #7]
+		can_send(&msg, 0);
    80a24:	4629      	mov	r1, r5
    80a26:	a801      	add	r0, sp, #4
    80a28:	4b06      	ldr	r3, [pc, #24]	; (80a44 <adc_ballpoint+0x6c>)
@@ -1288,35 +1321,35 @@ int main(void)
 {
    80a48:	b508      	push	{r3, lr}
 		//LED TEST
-		PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
+		PIOA->PIO_PER	|= PIO_PER_P19;  //PIO enable register
    80a4a:	4b1c      	ldr	r3, [pc, #112]	; (80abc <main+0x74>)
    80a4c:	681a      	ldr	r2, [r3, #0]
    80a4e:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a52:	601a      	str	r2, [r3, #0]
-		PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
+		PIOA->PIO_OER	|= PIO_OER_P19;  //PIO enable output register
    80a54:	691a      	ldr	r2, [r3, #16]
    80a56:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a5a:	611a      	str	r2, [r3, #16]
-		PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register
+		PIOA->PIO_SODR	|= PIO_SODR_P19;  //set output data register
    80a5c:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    80a5e:	f442 2200 	orr.w	r2, r2, #524288	; 0x80000
    80a62:	631a      	str	r2, [r3, #48]	; 0x30
 								
-		PIOA->PIO_PER |= PIO_PER_P20;  //pio enable register
+		PIOA->PIO_PER	|= PIO_PER_P20;  //PIO enable register
    80a64:	681a      	ldr	r2, [r3, #0]
    80a66:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a6a:	601a      	str	r2, [r3, #0]
-		PIOA->PIO_OER |= PIO_OER_P20;  //pio enable output register
+		PIOA->PIO_OER	|= PIO_OER_P20;  //PIO enable output register
    80a6c:	691a      	ldr	r2, [r3, #16]
    80a6e:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a72:	611a      	str	r2, [r3, #16]
-		PIOA->PIO_SODR |= PIO_SODR_P20;  //set output data register
+		PIOA->PIO_SODR	|= PIO_SODR_P20;  //set output data register
    80a74:	6b1a      	ldr	r2, [r3, #48]	; 0x30
    80a76:	f442 1280 	orr.w	r2, r2, #1048576	; 0x100000
    80a7a:	631a      	str	r2, [r3, #48]	; 0x30
 		
 	
-		SystemInit(); //init SAM system
+		SystemInit(); //SAM system init
    80a7c:	4b10      	ldr	r3, [pc, #64]	; (80ac0 <main+0x78>)
    80a7e:	4798      	blx	r3
 		WDT->WDT_MR |= WDT_MR_WDDIS; // disable the watchdog timer
@@ -1343,9 +1376,6 @@ int main(void)
 		motor_dac_init();
    80aa0:	4b0f      	ldr	r3, [pc, #60]	; (80ae0 <main+0x98>)
    80aa2:	4798      	blx	r3
-		
-		
-		
 		motor_stop();
    80aa4:	4b0f      	ldr	r3, [pc, #60]	; (80ae4 <main+0x9c>)
    80aa6:	4798      	blx	r3
@@ -1359,8 +1389,6 @@ int main(void)
    80ab0:	4b0f      	ldr	r3, [pc, #60]	; (80af0 <main+0xa8>)
    80ab2:	4798      	blx	r3
 		
-		
-	
     while (1){
 		//adc_read_putty();
 		adc_ballpoint();
@@ -1729,7 +1757,6 @@ void SysTick_Handler(void){
    80df2:	d00b      	beq.n	80e0c <SysTick_Handler+0x28>
 		busywait_alarm = 1;
 	}
-	
 	
 	if(SysTick_counter%1000 == 0){
    80df4:	4a0f      	ldr	r2, [pc, #60]	; (80e34 <SysTick_Handler+0x50>)

@@ -18,7 +18,6 @@
 #include "DRIVER_SLIDER.h"
 #include "DRIVER_TIMER.h"
 
-
 #define MYUBRR FOSC/16/BAUD-1 //UART Baud Rate Register
 
 
@@ -32,14 +31,11 @@ int main(void){
 	joystick_calibrate();
 	can_init();
 	
-	
 	while(1){
 		_delay_us(1);
 		navigate();
 		//joystick_sendPositionButtonCan(joystick_getPosition());
 		//slider_sendPositionButtonCan(slider_getPosition());
-		
-		
 	}
 	
 	return 0;

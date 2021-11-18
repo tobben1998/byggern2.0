@@ -17,9 +17,7 @@ void spi_init(void){
 	PORTB |= 1<<PB4;
 	
 	//button pull up
-	PORTB |= 1<<PB2;
-	
-	
+	PORTB |= 1<<PB2;	
 }
 
 void spi_send(uint8_t cData){

@@ -2919,11 +2919,11 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
                               0x53f55 (size before relaxing)
  .debug_str     0x00054903       0x2a DRIVER_PWM.o
                               0x534fd (size before relaxing)
- .debug_str     0x0005492d       0xbc DRIVER_ADC.o
+ .debug_str     0x0005492d       0x65 DRIVER_ADC.o
                               0x5331b (size before relaxing)
- .debug_str     0x000549e9      0x159 main.o
+ .debug_str     0x00054992      0x159 main.o
                               0x53680 (size before relaxing)
- .debug_str     0x00054b42      0x17a printf-stdarg.o
+ .debug_str     0x00054aeb      0x1d1 printf-stdarg.o
                                0x3652 (size before relaxing)
  .debug_str     0x00054cbc       0xa3 timer.o
                               0x53603 (size before relaxing)

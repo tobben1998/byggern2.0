@@ -39,8 +39,8 @@ void RTT_Handler(void){
 	int error = ref - pos;
 	sumError += error;
 
-	int derivative = kd/dt*(error-prevError);
-	int integral = dt*ki*sumError;
+	int derivative	= kd/dt*(error-prevError);
+	int integral	= dt*ki*sumError;
 	
 	int power = kp*error + integral + derivative;
 	

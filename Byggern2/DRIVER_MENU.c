@@ -28,14 +28,11 @@
 #define s_animation 72
 #define s_gameover 80
 
-
-
 static controller ctrl;
 static int pos_child=0;
 menu_item* main_menu;
 static menu_item* curr_menu;
 static int header_pages=2;
-
 
 void menu_init(){
 	
@@ -97,9 +94,9 @@ void f_1player(){
 		//several times because of race condition
 		
 		can_message msg;
-		msg.id=1;
-		msg.length=3;
-		msg.data[2]=(char)1;
+		msg.id = 1;
+		msg.length = 3;
+		msg.data[2] = (char)1;
 		can_send_message(&msg); //solenoide hit
 		
 		uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
@@ -133,7 +130,6 @@ void f_1player(){
 	
 		oled_reset();
 		oled_print_screen_progmem(s_gameover);
-		
 		oled_print_time_used();
 		
 		_delay_ms(1000);
@@ -148,7 +144,7 @@ void f_2player(){
 	oled_print_screen_progmem(s_p2);
 	
 	_delay_ms(1000);
-	curr_menu=main_menu;
+	curr_menu = main_menu;
 	pos_child=0;
 	(*curr_menu->function)(main_menu->name);
 }
@@ -157,16 +153,17 @@ void f_controller(){
 	oled_reset();
 	oled_print_screen_progmem(s_controller);
 	oled_print_page_progmem(s_controllerP,header_pages);
-
 }
 
 void f_joystick(){
 	oled_reset();
 	oled_print_screen_progmem(s_joystick);
+	
 	cli();
 	controller ctrl = JOYSTICK;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	sei();
+	
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -178,10 +175,12 @@ void f_joystick(){
 void f_slider(){
 	oled_reset();
 	oled_print_screen_progmem(s_slider);
+	
 	cli();
 	controller ctrl = SLIDER;
 	xmem_write(ctrl,0x800); //Lagrer i SRAM
 	sei();
+	
 	_delay_ms(1000);
 	
 	curr_menu=main_menu;
@@ -196,7 +195,6 @@ void f_calibrate(){
 	
 	_delay_ms(700);
 	joystick_calibrate();
-	
 	_delay_ms(300);
 		
 	curr_menu=main_menu;
@@ -213,55 +211,52 @@ void f_animation(){
 	
 	curr_menu=main_menu;
 	pos_child=0;
-	(*curr_menu->function)(main_menu->name);
-	
-	
+	(*curr_menu->function)(main_menu->name);	
 }
 
 void navigate(){
 	
-if(joystick_getDirection()!=NEUTRAL){
-			_delay_ms(80);
+	if(joystick_getDirection()!=NEUTRAL){
+				_delay_ms(80);
 		
-	switch (joystick_getDirection()){
+		switch (joystick_getDirection()){
 		
-		case UP:
-		if(pos_child>0){
-			oled_goto_page(pos_child+header_pages);
-			oled_clear_page(pos_child+header_pages);
-			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
+			case UP:
+			if(pos_child>0){
+				oled_goto_page(pos_child+header_pages);
+				oled_clear_page(pos_child+header_pages);
+				oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
 			
-			oled_goto_page(pos_child+header_pages-1);
-			oled_clear_page(pos_child+header_pages-1);
-			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child-1);
+				oled_goto_page(pos_child+header_pages-1);
+				oled_clear_page(pos_child+header_pages-1);
+				oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child-1);
 				
-			pos_child -= 1;
-		}
-		break;
-		case DOWN:
-		if(pos_child < curr_menu->numOfChildren-1){
-			oled_goto_page(pos_child+header_pages);
-			oled_clear_page(pos_child+header_pages);
-			oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
+				pos_child -= 1;
+			}
+			break;
+			case DOWN:
+			if(pos_child < curr_menu->numOfChildren-1){
+				oled_goto_page(pos_child+header_pages);
+				oled_clear_page(pos_child+header_pages);
+				oled_print_page_progmem(curr_menu->oledOffset,header_pages+pos_child);
 			
-			oled_goto_page(pos_child+header_pages+1);
-			oled_clear_page(pos_child+header_pages+1);
-			oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child+1);
+				oled_goto_page(pos_child+header_pages+1);
+				oled_clear_page(pos_child+header_pages+1);
+				oled_print_page_progmem((curr_menu->oledOffset)+s_screen,header_pages+pos_child+1);
 			
-			pos_child += 1;
+				pos_child += 1;
+			}
+			break;
 		}
-		break;
 	}
-}
-	if (!(PINB & (1<<PB2))){
-		if(curr_menu->children!= NULL){
-			curr_menu=curr_menu->children[pos_child];
-			pos_child=0;
-			(*curr_menu->function)(curr_menu->name);
+		if (!(PINB & (1<<PB2))){
+			if(curr_menu->children!= NULL){
+				curr_menu=curr_menu->children[pos_child];
+				pos_child=0;
+				(*curr_menu->function)(curr_menu->name);
+			}
+			_delay_ms(200);
 		}
-		_delay_ms(200);
-	}
-		
 }
 
 

@@ -24,16 +24,16 @@
 int main(void)
 {
 		//LED TEST
-		PIOA->PIO_PER |= PIO_PER_P19;  //pio enable register
-		PIOA->PIO_OER |= PIO_OER_P19;  //pio enable output register
-		PIOA->PIO_SODR |= PIO_SODR_P19;  //set output data register
+		PIOA->PIO_PER	|= PIO_PER_P19;  //PIO enable register
+		PIOA->PIO_OER	|= PIO_OER_P19;  //PIO enable output register
+		PIOA->PIO_SODR	|= PIO_SODR_P19;  //set output data register
 								
-		PIOA->PIO_PER |= PIO_PER_P20;  //pio enable register
-		PIOA->PIO_OER |= PIO_OER_P20;  //pio enable output register
-		PIOA->PIO_SODR |= PIO_SODR_P20;  //set output data register
+		PIOA->PIO_PER	|= PIO_PER_P20;  //PIO enable register
+		PIOA->PIO_OER	|= PIO_OER_P20;  //PIO enable output register
+		PIOA->PIO_SODR	|= PIO_SODR_P20;  //set output data register
 		
 	
-		SystemInit(); //init SAM system
+		SystemInit(); //SAM system init
 		WDT->WDT_MR |= WDT_MR_WDDIS; // disable the watchdog timer
 		configure_uart();
 		can_init_def_tx_rx_mb(CAN_BR);
@@ -41,17 +41,11 @@ int main(void)
 		adc_init();
 		motor_init();
 		motor_dac_init();
-		
-		
-		
 		motor_stop();
 		motor_encoder_tglreset();
 		motor_calibrate();
 		PID_rtt_init();
-	
 		
-		
-	
     while (1){
 		//adc_read_putty();
 		adc_ballpoint();

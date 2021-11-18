@@ -6,14 +6,10 @@
 
 #include <stdint.h>
 
-
-
 typedef struct {
 	int l_pos;
 	int r_pos;
 } slider_position;
-
-
 
 slider_position slider_getPosition(void);
 
