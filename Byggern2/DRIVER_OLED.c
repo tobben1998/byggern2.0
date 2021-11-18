@@ -4,6 +4,7 @@
 #include <string.h>
 #include <util/delay.h>
 #include "progmem.h"
+#include "DRIVER_TIMER.h"
 #include "DRIVER_ADC.h"
 #include "DRIVER_OLED.h"
 #include "fonts.h"
@@ -269,4 +270,31 @@ void oled_print_page_progmem(int screenoffset, int pageOffset){
 	oled_goto_page(pageOffset);
 	strcpy_P(buffer,(PGM_P)pgm_read_word(&table[screenoffset+pageOffset]));
 	oled_center_print(buffer,8);
+}
+
+void oled_print_time_used(void){
+	int seconds;
+	int mseconds;
+	int digit3char;
+	int digit2char;
+	int digit1char;
+	int mdigitchar;
+	seconds = timer_get_seconds();
+	mseconds = timer_get_mseconds();
+	uint8_t digit3 =seconds/100;
+	uint8_t digit2 =seconds/10;
+	uint8_t digit1 =seconds%10;
+	uint8_t mdigit = mseconds;
+	digit3char = digit3+'0';
+	digit2char = digit2+'0';
+	digit1char = digit1+'0';
+	mdigitchar = mdigit+'0';
+	
+	oled_goto_page(4);
+	oled_goto_col(63-(5*(8/2)));
+	oled_write_char(digit3char,8);
+	oled_write_char(digit2char,8);
+	oled_write_char(digit1char,8);
+	oled_write_char(44,8); //44=","
+	oled_write_char(mdigitchar,8);
 }
