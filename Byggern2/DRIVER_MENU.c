@@ -110,25 +110,26 @@ void f_1player(){
 		strcpy_P(buffer,(PGM_P)pgm_read_word(&table[i+s_p1]));
 		oled_center_print(buffer,8);	
 	}
-	
+	joystick_sendPositionButtonCan(joystick_getPosition());//For å sende motoren til midten før vi starter.
 	while(!(PINB & (1<<0))){ //
 		printf("--");
 	}
+		can_clearIfInterrupted(); 
+		can_clearIfInterrupted();//second one because of race codistion. 
 		can_message msg;
 		msg.id=1;
 		msg.length=3;
 		msg.data[2]=(char)1; //ER DETTE RIKTIG?
 		can_send_message(&msg);
 		uint8_t ctrl = xmem_read(0x800); //Leser variabelen fra SRAM. Viktig at adressen stemmer med der man skrev til.
-		printf("\n\r%d \n\r",ctrl);
-		//printf("%d",ctrl);
 		//start timer
-		timer_init();		
+		timer_init();
+				
 	switch(ctrl){
 		case JOYSTICK:
 
 		//starter counter
-			while (!can_interrupted()){ //stopper n?r snor treffes			
+			while (!can_clearIfInterrupted()){ //stopper n?r snor treffes			
 				joystick_sendPositionButtonCan(joystick_getPosition());
 				//tiden kan telle p? skjermen
 				
@@ -136,7 +137,7 @@ void f_1player(){
 		//	
 		break;
 		case SLIDER:
-			while (!can_interrupted()){	 //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
+			while (!can_clearIfInterrupted()){	 //legge inn en variabel som gj?r at n?r man taper kommer man tl main menu for eksempel
 				slider_sendPositionButtonCan(slider_getPosition());
 			}
 		break;

@@ -53,8 +53,8 @@ int main(void)
 		
 		int16_t encval;
 		motor_encoder_tglreset();
-		motor_calibrate();
-		//motor_calibrate2();
+		//motor_calibrate();
+		motor_calibrate2();
 		PID_rtt_init();
 	
 		

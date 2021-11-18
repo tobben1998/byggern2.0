@@ -25,7 +25,7 @@ void can_init();
 void can_send_message(can_message *msg);
 can_message *can_recive_msg(uint8_t buffer_number);
 void can_interrupt_handler(void);
-int can_interrupted(void);
+int can_clearIfInterrupted(void);
 
 
 

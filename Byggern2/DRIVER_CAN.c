@@ -162,7 +162,7 @@ ISR(INT0_vect){ //Interrupt handler for IR-goal signal CAN message from node 2
 	
 }
 
-int can_interrupted(void){
+int can_clearIfInterrupted(void){
 	if (CAN_flag==1){
 		CAN_flag=0;
 		mcp_bit_modify(MCP_CANINTF, 0x01, 0);
