@@ -2927,9 +2927,9 @@ OUTPUT(ByggernNode2.elf elf32-littlearm)
                               0x53681 (size before relaxing)
  .debug_str     0x00054af7      0x17a printf-stdarg.o
                                0x3652 (size before relaxing)
- .debug_str     0x00054c71       0xa3 timer.o
+ .debug_str     0x00054c71       0xfa timer.o
                               0x53603 (size before relaxing)
- .debug_str     0x00054d14      0x15a uart.o
+ .debug_str     0x00054d6b      0x103 uart.o
                               0x53933 (size before relaxing)
 
 .debug_frame    0x00000000      0x81c

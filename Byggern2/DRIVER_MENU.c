@@ -101,7 +101,8 @@ void f_1player(){
 		msg.data[2]=(char)1;
 		can_send_message(&msg); //solonoide hit
 		
-		uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
+		//uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
+		uint8_t ctrl=0;
 		timer2_set_ctrl(ctrl);
 		timer_init();
 		timer2_init();
