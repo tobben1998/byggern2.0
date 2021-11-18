@@ -146,6 +146,11 @@ void f_1player(){
 void f_2player(){
 	oled_reset();
 	oled_print_screen_progmem(s_p2);
+	
+	_delay_ms(1000);
+	curr_menu=main_menu;
+	pos_child=0;
+	(*curr_menu->function)(main_menu->name);
 }
 
 void f_controller(){
