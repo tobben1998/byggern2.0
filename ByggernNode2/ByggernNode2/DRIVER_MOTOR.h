@@ -2,7 +2,6 @@
 #define DRIVER_MOTOR_H_
 
 #include "can_controller.h"
-//pin til DACC = PB16. på shield A_out
 
 void motor_init(void);
 int16_t motor_read_encoder(int doReset);

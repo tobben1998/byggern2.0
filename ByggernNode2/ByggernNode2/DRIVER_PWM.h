@@ -7,5 +7,4 @@ void pwm_init(void);
 void pwm_update_duty_cycle(CAN_MESSAGE *msg);
 
 
-
 #endif

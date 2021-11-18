@@ -165,7 +165,7 @@ void motor_calibrate2(void){
 	while(prevPos != pos){
 		prevPos = pos;
 		for(int i = 0; i < 100000; i++){
-			motor_run(0, 800); //Må ha nok pådrag til å orke å kjøre til enden, men ikke spinne på slutten. 900 fungerer såvidt. 
+			motor_run(0, 800);
 		}
 		pos = motor_read_encoder(0);
 		printf("prevPos: %d, pos: %d \n\r", prevPos, pos);

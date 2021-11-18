@@ -4,7 +4,7 @@
 
 void adc_init(void);
 void adc_read_putty(void);
-void adc_ballpoint(int *goal);
+void adc_ballpoint(void);
 
 
 #endif 

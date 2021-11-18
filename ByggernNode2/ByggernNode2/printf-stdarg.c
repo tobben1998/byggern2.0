@@ -24,7 +24,6 @@ Edited 2020 by Eivind H. Jølsgard and Gustav O. Often for use in course TTK4155
 #include "uart.h"
 
 
-//insert function to print to here
 static void printchar(char **str, int c)
 {
 	(void) uart_putchar(c);  //Send characters to uart

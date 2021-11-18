@@ -31,16 +31,6 @@ void adc_init (void){
 int adc_read(int channel){
 	//Successive read pulses sense through RAM, beginning with channel 0:
 	
-	//Table 1
-	//D0 = 1 select A as input channel
-	//D1 = 0
-	//D2 = 0
-	//D3 = 0 for normal ADC operation
-	//D4 = 0, a conversion starts when !WR goes high
-	//D5 = 0, unipolar conversion for the channel specified by A0
-	//D6 = 0, Single ended configuration for the channel specified
-	//D7 = 1, only the channel specified by An is converted. A single !RD pulse reads the result of that conversion
-
 	uint8_t confData = 0b10000000 | channel;
 	uint16_t adcMemArea = 0x400;
 

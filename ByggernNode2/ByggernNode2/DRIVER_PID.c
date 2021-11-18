@@ -29,7 +29,7 @@ double kd = 0.01;
 void PID_rtt_init(void){
 	NVIC_EnableIRQ(RTT_IRQn); // Enable RTT interrupts in NVIC
 	uint8_t mseconds = 1000*dt;
-	uint32_t prescaler = mseconds * 33; //Blir en litt unøyaktig teller
+	uint32_t prescaler = mseconds * 33; //not fully accurate, but good enough.
 	REG_RTT_MR = 0;
 	REG_RTT_MR |= (prescaler << RTT_MR_RTPRES_Pos);
 	REG_RTT_MR |= RTT_MR_RTTINCIEN;
@@ -38,8 +38,7 @@ void PID_rtt_init(void){
 
 
 void RTT_Handler(void){
-	
-	//Denne interrupt-handleren kan brukes til å styre regulatoren! Husk å kalle pid_rtt_init();
+	//this interupt handler can be used to control the regulator. rembemer to call pid_rtt_init();
 	int pos = motor_read_encoder(0);
 	int ref = refPos; //RefPos might change at an interrupt.
 	int error = ref - pos;
@@ -62,40 +61,8 @@ void RTT_Handler(void){
 	
 	prevError = error;
 
-	// 	if(error > 1000){
-	// 		if(error > 500){
-	// 			for(int i = 0; i<16000; i++){
-	// 				motor_run(1,500);
-	// 			}
-	// 		}
-	// 		for(int i = 0; i<16000; i++){
-	// 			motor_run(1,1000);
-	// 		}
-	// 	}
-	// 	else if(error < -1000){
-	// 		if(error < -500){
-	// 			for(int i = 0; i<16000; i++){
-	// 				motor_run(0,500);
-	// 			}
-	// 		}
-	// 		for(int i = 0; i<16000; i++){
-	// 			motor_run(0,1000);
-	// 		}
-	// 	}
-	// 	else{
-	// 		motor_stop();
-	// 	}
-	
 	//reading status register will clear interrupt flags
 	uint32_t status = REG_RTT_SR;
-	// 	if(status & RTT_SR_RTTINC){ //ALMS generated the interrupt
-	// 		count++;
-	// 		//printf("Inc %d \n\r", count);
-	// 		if(count%50 == 0){
-	// 			seconds++;
-	// 			//printf("Seconds: %d \n\r", seconds);
-	// 		}
-	// 	}
 }
 
 

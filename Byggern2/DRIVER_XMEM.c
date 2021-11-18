@@ -8,7 +8,7 @@ void xmem_init(void){
 	MCUCR |= (1 << SRE); //enable XMEM
 	SFIOR |= (1 << XMM2); //Mask unused bits/pins, which is PC4-PC7
 }
-//Somehow works badly when calling this function from main? Works perfectly by just copy-pasting code to main.
+
 void xmem_write(uint8_t data, uint16_t addr){
 	volatile char *ext_mem = (char *) 0x1000;
 	ext_mem[addr] = data;

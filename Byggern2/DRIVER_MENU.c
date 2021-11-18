@@ -90,8 +90,10 @@ void f_1player(){
 	while(!(PINB & (1<<0))){
 		printf("--");
 	}
-		can_clearIfInterrupted(); 
-		can_clearIfInterrupted();//second one because of race condition
+		for(unsigned char i=0; i<5; i++){
+			can_clearIfInterrupted();
+		}
+		//second one because of race condition
 		
 		can_message msg;
 		msg.id=1;
@@ -100,21 +102,28 @@ void f_1player(){
 		can_send_message(&msg); //solonoide hit
 		
 		uint8_t ctrl = xmem_read(0x800); //read variable from SRAM joystick/slider.
+		timer2_set_ctrl(ctrl);
 		timer_init();
+		timer2_init();
+		timer2_stop();
 				
 	switch(ctrl){
 		case JOYSTICK:
-
-			while (!can_clearIfInterrupted()){			
-				joystick_sendPositionButtonCan(joystick_getPosition());
-				
+			timer2_start();
+			while (!can_clearIfInterrupted()){
+				printf("--");
+				//joystick_sendPositionButtonCan(joystick_getPosition());
 			}
+			timer2_stop();
 
 		break;
 		case SLIDER:
+			timer2_start();
 			while (!can_clearIfInterrupted()){	
-				slider_sendPositionButtonCan(slider_getPosition());
+				printf("--");
+				//slider_sendPositionButtonCan(slider_getPosition());
 			}
+			timer2_stop();
 		break;
 	}	
 	

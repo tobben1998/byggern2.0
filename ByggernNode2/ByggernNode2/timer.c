@@ -56,6 +56,3 @@ void timer_busywaitms(uint32_t mseconds){
 	SysTick_disable();
 }
 
-
-
-//Mulig vi må resette RTTRST in RTT_MR når alarm skjer. 

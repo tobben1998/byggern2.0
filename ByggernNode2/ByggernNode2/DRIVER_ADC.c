@@ -7,46 +7,32 @@
 #include "can_controller.h"
 #include "./printf-stdarg.h"
 
-static int activateGoal=1; //global variable
-static int goalCount=0; //global variable
+static int activateGoal=1; 
+static int goalCount=0;
 
 
 
 
-//activate perperal.
-// not ab periperhal, but extra //see 43.5.3
-//singel ended freerunning mode
-//adc_mr mode register
-//adc_cher channel enable register
-//adc_cr controller register
-//adc_cdr[n] only in free runing mode, but i chosse this- channel n data register
-
-//A7 på shieldet er valhgt
-
+// not ab peripherals, but extra //see 43.5.3
 void adc_init(void){
 	REG_PMC_PCER1	|= PMC_PCER1_PID37; 	//enable clock
-	REG_ADC_CHER	|= ADC_CHDR_CH0; // Valgte kanal 0. medfører at pa2 blir valgt=A7/AD/
-	REG_ADC_MR		|= ADC_MR_FREERUN_ON;
-	//REG_ADC_MR |= ADC_MR_PRESCAL(???);
-	//REG_ADC_MR |= ADC_MR_TRACKTIM(???);
-	//REG_ADC_MR |= ADC_MR_TRANSFER(???);
+	REG_ADC_CHER	|= ADC_CHDR_CH0; // Channel 0. entails that PA2 is chosen (A7/AD)
+	REG_ADC_MR		|= ADC_MR_FREERUN_ON; //chosen free-running mode
 	REG_ADC_CR		|= ADC_CR_START; //The software trigger that starts ADC conversion
-	
-	//adc_cwr for comparing settings of ADC_EMR
 	
 }
 
 void adc_read_putty(void){
-	//printf("test");
-	printf("adc value: %d \n\r",REG_ADC_CDR);//used for reading current result
+	printf("adc value: %d \n\r",REG_ADC_CDR);
 }
 
-void adc_ballpoint(int *goal){
+void adc_ballpoint(void){
 	int adcval = REG_ADC_CDR;
-	if(adcval < 250  && activateGoal==1){ // eller annen tersekl verdi
+	if(adcval < 250  && activateGoal==1){ // adc value threshold depends on IR condition
 		goalCount++;
 		activateGoal=0;
 		printf("Goal Count: %d \n\r", goalCount);
+		
 		CAN_MESSAGE msg;
 		msg.id = 0;
 		msg.data_length = 1;
