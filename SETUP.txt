@@ -1,0 +1,11 @@
+connect every cable.
+check that you have both diodes the right way.
+turn on power. 12 volt on both inputs.(if trouble adjusting the voltage up. try turning the current up first, then the voltage often will go up)
+turn on motor box
+pull main (or the commit ALT FUNGERER if not working)
+build node1 and node2
+if getting a black screen take out the power cables to the board and set them in again. then press the reset button
+if servo is going the wrong way comment/unncomment the inverter in pwm_update_duty_cycle in node 2
+if pid is bad on the board you are using; tune the parameter in driver_PID in node 2
+
+after following this checklist everything will work. (but be careful about touching the cabels for the ir diode. can make you lose the game before you shoudl)
